@@ -1,0 +1,48 @@
+{
+  "name": "statezero",
+  "version": "0.0.0",
+  "author": "andornaut",
+  "description": "Small, simple, functional JavaScript library for managing immutable state",
+  "keywords": [
+    "functional",
+    "immutable",
+    "state"
+  ],
+  "license": "MIT",
+  "main": "dist/statezero.cjs.js",
+  "browser": "dist/statezero.umd.js",
+  "jsnext:main": "dist/statezero.esm.js",
+  "module": "dist/statezero.esm.js",
+  "bugs": {
+    "url": "https://github.com/andornaut/statezero/issues"
+  },
+  "homepage": "https://github.com/andornaut/statezero#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/andornaut/statezero.git"
+  },
+  "dependencies": {
+    "deep-freeze-strict": "^1.1.1"
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-html": "^4.0.2",
+    "eslint-plugin-import": "^2.10.0",
+    "husky": "^0.14.3",
+    "lint-staged": "^7.0.4",
+    "prettier-eslint": "^8.8.1",
+    "prettier-eslint-cli": "^4.7.1",
+    "rollup": "^0.57.1",
+    "rollup-plugin-commonjs": "^9.1.0",
+    "rollup-plugin-node-resolve": "^3.3.0"
+  },
+  "scripts": {
+    "build": "rollup --config",
+    "eslint": "eslint src/**/*.js",
+    "precommit": "lint-staged",
+    "prepublish": "rm -rf dist/ && npm run eslint && npm run build",
+    "prettier": "prettier-eslint --write \"src/**/*.{css,js,json,md}\"",
+    "test": "npm run build && node test/test.js"
+  }
+}
