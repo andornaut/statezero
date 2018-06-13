@@ -17,6 +17,10 @@ statezero.esm.js
 statezero.umd.js
 ```
 
+## Usage
+
+See [./test](./test) for more examples.
+
 ## Developing
 
 ```

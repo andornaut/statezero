@@ -1,15 +1,19 @@
 import deepFreeze from 'deep-freeze-strict';
+import get from 'lodash-es/get';
+import isString from 'lodash-es/isString';
 
 let state = {};
 const subscribers = new Set();
 
-const applyFilter = (callback, filter) => (prev, next) => {
+const applyJSONFilter = (callback, filter) => (prev, next) => {
   prev = filter(prev);
   next = filter(next);
   if (JSON.stringify(prev) !== JSON.stringify(next)) {
     callback(next);
   }
 };
+
+const createJSONPathFilter = path => _state => get(_state, path);
 
 const notify = (previousState, newState) => {
   for (const subscriber of subscribers) {
@@ -29,11 +33,18 @@ export const action = fn => (...args) => fn({ commit, state: copyState() }, ...a
 
 export const getState = () => state;
 
-export const subscribe = (callback, filter) => {
-  if (filter) {
-    callback = applyFilter(callback, filter);
+export const subscribe = (callback, filterJSON) => {
+  if (isString(filterJSON)) {
+    filterJSON = createJSONPathFilter(filterJSON);
+  }
+  if (filterJSON) {
+    callback = applyJSONFilter(callback, filterJSON);
   }
   subscribers.add(callback);
+
+  // If a `filterJSON` was provided, then the caller will need a reference to the augmented `callback` in order to
+  // `unsubscribe()`.
+  return callback;
 };
 
 export const unsubscribe = (callback) => {
