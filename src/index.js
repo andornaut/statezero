@@ -1,4 +1,5 @@
 import deepFreeze from 'deep-freeze-strict';
+import cloneDeep from 'lodash-es/cloneDeep';
 import get from 'lodash-es/get';
 import isString from 'lodash-es/isString';
 
@@ -27,7 +28,7 @@ const commit = (newState) => {
   notify(previousState, state);
 };
 
-const copyState = () => JSON.parse(JSON.stringify(state));
+const copyState = () => cloneDeep(state);
 
 export const action = fn => (...args) => fn({ commit, state: copyState() }, ...args);
 
