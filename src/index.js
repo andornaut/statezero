@@ -34,18 +34,28 @@ export const action = fn => (...args) => fn({ commit, state: copyState() }, ...a
 
 export const getState = () => state;
 
-export const subscribe = (callback, filterJSON) => {
-  if (isString(filterJSON)) {
-    filterJSON = createJSONPathFilter(filterJSON);
+export const subscribe = (callback, filter) => {
+  if (isString(filter)) {
+    filter = createJSONPathFilter(filter);
   }
-  if (filterJSON) {
-    callback = applyJSONFilter(callback, filterJSON);
+  if (filter) {
+    callback = applyJSONFilter(callback, filter);
   }
   subscribers.add(callback);
 
   // If a `filterJSON` was provided, then the caller will need a reference to the augmented `callback` in order to
   // `unsubscribe()`.
   return callback;
+};
+
+export const subscribeOnce = (callback, filter) => {
+  const wrapper = (...args) => {
+    callback(...args);
+    // eslint-disable-next-line no-use-before-define
+    unsubscribe(subscription);
+  };
+  const subscription = subscribe(wrapper, filter);
+  return subscription;
 };
 
 export const unsubscribe = (callback) => {
