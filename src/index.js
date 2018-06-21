@@ -6,26 +6,26 @@ import isString from 'lodash-es/isString';
 let state = {};
 const subscribers = new Set();
 
-const applyJSONFilter = (callback, filter) => (prev, next) => {
-  prev = filter(prev);
+const applyJSONFilter = (callback, filter) => (next, prev) => {
   next = filter(next);
-  if (JSON.stringify(prev) !== JSON.stringify(next)) {
-    callback(next);
+  prev = filter(prev);
+  if (JSON.stringify(next) !== JSON.stringify(prev)) {
+    callback(next, prev);
   }
 };
 
 const createJSONPathFilter = path => _state => get(_state, path);
 
-const notify = (previousState, newState) => {
+const notify = (newState, prevState) => {
   for (const subscriber of subscribers) {
-    subscriber(previousState, newState);
+    subscriber(newState, prevState);
   }
 };
 
 const commit = (newState) => {
-  const previousState = state;
+  const prev = state;
   state = deepFreeze(newState);
-  notify(previousState, state);
+  notify(state, prev);
 };
 
 const copyState = () => cloneDeep(state);
