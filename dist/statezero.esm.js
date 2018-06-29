@@ -38,19 +38,19 @@ const commit = (newState) => {
   notify(state, prev);
 };
 
-export const action = fn => (...args) => fn({ commit, state: appendComputedProps(state) }, ...args);
+const action = fn => (...args) => fn({ commit, state: appendComputedProps(state) }, ...args);
 
-export const getState = () => freezeWithComputedProps(state);
+const getState = () => freezeWithComputedProps(state);
 
-export const registerComputedProp = (key, computeFn) => {
+const registerComputedProp = (key, computeFn) => {
   computedProps[key] = computeFn;
 };
 
-export const deregisterComputedProp = (key) => {
+const deregisterComputedProp = (key) => {
   delete computedProps[key];
 };
 
-export const subscribe = (callback, filter) => {
+const subscribe = (callback, filter) => {
   if (isString(filter)) {
     filter = createJSONPathFilter(filter);
   }
@@ -64,7 +64,7 @@ export const subscribe = (callback, filter) => {
   return callback;
 };
 
-export const subscribeOnce = (callback, filter) => {
+const subscribeOnce = (callback, filter) => {
   const wrapper = (...args) => {
     callback(...args);
     // eslint-disable-next-line no-use-before-define
@@ -74,10 +74,21 @@ export const subscribeOnce = (callback, filter) => {
   return subscription;
 };
 
-export const unsubscribe = (callback) => {
+const unsubscribe = (callback) => {
   subscribers.delete(callback);
 };
 
-export const clearSubscribers = () => {
+const clearSubscribers = () => {
   subscribers.clear();
+};
+
+export {
+  action,
+  getState,
+  registerComputedProp,
+  deregisterComputedProp,
+  subscribe,
+  subscribeOnce,
+  unsubscribe,
+  clearSubscribers,
 };

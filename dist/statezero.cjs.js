@@ -1,9 +1,15 @@
-import deepFreeze from 'deep-freeze-strict';
-import cloneDeep from 'lodash-es/cloneDeep';
-import get from 'lodash-es/get';
-import omit from 'lodash-es/omit';
-import isString from 'lodash-es/isString';
-import mapValues from 'lodash-es/mapValues';
+Object.defineProperty(exports, '__esModule', { value: true });
+
+function _interopDefault(ex) {
+  return ex && typeof ex === 'object' && 'default' in ex ? ex.default : ex;
+}
+
+const deepFreeze = _interopDefault(require('deep-freeze-strict'));
+const cloneDeep = _interopDefault(require('lodash-es/cloneDeep'));
+const get = _interopDefault(require('lodash-es/get'));
+const omit = _interopDefault(require('lodash-es/omit'));
+const isString = _interopDefault(require('lodash-es/isString'));
+const mapValues = _interopDefault(require('lodash-es/mapValues'));
 
 let state = {};
 const subscribers = new Set();
@@ -38,19 +44,19 @@ const commit = (newState) => {
   notify(state, prev);
 };
 
-export const action = fn => (...args) => fn({ commit, state: appendComputedProps(state) }, ...args);
+const action = fn => (...args) => fn({ commit, state: appendComputedProps(state) }, ...args);
 
-export const getState = () => freezeWithComputedProps(state);
+const getState = () => freezeWithComputedProps(state);
 
-export const registerComputedProp = (key, computeFn) => {
+const registerComputedProp = (key, computeFn) => {
   computedProps[key] = computeFn;
 };
 
-export const deregisterComputedProp = (key) => {
+const deregisterComputedProp = (key) => {
   delete computedProps[key];
 };
 
-export const subscribe = (callback, filter) => {
+const subscribe = (callback, filter) => {
   if (isString(filter)) {
     filter = createJSONPathFilter(filter);
   }
@@ -64,7 +70,7 @@ export const subscribe = (callback, filter) => {
   return callback;
 };
 
-export const subscribeOnce = (callback, filter) => {
+const subscribeOnce = (callback, filter) => {
   const wrapper = (...args) => {
     callback(...args);
     // eslint-disable-next-line no-use-before-define
@@ -74,10 +80,19 @@ export const subscribeOnce = (callback, filter) => {
   return subscription;
 };
 
-export const unsubscribe = (callback) => {
+const unsubscribe = (callback) => {
   subscribers.delete(callback);
 };
 
-export const clearSubscribers = () => {
+const clearSubscribers = () => {
   subscribers.clear();
 };
+
+exports.action = action;
+exports.getState = getState;
+exports.registerComputedProp = registerComputedProp;
+exports.deregisterComputedProp = deregisterComputedProp;
+exports.subscribe = subscribe;
+exports.subscribeOnce = subscribeOnce;
+exports.unsubscribe = unsubscribe;
+exports.clearSubscribers = clearSubscribers;
