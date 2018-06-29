@@ -1,6 +1,7 @@
 import deepFreeze from 'deep-freeze-strict';
 import cloneDeep from 'lodash-es/cloneDeep';
 import get from 'lodash-es/get';
+import omit from 'lodash-es/omit';
 import isString from 'lodash-es/isString';
 import mapValues from 'lodash-es/mapValues';
 
@@ -8,11 +9,18 @@ let state = {};
 const subscribers = new Set();
 const computedProps = {};
 
+const appendComputedProps = aState => ({
+  ...cloneDeep(aState),
+  computed: mapValues(computedProps, computeFn => computeFn(aState)),
+});
+
+const freezeWithComputedProps = aState => deepFreeze(appendComputedProps(aState));
+
 const applyJSONFilter = (callback, filter) => (next, prev) => {
-  next = filter(next);
-  prev = filter(prev);
-  if (JSON.stringify(next) !== JSON.stringify(prev)) {
-    callback(next, prev);
+  const filteredNext = filter(next);
+  const filteredPrev = filter(prev);
+  if (JSON.stringify(filteredNext) !== JSON.stringify(filteredPrev)) {
+    callback(filteredNext, filteredPrev);
   }
 };
 
@@ -20,24 +28,17 @@ const createJSONPathFilter = path => _state => get(_state, path);
 
 const notify = (newState, prevState) => {
   for (const subscriber of subscribers) {
-    subscriber(newState, prevState);
+    subscriber(freezeWithComputedProps(newState), freezeWithComputedProps(prevState));
   }
 };
 
-const freezeWithComputedProps = (aState) => {
-  const computed = mapValues(computedProps, computeFn => computeFn(aState));
-  return deepFreeze({ ...aState, computed });
-};
-
 const commit = (newState) => {
-  const prev = state;
-  state = newState;
-  notify(freezeWithComputedProps(state), freezeWithComputedProps(prev));
+  const prev = omit(state, 'computed');
+  state = omit(newState, 'computed');
+  notify(state, prev);
 };
 
-const copyState = () => cloneDeep(state);
-
-export const action = fn => (...args) => fn({ commit, state: copyState() }, ...args);
+export const action = fn => (...args) => fn({ commit, state: appendComputedProps(state) }, ...args);
 
 export const getState = () => freezeWithComputedProps(state);
 

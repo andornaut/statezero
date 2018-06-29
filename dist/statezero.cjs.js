@@ -1,24 +1,32 @@
-'use strict';
-
 Object.defineProperty(exports, '__esModule', { value: true });
 
-function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+function _interopDefault(ex) {
+  return ex && typeof ex === 'object' && 'default' in ex ? ex.default : ex;
+}
 
-var deepFreeze = _interopDefault(require('deep-freeze-strict'));
-var cloneDeep = _interopDefault(require('lodash-es/cloneDeep'));
-var get = _interopDefault(require('lodash-es/get'));
-var isString = _interopDefault(require('lodash-es/isString'));
-var mapValues = _interopDefault(require('lodash-es/mapValues'));
+const deepFreeze = _interopDefault(require('deep-freeze-strict'));
+const cloneDeep = _interopDefault(require('lodash-es/cloneDeep'));
+const get = _interopDefault(require('lodash-es/get'));
+const omit = _interopDefault(require('lodash-es/omit'));
+const isString = _interopDefault(require('lodash-es/isString'));
+const mapValues = _interopDefault(require('lodash-es/mapValues'));
 
 let state = {};
 const subscribers = new Set();
 const computedProps = {};
 
+const appendComputedProps = aState => ({
+  ...cloneDeep(aState),
+  computed: mapValues(computedProps, computeFn => computeFn(aState)),
+});
+
+const freezeWithComputedProps = aState => deepFreeze(appendComputedProps(aState));
+
 const applyJSONFilter = (callback, filter) => (next, prev) => {
-  next = filter(next);
-  prev = filter(prev);
-  if (JSON.stringify(next) !== JSON.stringify(prev)) {
-    callback(next, prev);
+  const filteredNext = filter(next);
+  const filteredPrev = filter(prev);
+  if (JSON.stringify(filteredNext) !== JSON.stringify(filteredPrev)) {
+    callback(filteredNext, filteredPrev);
   }
 };
 
@@ -26,26 +34,27 @@ const createJSONPathFilter = path => _state => get(_state, path);
 
 const notify = (newState, prevState) => {
   for (const subscriber of subscribers) {
-    subscriber(newState, prevState);
+    subscriber(freezeWithComputedProps(newState), freezeWithComputedProps(prevState));
   }
 };
 
-const freezeAndCompute = (aState) => {
-  const computed = mapValues(computedProps, computeFn => computeFn(aState));
-  return deepFreeze({ ...aState, computed });
-};
-
 const commit = (newState) => {
-  const prev = state;
-  state = newState;
-  notify(freezeAndCompute(state), freezeAndCompute(prev));
+  const prev = omit(state, 'computed');
+  state = omit(newState, 'computed');
+  notify(state, prev);
 };
 
-const copyState = () => cloneDeep(state);
+const action = fn => (...args) => fn({ commit, state: appendComputedProps(state) }, ...args);
 
-const action = fn => (...args) => fn({ commit, state: copyState() }, ...args);
+const getState = () => freezeWithComputedProps(state);
 
-const getState = () => freezeAndCompute(state);
+const registerComputedProp = (key, computeFn) => {
+  computedProps[key] = computeFn;
+};
+
+const deregisterComputedProp = (key) => {
+  delete computedProps[key];
+};
 
 const subscribe = (callback, filter) => {
   if (isString(filter)) {
@@ -59,14 +68,6 @@ const subscribe = (callback, filter) => {
   // If a `filterJSON` was provided, then the caller will need a reference to the augmented `callback` in order to
   // `unsubscribe()`.
   return callback;
-};
-
-const registerComputedProp = (key, computeFn) => {
-  computedProps[key] = computeFn;
-};
-
-const deregisterComputedProp = (key) => {
-  delete computedProps[key];
 };
 
 const subscribeOnce = (callback, filter) => {
@@ -89,9 +90,9 @@ const clearSubscribers = () => {
 
 exports.action = action;
 exports.getState = getState;
-exports.subscribe = subscribe;
 exports.registerComputedProp = registerComputedProp;
 exports.deregisterComputedProp = deregisterComputedProp;
+exports.subscribe = subscribe;
 exports.subscribeOnce = subscribeOnce;
 exports.unsubscribe = unsubscribe;
 exports.clearSubscribers = clearSubscribers;
