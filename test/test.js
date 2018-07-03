@@ -74,16 +74,19 @@ const setCountProp = action(({ commit, state }) => {
   commit(state);
 });
 
-const canSetProperties = () => {
-  setCount(1);
+const gettersArePreserved = () => {
+  setCount(0);
 
   setCountProp();
+  increment();
 
-  assert.equal(getState().countProp, 1);
+  const { count, countProp } = getState();
+  assert.equal(count, countProp);
+  assert.equal(countProp, 1);
 };
 
 actionMutatesState();
 arrayFilteredSubscriberIsNotified();
+gettersArePreserved();
 stringFilteredSubscriberIsNotified();
 unsubscribedCallbackIsNotCalled();
-canSetProperties();

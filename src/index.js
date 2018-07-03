@@ -27,12 +27,22 @@ const notify = (newState, prevState) => {
 };
 
 const commit = (newState) => {
-  const prev = state;
+  const prevState = state;
   state = deepFreeze(newState);
-  notify(state, prev);
+  notify(state, prevState);
 };
 
-const copyState = () => cloneDeep(state);
+const copyState = () => {
+  const gettersAndSetters = {};
+  for (const [key, val] of Object.entries(Object.getOwnPropertyDescriptors(state))) {
+    if (val.get || val.set) {
+      gettersAndSetters[key] = val;
+    }
+  }
+  const clonedState = cloneDeep(state);
+  Object.defineProperties(clonedState, gettersAndSetters);
+  return clonedState;
+};
 
 export const action = fn => (...args) => fn({ commit, state: copyState() }, ...args);
 
