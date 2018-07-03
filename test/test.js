@@ -21,7 +21,26 @@ const actionMutatesState = () => {
   assert.equal(getState().count, 1);
 };
 
-const jsonPathSubscriberIsNotified = () => {
+const arrayFilteredSubscriberIsNotified = () => {
+  let subscriberWasCalled = false;
+  setCount(0);
+  subscribe(
+    (state) => {
+      subscriberWasCalled = true;
+      assert.equal(state.count, 1);
+    },
+    ['count'],
+  );
+
+  increment();
+  clearSubscribers();
+
+  setTimeout(() => {
+    assert.ok(subscriberWasCalled);
+  });
+};
+
+const stringFilteredSubscriberIsNotified = () => {
   let subscriberWasCalled = false;
   setCount(0);
   subscribe((state) => {
@@ -46,6 +65,25 @@ const unsubscribedCallbackIsNotCalled = () => {
   increment();
 };
 
+const setCountProp = action(({ commit, state }) => {
+  Object.defineProperty(state, 'countProp', {
+    get() {
+      return this.count;
+    },
+  });
+  commit(state);
+});
+
+const canSetProperties = () => {
+  setCount(1);
+
+  setCountProp();
+
+  assert.equal(getState().countProp, 1);
+};
+
 actionMutatesState();
-jsonPathSubscriberIsNotified();
+arrayFilteredSubscriberIsNotified();
+stringFilteredSubscriberIsNotified();
 unsubscribedCallbackIsNotCalled();
+canSetProperties();
