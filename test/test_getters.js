@@ -29,6 +29,8 @@ const nestedGettersArePreserved = () => {
     commit(state);
   })();
 
+  assert.equal(getState().nested.countProp, 1);
+
   action(({ commit, state }) => {
     state.nested.count = 2;
     commit(state);
