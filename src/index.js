@@ -1,9 +1,10 @@
 import deepFreeze from 'deep-freeze-strict';
-import cloneDeep from 'lodash-es/cloneDeep';
 import get from 'lodash-es/get';
 import isArray from 'lodash-es/isArray';
 import isString from 'lodash-es/isString';
 import pick from 'lodash-es/pick';
+
+import { clone } from './clone.mjs';
 
 let state = {};
 const subscribers = new Set();
@@ -32,19 +33,7 @@ const commit = (newState) => {
   notify(state, prevState);
 };
 
-const copyState = () => {
-  const gettersAndSetters = {};
-  for (const [key, val] of Object.entries(Object.getOwnPropertyDescriptors(state))) {
-    if (val.get || val.set) {
-      gettersAndSetters[key] = val;
-    }
-  }
-  const clonedState = cloneDeep(state);
-  Object.defineProperties(clonedState, gettersAndSetters);
-  return clonedState;
-};
-
-export const action = fn => (...args) => fn({ commit, state: copyState() }, ...args);
+export const action = fn => (...args) => fn({ commit, state: clone(state) }, ...args);
 
 export const getState = () => state;
 
