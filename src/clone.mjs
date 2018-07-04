@@ -14,9 +14,7 @@ export const clone = (value) => {
   }
 
   if (value instanceof Date) {
-    const copy = new Date();
-    copy.setTime(value.getTime());
-    return copy;
+    return new Date(value.getTime());
   }
 
   if (value instanceof Array) {
@@ -28,14 +26,12 @@ export const clone = (value) => {
   }
 
   if (value instanceof Object) {
-    const getters = getterDescriptors(value);
     const copy = {};
-    for (const propName of Object.getOwnPropertyNames(value)) {
-      if (Object.prototype.hasOwnProperty.call(value, propName)) {
-        copy[propName] = clone(value[propName]);
-      }
+    for (const propName of Object.getOwnPropertyNames(value)) { // Includes non-enumerable properties
+      copy[propName] = clone(value[propName]);
     }
-    Object.defineProperties(copy, getters);
+
+    Object.defineProperties(copy, getterDescriptors(value));
     return copy;
   }
 
