@@ -38,6 +38,28 @@ export const action = fn => (...args) => fn({ commit, state: clone(state) }, ...
 export const getState = () => state;
 
 /**
+ * Define a getter (computed property) on the state.
+ *
+ * @param path: A JSON path as a string eg. "a.b.c", or and array eg. ['a', 'b', 'c'] or property name like "c".
+ *  If a parent path component does not exist, then it will be created as an empty object.
+ * @param fn: A function which takes state as its only parameter and returns a value.
+ */
+export const defineGetter = action((context, path, fn) => {
+  const pathArray = isArray(path) ? path : path.split('.');
+  const lastIdx = pathArray.length - 1;
+  const propName = pathArray[lastIdx];
+  const parentPath = pathArray.slice(0, lastIdx);
+  const obj = parentPath.length ? get(context.state, parentPath, {}) : context.state;
+
+  Object.defineProperty(obj, propName, {
+    get() {
+      return fn.call(this, this);
+    },
+  });
+  context.commit(context.state);
+});
+
+/**
  * Subscribe to changes of state.
  *
  * @param callback: A function which is called when the state (filtered or not) changes.

@@ -1,6 +1,6 @@
 const assert = require('assert');
 const {
-  action, clearSubscribers, subscribe, unsubscribe,
+  action, clearSubscribers, defineGetter, getState, subscribe, unsubscribe,
 } = require('../dist/statezero.umd');
 
 const increment = action(({ commit, state }) => {
@@ -25,6 +25,29 @@ const arrayFilteredSubscriberIsNotified = () => {
   );
 
   increment();
+  clearSubscribers();
+
+  setTimeout(() => {
+    assert.ok(subscriberWasCalled);
+  });
+};
+
+const getterSubcriptionsAreCalled = () => {
+  let subscriberWasCalled = false;
+  setCount(0);
+  defineGetter('countProp', state => state.count);
+
+  subscribe(
+    (state) => {
+      subscriberWasCalled = true;
+      assert.equal(getState().count, state.countProp);
+      assert.equal(state.countProp, 1);
+    },
+    ['countProp'],
+  );
+
+  increment();
+
   clearSubscribers();
 
   setTimeout(() => {
@@ -58,5 +81,6 @@ const unsubscribedCallbackIsNotCalled = () => {
 };
 
 arrayFilteredSubscriberIsNotified();
+getterSubcriptionsAreCalled();
 stringFilteredSubscriberIsNotified();
 unsubscribedCallbackIsNotCalled();
