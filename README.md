@@ -4,6 +4,8 @@ Small, simple, functional JavaScript library for managing immutable state.
 
 ## Installation
 
+Install from [npm](https://www.npmjs.com/package/statezero).
+
 ```
 npm install statezero --save
 ```
@@ -15,6 +17,12 @@ ls -1 node_modules/statezero/dist/
 statezero.cjs.js
 statezero.esm.js
 statezero.umd.js
+```
+
+Import statezero functions.
+
+```javascript
+import { action, getState, subscribe } from 'statezero';
 ```
 
 ## Usage
