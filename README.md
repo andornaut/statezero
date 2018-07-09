@@ -69,9 +69,9 @@ setCount(5);
 
 ### Subscribing to state change notifications
 
-You can subscribe to state change notifications by calling `subscribe(fn, filter)`, where "fn" is a function
-that you define, "filter" is an optional String, Array or Function which you can use to select the part of the
-state that you care about, and the return value is a subscription, which you can use to unsubscribe.
+You can subscribe to state change notifications by calling `subscribe(fn, filter)`, where "fn" is a function that you
+define, "filter" is an optional String, Array or Function that selects the part of the state that you care about, and
+the return value is a subscription, which you can use to unsubscribe.
 
 The function that you pass to `subscribe()` is passed different values depending on the "filter" argument that you
 supplied.
@@ -83,8 +83,8 @@ supplied.
 | Function eg. `({ a, c } => { a, c })` | `{ a: getState().a, c: getState().c }`         |
 | Other. eg. `undefined`                | `getState()`                                   |
 
-If you supplied a String, Array or Function "filter" argument to `subscribe()` then you can unsubscribe by passing
-the return value from `subscribe()` to `unsubscribe()`.
+If you supplied a `String`, `Array` or `Function` "filter" argument to `subscribe()`, then you can unsubscribe by
+passing the return value from `subscribe()` to `unsubscribe()`.
 
 ```javascript
 const fn = console.log;
@@ -107,8 +107,8 @@ unsubscribe(fn);
 
 ### Getters
 
-Getters are analogous to "computed properties" (in eg.
-[Vuex](https://vuex.vuejs.org/guide/state.html#getting-vuex-state-into-vue-components)).
+Getters are analogous to "computed properties" (see, for example,
+[computed properties in Vuex](https://vuex.vuejs.org/guide/state.html#getting-vuex-state-into-vue-components)).
 Getters are defined by calling `defineGetter(fn, path)`, where "fn" is a function that you define, and "path" is the
 [dot notation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_accessors)
 path of the
@@ -117,19 +117,23 @@ that you wish to define. Any non-existent ancestors in the "path" will be create
 avoid [cycles](https://en.wikipedia.org/wiki/Circular_dependency) in Getters. In other words, Getter functions should
 not reference other Getters.
 
-You can subscribe to receive notifications whenever a Getter changes using "filters" as with any other properties of the
+You can subscribe to receive notifications whenever a Getter changes using "filters" as with any other property of the
 state.
 
 ```javascript
 defineGetter('countTimesTwo', state => state.count * 2);
 
 subscribe(subscriber, ['countTimesTwo']);
+
+// If `state.count` is 1 then `getState().countTimesTwo` is 2
 ```
 
 You can also define nested Getters.
 
 ```javascript
 defineGetter('nested.countTimesTwo', nested => nested.count * 2);
+
+// If `state.nested.count` is 1 then `getState().nested.countTimesTwo` is 2
 ```
 
 See [./test](./test) for more examples.
