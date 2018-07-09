@@ -76,12 +76,12 @@ state that you care about, and the return value is a subscription, which you can
 The function that you pass to `subscribe()` is passed different values depending on the "filter" argument that you
 supplied.
 
-| Filter argument                       | Argument passed to subscribe function  |
-| ------------------------------------- | -------------------------------------- |
-| String path eg. `"a.b"`               | `getState().a.b`                       |
-| Array of paths eg. `["a", "c"]`       | `{ a: getState().a, c: getState().c }` |
-| Function eg. `({ a, c } => { a, c })` | `{ a: getState().a, c: getState().c }` |
-| Other. eg. `undefined`                | `getState()`                           |
+| `subscribe()` "filter" argument       | Argument passed to `subscribe()` "fn" argument |
+| ------------------------------------- | ---------------------------------------------- |
+| String path eg. `"a.b"`               | `getState().a.b`                               |
+| Array of paths eg. `["a", "c"]`       | `{ a: getState().a, c: getState().c }`         |
+| Function eg. `({ a, c } => { a, c })` | `{ a: getState().a, c: getState().c }`         |
+| Other. eg. `undefined`                | `getState()`                                   |
 
 If you supplied a String, Array or Function "filter" argument to `subscribe()` then you can unsubscribe by passing
 the return value from `subscribe()` to `unsubscribe()`.
@@ -107,9 +107,9 @@ unsubscribe(fn);
 
 ### Getters
 
-Getters are analogous to "computed properties" in eg.
+Getters are analogous to "computed properties" (in eg.
 [Vuex](https://vuex.vuejs.org/guide/state.html#getting-vuex-state-into-vue-components).
-Getters are defined by calling `defineGetter(fn, path)`, where "fn" is a function that you define, and "path" is the
+Getters are defined by calling `defineGetter(fn, path)`), where "fn" is a function that you define, and "path" is the
 [dot notation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_accessors)
 path of the
 [Getter Property](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_Objects#Defining_getters_and_setters)
