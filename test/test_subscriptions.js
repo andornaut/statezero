@@ -1,86 +1,51 @@
 const assert = require('assert');
 const {
-  action, clearSubscribers, defineGetter, getState, subscribe, unsubscribe,
+  unsubscribeAll, defineGetter, getState, subscribe, unsubscribe,
 } = require('../dist/statezero.umd');
+const { incrementCount, resetState } = require('./helpers');
 
-const increment = action(({ commit, state }) => {
-  state.count = (state.count || 0) + 1;
-  commit(state);
+beforeEach(resetState);
+
+afterEach(unsubscribeAll);
+
+test('array-filtered subscriber is notified', (done) => {
+  const subscriber = (state) => {
+    assert.equal(state.count, 1);
+    done();
+  };
+
+  subscribe(subscriber, ['count']);
+  incrementCount();
 });
 
-const setCount = action(({ commit, state }, count) => {
-  state.count = count;
-  commit(state);
-});
-
-const arrayFilteredSubscriberIsNotified = () => {
-  let subscriberWasCalled = false;
-  setCount(0);
-  subscribe(
-    (state) => {
-      subscriberWasCalled = true;
-      assert.equal(state.count, 1);
-    },
-    ['count'],
-  );
-
-  increment();
-  clearSubscribers();
-
-  setTimeout(() => {
-    assert.ok(subscriberWasCalled);
-  });
-};
-
-const getterSubcriptionsAreCalled = () => {
-  let subscriberWasCalled = false;
-  setCount(0);
+test('getter-subcribers is called', (done) => {
   defineGetter('countProp', state => state.count);
 
-  subscribe(
-    (state) => {
-      subscriberWasCalled = true;
-      assert.equal(getState().count, state.countProp);
-      assert.equal(state.countProp, 1);
-    },
-    ['countProp'],
-  );
+  const subscriber = (state) => {
+    assert.equal(getState().count, state.countProp);
+    assert.equal(state.countProp, 1);
+    done();
+  };
 
-  increment();
+  subscribe(subscriber, ['countProp']);
+  incrementCount();
+});
 
-  clearSubscribers();
-
-  setTimeout(() => {
-    assert.ok(subscriberWasCalled);
-  });
-};
-
-const stringFilteredSubscriberIsNotified = () => {
-  let subscriberWasCalled = false;
-  setCount(0);
-  subscribe((state) => {
-    subscriberWasCalled = true;
+test('string-filtered subscriber is notified', (done) => {
+  const subscriber = (state) => {
     assert.equal(state, 1);
+    done();
+  };
+
+  subscribe(subscriber, 'count');
+  incrementCount();
+});
+
+test('unsubscribed subscriber is NOT notified', () => {
+  const subscriber = subscribe(() => {
+    assert.fail('subscriber was notified');
   }, 'count');
 
-  increment();
-  clearSubscribers();
-
-  setTimeout(() => {
-    assert.ok(subscriberWasCalled);
-  });
-};
-
-const unsubscribedCallbackIsNotCalled = () => {
-  const callback = subscribe(() => {
-    assert.fail('subscriber was called');
-  }, 'count');
-
-  unsubscribe(callback);
-  increment();
-};
-
-arrayFilteredSubscriberIsNotified();
-getterSubcriptionsAreCalled();
-stringFilteredSubscriberIsNotified();
-unsubscribedCallbackIsNotCalled();
+  unsubscribe(subscriber);
+  incrementCount();
+});

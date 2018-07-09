@@ -1,25 +1,40 @@
-import assert from 'assert';
 import { clone } from '../src/clone.mjs';
 
-const a = {
+const createOriginal = () => ({
   b: {
     c: 'C',
     date: new Date(),
   },
   array: [1, 2],
-};
+});
 
-const b = clone(a);
+test('mutating original array property does not change clone', () => {
+  const original = createOriginal();
 
-a.b.c = 'X';
-assert.equal(a.b.c, 'X');
-assert.equal(b.b.c, 'C');
+  const clonedA = clone(original);
 
-a.array.push(3);
-assert.equal(a.array.length, 3);
-assert.equal(b.array.length, 2);
+  original.array.push(3);
+  expect(original.array.length).toBe(3);
+  expect(clonedA.array.length).toBe(2);
+});
 
-const originalTime = a.b.date.getTime();
-a.b.date.setTime(0);
-assert.equal(a.b.date.getTime(), 0);
-assert.equal(b.b.date.getTime(), originalTime);
+test('mutating original date property does not change clone', () => {
+  const original = createOriginal();
+
+  const clonedA = clone(original);
+
+  const originalTime = original.b.date.getTime();
+  original.b.date.setTime(0);
+  expect(original.b.date.getTime()).toBe(0);
+  expect(clonedA.b.date.getTime()).toBe(originalTime);
+});
+
+test('mutating original string property does not change clone', () => {
+  const original = createOriginal();
+
+  const clonedA = clone(original);
+
+  original.b.c = 'CHANGED';
+  expect(original.b.c).toBe('CHANGED');
+  expect(clonedA.b.c).toBe('C');
+});

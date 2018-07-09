@@ -1,38 +1,44 @@
-const assert = require('assert');
-const { action, defineGetter, getState } = require('../dist/statezero.umd');
+const { defineGetter, getState } = require('../dist/statezero.umd');
+const { incrementCount, incrementNestedCount, resetState } = require('./helpers');
 
-const gettersArePreserved = () => {
-  action(({ commit, state }) => {
-    state.count = 1;
-    commit(state);
-  })();
+beforeEach(resetState);
+
+test('getters added after an action is called return the updated state', () => {
+  incrementCount();
 
   defineGetter('countProp', state => state.count);
-  const { count, countProp } = getState();
-  assert.equal(count, countProp);
-  assert.equal(countProp, 1);
-};
 
-const nestedGettersArePreserved = () => {
-  action(({ commit, state }) => {
-    state.nested = state.nested || {};
-    state.nested.count = 1;
-    commit(state);
-  })();
+  const { count, countProp } = getState();
+  expect(count).toBe(countProp);
+  expect(countProp).toBe(1);
+});
+
+test('getters added before an action is called return the updated state', () => {
+  defineGetter('countProp', state => state.count);
+
+  incrementCount();
+  incrementCount();
+
+  const { count, countProp } = getState();
+  expect(count).toBe(countProp);
+  expect(countProp).toBe(2);
+});
+
+test('nested getters added after an action is called return the updated state', () => {
+  incrementNestedCount();
 
   defineGetter('nested.countProp', nested => nested.count);
 
-  assert.equal(getState().nested.countProp, 1);
+  expect(getState().nested.countProp).toBe(1);
+});
 
-  action(({ commit, state }) => {
-    state.nested.count = 2;
-    commit(state);
-  })();
+test('nested getters added before an action is called return the updated state', () => {
+  defineGetter('nested.countProp', nested => nested.count);
+
+  incrementNestedCount();
+  incrementNestedCount();
 
   const { count, countProp } = getState().nested;
-  assert.equal(count, countProp);
-  assert.equal(countProp, 2);
-};
-
-gettersArePreserved();
-nestedGettersArePreserved();
+  expect(count).toBe(countProp);
+  expect(countProp).toBe(2);
+});
