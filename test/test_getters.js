@@ -1,44 +1,46 @@
 const { defineGetter, getState } = require('../dist/statezero.umd');
-const { incrementCount, incrementNestedCount, resetState } = require('./helpers');
+const {
+  getCountTimesTwo, incrementCount, incrementNestedCount, resetState,
+} = require('./helpers');
 
 beforeEach(resetState);
 
 test('getters added after an action is called return the updated state', () => {
   incrementCount();
 
-  defineGetter('countProp', state => state.count);
+  defineGetter('countTimesTwo', getCountTimesTwo);
 
-  const { count, countProp } = getState();
-  expect(count).toBe(countProp);
-  expect(countProp).toBe(1);
+  const { count, countTimesTwo } = getState();
+  expect(countTimesTwo).toBe(count * 2);
+  expect(countTimesTwo).toBe(2);
 });
 
 test('getters added before an action is called return the updated state', () => {
-  defineGetter('countProp', state => state.count);
+  defineGetter('countTimesTwo', getCountTimesTwo);
 
   incrementCount();
   incrementCount();
 
-  const { count, countProp } = getState();
-  expect(count).toBe(countProp);
-  expect(countProp).toBe(2);
+  const { count, countTimesTwo } = getState();
+  expect(countTimesTwo).toBe(count * 2);
+  expect(countTimesTwo).toBe(4);
 });
 
 test('nested getters added after an action is called return the updated state', () => {
   incrementNestedCount();
 
-  defineGetter('nested.countProp', nested => nested.count);
+  defineGetter('nested.countTimesTwo', getCountTimesTwo);
 
-  expect(getState().nested.countProp).toBe(1);
+  expect(getState().nested.countTimesTwo).toBe(2);
 });
 
 test('nested getters added before an action is called return the updated state', () => {
-  defineGetter('nested.countProp', nested => nested.count);
+  defineGetter('nested.countTimesTwo', getCountTimesTwo);
 
   incrementNestedCount();
   incrementNestedCount();
 
-  const { count, countProp } = getState().nested;
-  expect(count).toBe(countProp);
-  expect(countProp).toBe(2);
+  const { count, countTimesTwo } = getState().nested;
+  expect(countTimesTwo).toBe(count * 2);
+  expect(countTimesTwo).toBe(4);
 });

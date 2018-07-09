@@ -1,8 +1,7 @@
-const assert = require('assert');
 const {
-  unsubscribeAll, defineGetter, getState, subscribe, unsubscribe,
+  defineGetter, getState, subscribe, unsubscribe, unsubscribeAll,
 } = require('../dist/statezero.umd');
-const { incrementCount, resetState } = require('./helpers');
+const { getCountTimesTwo, incrementCount, resetState } = require('./helpers');
 
 beforeEach(resetState);
 
@@ -10,7 +9,7 @@ afterEach(unsubscribeAll);
 
 test('array-filtered subscriber is notified', (done) => {
   const subscriber = (state) => {
-    assert.equal(state.count, 1);
+    expect(state.count).toBe(1);
     done();
   };
 
@@ -19,21 +18,21 @@ test('array-filtered subscriber is notified', (done) => {
 });
 
 test('getter-subcribers is called', (done) => {
-  defineGetter('countProp', state => state.count);
+  defineGetter('countTimesTwo', getCountTimesTwo);
 
   const subscriber = (state) => {
-    assert.equal(getState().count, state.countProp);
-    assert.equal(state.countProp, 1);
+    expect(state.countTimesTwo).toBe(getState().count * 2);
+    expect(state.countTimesTwo).toBe(2);
     done();
   };
 
-  subscribe(subscriber, ['countProp']);
+  subscribe(subscriber, ['countTimesTwo']);
   incrementCount();
 });
 
 test('string-filtered subscriber is notified', (done) => {
   const subscriber = (state) => {
-    assert.equal(state, 1);
+    expect(state).toBe(1);
     done();
   };
 
@@ -43,7 +42,7 @@ test('string-filtered subscriber is notified', (done) => {
 
 test('unfiltered subscriber is notified', (done) => {
   const subscriber = (state) => {
-    assert.equal(state.count, 1);
+    expect(state.count).toBe(1);
     done();
   };
 
@@ -51,11 +50,28 @@ test('unfiltered subscriber is notified', (done) => {
   incrementCount();
 });
 
-test('unsubscribed subscriber is NOT notified', () => {
-  const subscriber = subscribe(() => {
-    assert.fail('subscriber was notified');
-  }, 'count');
+test('unsubscribed filtered-subscriber is NOT notified', (done) => {
+  const subscriber = jest.fn();
+  const subscription = subscribe(subscriber, 'count');
+
+  unsubscribe(subscription);
+  incrementCount();
+
+  setTimeout(() => {
+    expect(subscriber).not.toHaveBeenCalled();
+    done();
+  }, 1);
+});
+
+test('unsubscribed un-filtered is NOT notified', (done) => {
+  const subscriber = jest.fn();
+  subscribe(subscriber);
 
   unsubscribe(subscriber);
   incrementCount();
+
+  setTimeout(() => {
+    expect(subscriber).not.toHaveBeenCalled();
+    done();
+  }, 1);
 });

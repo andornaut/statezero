@@ -113,20 +113,23 @@ Getters are defined by calling `defineGetter(fn, path)`, where "fn" is a functio
 [dot notation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_accessors)
 path of the
 [Getter Property](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_Objects#Defining_getters_and_setters)
-that you wish to define.
+that you wish to define. Any non-existent ancestors in the "path" will be created as empty objects. Note that you should
+avoid [cycles](https://en.wikipedia.org/wiki/Circular_dependency) in Getters. In other words, Getter functions should
+not reference other Getters.
 
-You can subscribe to changes to computed properties using "filters" as with any other properties of the state.
+You can subscribe to receive notifications whenever a Getter changes using "filters" as with any other properties of the
+state.
 
 ```javascript
-defineGetter('countProp', state => state.count);
+defineGetter('countTimesTwo', state => state.count * 2);
 
-subscribe(subscriber, ['countProp']);
+subscribe(subscriber, ['countTimesTwo']);
 ```
 
 You can also define nested Getters.
 
 ```javascript
-defineGetter('nested.countProp', nested => nested.count);
+defineGetter('nested.countTimesTwo', nested => nested.count * 2);
 ```
 
 See [./test](./test) for more examples.
