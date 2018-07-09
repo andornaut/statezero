@@ -17,7 +17,7 @@ test('array-filtered subscriber is notified', (done) => {
   incrementCount();
 });
 
-test('getter-subcribers is called', (done) => {
+test('getter-subscriber is called', (done) => {
   defineGetter('countTimesTwo', getCountTimesTwo);
 
   const subscriber = (state) => {
