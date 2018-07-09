@@ -108,7 +108,7 @@ unsubscribe(fn);
 ### Getters
 
 Getters are analogous to "computed properties" (in eg.
-[Vuex](https://vuex.vuejs.org/guide/state.html#getting-vuex-state-into-vue-components).
+[Vuex](https://vuex.vuejs.org/guide/state.html#getting-vuex-state-into-vue-components)).
 Getters are defined by calling `defineGetter(fn, path)`), where "fn" is a function that you define, and "path" is the
 [dot notation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_accessors)
 path of the
