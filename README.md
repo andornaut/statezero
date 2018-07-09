@@ -35,8 +35,8 @@ Statezero maintains a single state graph, which is initialized to an empty objec
 ### Immutable state
 
 statezero maintains a single, immutable, global state object. Once your code has a reference to a copy of this state -
-by calling `getState()` - any changes you attempt to make to it will affect any other values returned by `getState()`.
-Instead, you can change state by calling functions defined using `action()`.
+by calling `getState()` - any changes you attempt to make to it will not affect any other values returned by
+`getState()`. Instead, you can change state by calling functions defined using `action()`.
 
 ### Actions
 
@@ -46,7 +46,7 @@ value is a function that can modify state.
 
 The function that you pass to `action()` is itself passed a `context` argument by statezero, and it can also accept
 arbitrary additional arguments. Typically, you would destructure `context` into `{commit, state}`, where `state` is a
-copy of the current state and `commit` is a function that you can call within "fn" to change the state.
+copy of the current state and `commit` is a function that you can call to change the state.
 
 ```javascript
 const increment = action(({ commit, state }) => {
