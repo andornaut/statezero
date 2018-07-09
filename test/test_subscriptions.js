@@ -41,6 +41,16 @@ test('string-filtered subscriber is notified', (done) => {
   incrementCount();
 });
 
+test('unfiltered subscriber is notified', (done) => {
+  const subscriber = (state) => {
+    assert.equal(state.count, 1);
+    done();
+  };
+
+  subscribe(subscriber);
+  incrementCount();
+});
+
 test('unsubscribed subscriber is NOT notified', () => {
   const subscriber = subscribe(() => {
     assert.fail('subscriber was notified');
