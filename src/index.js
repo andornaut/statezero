@@ -22,8 +22,6 @@ const commit = (newState) => {
 
 export const action = fn => (...args) => fn({ commit, state: clone(state) }, ...args);
 
-export const getState = () => state;
-
 /**
  * Define a getter (computed property) on the state.
  *
@@ -51,6 +49,8 @@ export const defineGetter = action((context, path, fn) => {
   });
   context.commit(context.state);
 });
+
+export const getState = () => state;
 
 export const {
   subscribeOnce, subscribe, unsubscribeAll, unsubscribe,

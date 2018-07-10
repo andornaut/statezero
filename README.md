@@ -10,15 +10,6 @@ Install from [npm](https://www.npmjs.com/package/statezero).
 npm install statezero --save
 ```
 
-Include the statezero bundle that matches your environment:
-
-```
-ls -1 node_modules/statezero/dist/
-statezero.cjs.js
-statezero.esm.js
-statezero.umd.js
-```
-
 Import statezero functions.
 
 ```javascript
@@ -27,7 +18,7 @@ import { action, getState, subscribe } from 'statezero';
 
 ## Usage
 
-Statezero maintains a single state graph, which is initialized to an empty object. Users of this library can:
+Statezero maintains a single state graph, which is initialized to an empty object. Users can:
 
 * Retrieve the current
   [frozen](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze)
@@ -42,7 +33,7 @@ Statezero maintains a single state graph, which is initialized to an empty objec
 
 ### Immutable state
 
-statezero maintains a single, immutable, global state object. Once your code has a reference to a copy of this state -
+Statezero maintains a single, immutable, global state object. Once your code has a reference to a copy of this state -
 by calling `getState()` - any changes you attempt to make to it will not affect any other values returned by
 `getState()`. Instead, you can change state by calling functions defined using `action()`.
 
@@ -81,17 +72,24 @@ You can subscribe to state change notifications by calling `subscribe(fn, filter
 define, "filter" is an optional String, Array or Function that selects the part of the state that you care about, and
 the return value is a subscription, which you can use to unsubscribe.
 
-The function that you pass to `subscribe()` is passed different values depending on the "filter" argument that you
-supplied.
+When the state changes, then statezero calls your "fn" function with two arguments: `nextState`, `previousState`, the
+value of which depends on the "filter" argument that you supplied.
 
-| "filter" argument                      | Argument passed to "fn" function       |
-| -------------------------------------- | -------------------------------------- |
-| String path, eg. `"a.b"`               | `getState().a.b`                       |
-| Array of paths, eg. `["a", "c"]`       | `{ a: getState().a, c: getState().c }` |
-| Function, eg. `({ a, c } => { a, c })` | `{ a: getState().a, c: getState().c }` |
-| Other, eg. `undefined`                 | `getState()`                           |
+| "filter" argument                      | `nextState` and `previousState` arguments to "fn" |
+| -------------------------------------- | ------------------------------------------------- |
+| String path, eg. `"a.b"`               | `getState().a.b`                                  |
+| Array of paths, eg. `["a", "c"]`       | `{ a: getState().a, c: getState().c }`            |
+| Function, eg. `({ a, c } => { a, c })` | `{ a: getState().a, c: getState().c }`            |
+| Other, eg. `undefined`                 | `getState()`                                      |
 
-If you supplied a `String`, `Array` or `Function` "filter" argument to `subscribe()`, then you can unsubscribe by
+```javascript
+subscribe(console.log, 'a.b.c'); // String
+subscribe(console.log, ['a.b.c', 'd.e.f']); // Array
+subscribe(console.log, state => state.a.b.c); // Function
+subscribe(console.log); // Unfiltered
+```
+
+If you supplied a `String`, `Array` or `Function` "filter" argument to `subscribe()`, then you must unsubscribe by
 passing the return value from `subscribe()` to `unsubscribe()`.
 
 ```javascript
@@ -129,9 +127,9 @@ You can subscribe to state change notifications on Getters using "filters" as wi
 ```javascript
 defineGetter('countTimesTwo', state => state.count * 2);
 
-subscribe(console.log, ['countTimesTwo']);
+subscribe(console.log, 'countTimesTwo');
 
-// If `state.count` is changed to 1, then this prints 2
+// If `state.count` is changed to 1 to 2, then this prints "2 1"
 ```
 
 You can also define nested Getters.
@@ -139,9 +137,9 @@ You can also define nested Getters.
 ```javascript
 defineGetter('nested.countTimesTwo', nested => nested.count * 2);
 
-subscribe(console.log, ['nested.countTimesTwo']);
+subscribe(console.log, 'nested.countTimesTwo');
 
-// If `state.nested.count` is changed to 2, then this prints 4
+// If `state.nested.count` is changed from 1 to 2, then this prints "4 2"
 ```
 
 See [./test](./test) for more examples.
