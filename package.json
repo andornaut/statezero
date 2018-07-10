@@ -38,7 +38,7 @@
   },
   "scripts": {
     "build": "rollup --config",
-    "format": "prettier-eslint --write \"src/**/*.{css,js,json,md}\"",
+    "format": "prettier-eslint --write \"{src,test}/**/*.{css,js,json,md}\"",
     "lint": "eslint src/**/*.js",
     "precommit": "lint-staged",
     "jest": "jest",

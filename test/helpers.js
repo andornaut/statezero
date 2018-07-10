@@ -20,5 +20,8 @@ const resetState = action(({ commit }) => {
 });
 
 module.exports = {
-  getCountTimesTwo, incrementCount, incrementNestedCount, resetState,
+  getCountTimesTwo,
+  incrementCount,
+  incrementNestedCount,
+  resetState,
 };
