@@ -72,22 +72,27 @@ You can subscribe to state change notifications by calling `subscribe(fn, filter
 define, "filter" is an optional String, Array or Function that selects the part of the state that you care about, and
 the return value is a subscription, which you can use to unsubscribe.
 
-When the state changes, then statezero calls your "fn" function with two arguments: `nextState`, `previousState`, the
+When the state changes, statezero calls your "fn" function with two arguments: `nextState` and `previousState`, the
 value of which depends on the "filter" argument that you supplied.
 
-| "filter" argument                      | `nextState` and `previousState` arguments to "fn" |
-| -------------------------------------- | ------------------------------------------------- |
-| String path, eg. `"a.b"`               | `getState().a.b`                                  |
-| Array of paths, eg. `["a", "c"]`       | `{ a: getState().a, c: getState().c }`            |
-| Function, eg. `({ a, c } => { a, c })` | `{ a: getState().a, c: getState().c }`            |
-| Other, eg. `undefined`                 | `getState()`                                      |
-
 ```javascript
-subscribe(console.log, 'a.b.c'); // String
-subscribe(console.log, ['a.b.c', 'd.e.f']); // Array
-subscribe(console.log, state => state.a.b.c); // Function
-subscribe(console.log); // Unfiltered
+const fn = console.log;
+
+subscribe(fn, 'a.b.c'); // String "filter" argument
+subscribe(fn, ['a.b.c', 'd.e.f']); // Array "filter" argument
+subscribe(fn, state => state.a.b.c); // Function "filter" argument
+subscribe(fn); // undefined "filter" argument
 ```
+
+* `nextState` is the state prior to the state change
+* `previousState` is the state after the state change
+
+| "filter" argument                           | Value of arguments to "fn"               |
+| ------------------------------------------- | ---------------------------------------- |
+| String path, eg. `"a.b"`                    | `getState().a.b`                         |
+| Array of paths, eg. `["a", "c"]`            | `{ a: getState().a, c: getState().c }`   |
+| Function, eg. `({ a, c } => { a, d: c.d })` | `{ a: getState().a, d: getState().c.d }` |
+| Other, eg. `undefined`                      | `getState()`                             |
 
 If you supplied a `String`, `Array` or `Function` "filter" argument to `subscribe()`, then you must unsubscribe by
 passing the return value from `subscribe()` to `unsubscribe()`.
