@@ -2,6 +2,8 @@
 
 Small, simple, functional JavaScript library for managing immutable state.
 
+statezero is used by [Jetstart - a library for building web interfaces](https://github.com/andornaut/jetstart).
+
 ## Installation
 
 Install from [npm](https://www.npmjs.com/package/statezero).
