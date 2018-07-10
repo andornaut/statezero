@@ -71,15 +71,16 @@ setCount(5);
 ### Subscribing to state change notifications
 
 You can subscribe to state change notifications by calling `subscribe(fn, filter)`, where "fn" is a function that you
-define, "filter" is an optional String, Array or Function that selects the part of the state that you care about, and
-the return value is a subscription, which you can use to unsubscribe.
+define, "filter" is an optional String, Array or Function that selects the part of the state that when changed will
+trigger a call to "fn", and the return value is a subscription, which you can use to unsubscribe.
 
-When the state changes, statezero calls your "fn" function with two arguments: `nextState` and `previousState`.
+When the (optionally filtered) state changes, statezero will call your "fn" function with two arguments: `newState` and
+`previousState`.
 
 ```javascript
-const fn = (nextState, previousState) => {
+const fn = (newState, previousState) => {
   console.log('From', JSON.stringify(previousState));
-  console.log('To', JSON.stringify(nextState));
+  console.log('To', JSON.stringify(newState));
 };
 subscribe(fn, 'a.b.c'); // String "filter" path in "dot notation"
 subscribe(fn, ['a.b.c', 'd.e.f']); // Array "filter" paths in "dot notation"
@@ -87,10 +88,10 @@ subscribe(fn, state => state.a.b.c); // Function "filter"
 subscribe(fn); // Undefined "filter" - subscribe to every state change
 ```
 
-`nextState` is the new state and `previousState` is the old state (just prior to the state change), the value of each of
-which depends on the "filter" argument that you supplied.
+`newState` is the new/current state and `previousState` is the old state (just prior to the state change), the value of
+each of which depends on the "filter" argument that you supplied.
 
-| "filter" argument                           | Value of `nextState` and `previousState` |
+| "filter" argument                           | Value of `newState` and `previousState`  |
 | ------------------------------------------- | ---------------------------------------- |
 | String path, eg. `"a.b"`                    | `getState().a.b`                         |
 | Array of paths, eg. `["a", "c"]`            | `{ a: getState().a, c: getState().c }`   |
