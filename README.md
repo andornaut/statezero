@@ -57,7 +57,7 @@ arbitrary additional arguments. Typically, you would destructure `context` into 
 copy of the current state and `commit` is a function that you can call to change the state.
 
 ```javascript
-const increment = action(({ commit, state }) => {
+const incrementCount = action(({ commit, state }) => {
   state.count = (state.count || 0) + 1;
   commit(state);
 });
@@ -69,7 +69,7 @@ const setCount = action(({ commit, state }, count) => {
 
 setCount(1);
 // getState().count is 1
-increment();
+incrementCount();
 // getState().count is 2
 setCount(5);
 // getState().count is 5
@@ -84,7 +84,7 @@ the return value is a subscription, which you can use to unsubscribe.
 The function that you pass to `subscribe()` is passed different values depending on the "filter" argument that you
 supplied.
 
-| `subscribe()` "filter" argument        | Argument passed to `subscribe()` "fn" argument |
+| "filter" argument        | Argument passed to "fn" function |
 | -------------------------------------- | ---------------------------------------------- |
 | String path, eg. `"a.b"`               | `getState().a.b`                               |
 | Array of paths, eg. `["a", "c"]`       | `{ a: getState().a, c: getState().c }`         |
@@ -95,9 +95,7 @@ If you supplied a `String`, `Array` or `Function` "filter" argument to `subscrib
 passing the return value from `subscribe()` to `unsubscribe()`.
 
 ```javascript
-const fn = console.log;
-
-const subscription = subscribe(fn, 'a');
+const subscription = subscribe(console.log, 'a');
 
 unsubscribe(subscription);
 ```
@@ -113,27 +111,27 @@ subscribe(fn);
 unsubscribe(fn);
 ```
 
-### Getters
+### Getters a.k.a. Computed Properties
 
 Getters are analogous to "computed properties" (see, for example,
 [computed properties in Vuex](https://vuex.vuejs.org/guide/state.html#getting-vuex-state-into-vue-components)).
-Getters are defined by calling `defineGetter(fn, path)`, where "fn" is a function that you define, and "path" is the
+Getters are defined by calling `defineGetter(fn, path)`, where "fn" is a function that you define, which should return the value of the property, and "path" is the
 [dot notation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_accessors)
 path of the
 [Getter Property](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_Objects#Defining_getters_and_setters)
 that you wish to define. Any non-existent ancestors in the "path" will be created as empty objects. Note that you should
-avoid [cycles](https://en.wikipedia.org/wiki/Circular_dependency) in Getters. In other words, Getter functions should
-not reference other Getters.
+avoid [cycles](https://en.wikipedia.org/wiki/Circular_dependency) in Getters.
 
-You can subscribe to receive notifications whenever a Getter changes using "filters" as with any other property of the
-state.
+The function that you pass to `defineGetter()` is itself passed a `state` argument by statezero, which correponds to the object on which the Getter is defined. In the case of a top-level Getter, this will be the return value of `getState()`.
+
+You can subscribe to state change notifications on Getters using "filters" as with any other properties of the state.
 
 ```javascript
 defineGetter('countTimesTwo', state => state.count * 2);
 
-subscribe(subscriber, ['countTimesTwo']);
+subscribe(console.log, ['countTimesTwo']);
 
-// If `state.count` is 1 then `getState().countTimesTwo` is 2
+// If `state.count` is changed to 1, then this prints 2
 ```
 
 You can also define nested Getters.
@@ -141,7 +139,9 @@ You can also define nested Getters.
 ```javascript
 defineGetter('nested.countTimesTwo', nested => nested.count * 2);
 
-// If `state.nested.count` is 1 then `getState().nested.countTimesTwo` is 2
+subscribe(console.log, ['nested.countTimesTwo']);
+
+// If `state.nested.count` is changed to 2, then this prints 4
 ```
 
 See [./test](./test) for more examples.
