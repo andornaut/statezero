@@ -35,9 +35,9 @@ Statezero maintains a single state graph, which is initialized to an empty objec
 
 ### Immutable state
 
-Statezero maintains a single, immutable, global state object. Once your code has a reference to a copy of this state -
-by calling `getState()` - any changes you attempt to make to it will not affect any other values returned by
-`getState()`. Instead, you can change state by calling functions defined using `action()`.
+Statezero maintains a single, immutable, global state object. Once your code has a reference to a copy of the state -
+by calling `getState()` - any changes that you attempt to make to it will not affect any other values returned by
+`getState()`. Instead, you can modify state by calling "actions".
 
 ### Actions
 
@@ -46,8 +46,8 @@ that you define, "...args" are optional arguments that are passed to "fn" when t
 value is a function that can modify state.
 
 The function that you pass to `action()` is itself passed a `context` argument by statezero, and it can also accept
-arbitrary additional arguments. Typically, you would destructure `context` into `{commit, state}`, where `state` is a
-copy of the current state and `commit` is a function that you can call to change the state.
+arbitrary additional arguments. Typically, you would destructure `context` into `{commit, state}`, where `commit` is a
+function that can be used to set the new state and `state` is a mutable copy of the current state.
 
 ```javascript
 const incrementCount = action(({ commit, state }) => {
@@ -74,22 +74,23 @@ You can subscribe to state change notifications by calling `subscribe(fn, filter
 define, "filter" is an optional String, Array or Function that selects the part of the state that you care about, and
 the return value is a subscription, which you can use to unsubscribe.
 
-When the state changes, statezero calls your "fn" function with two arguments: `nextState` and `previousState`, the
-value of which depends on the "filter" argument that you supplied.
+When the state changes, statezero calls your "fn" function with two arguments: `nextState` and `previousState`.
 
 ```javascript
-const fn = console.log;
-
-subscribe(fn, 'a.b.c'); // String "filter" argument
-subscribe(fn, ['a.b.c', 'd.e.f']); // Array "filter" argument
-subscribe(fn, state => state.a.b.c); // Function "filter" argument
-subscribe(fn); // undefined "filter" argument
+const fn = (nextState, previousState) => {
+  console.log('From', JSON.stringify(previousState));
+  console.log('To', JSON.stringify(nextState));
+};
+subscribe(fn, 'a.b.c'); // String "filter" path in "dot notation"
+subscribe(fn, ['a.b.c', 'd.e.f']); // Array "filter" paths in "dot notation"
+subscribe(fn, state => state.a.b.c); // Function "filter"
+subscribe(fn); // Undefined "filter" - subscribe to every state change
 ```
 
-* `nextState` is the state after the state change
-* `previousState` is the state prior to the state change
+`nextState` is the new state and `previousState` is the old state (just prior to the state change), the value of each of
+which depends on the "filter" argument that you supplied.
 
-| "filter" argument                           | Value of arguments to "fn"               |
+| "filter" argument                           | Value of `nextState` and `previousState` |
 | ------------------------------------------- | ---------------------------------------- |
 | String path, eg. `"a.b"`                    | `getState().a.b`                         |
 | Array of paths, eg. `["a", "c"]`            | `{ a: getState().a, c: getState().c }`   |
@@ -120,16 +121,19 @@ unsubscribe(fn);
 
 Getters are analogous to "computed properties" (see, for example,
 [computed properties in Vuex](https://vuex.vuejs.org/guide/state.html#getting-vuex-state-into-vue-components)).
-Getters are defined by calling `defineGetter(fn, path)`, where "fn" is a function that you define, which should return the value of the property, and "path" is the
+Getters are defined by calling `defineGetter(fn, path)`, where "fn" is a function that you define, which should return
+the value of the property, and "path" is the
 [dot notation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_accessors)
 path of the
-[Getter Property](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_Objects#Defining_getters_and_setters)
+[getter Property](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_Objects#Defining_getters_and_setters)
 that you wish to define. Any non-existent ancestors in the "path" will be created as empty objects. Note that you should
-avoid [cycles](https://en.wikipedia.org/wiki/Circular_dependency) in Getters.
+avoid [cycles](https://en.wikipedia.org/wiki/Circular_dependency) in getters.
 
-The function that you pass to `defineGetter()` is itself passed a `state` argument by statezero, which correponds to the object on which the Getter is defined. In the case of a top-level Getter, this will be the return value of `getState()`.
+The function that you pass to `defineGetter()` is itself passed a `state` argument by statezero, which corresponds to
+the object on which the getter was defined. In the case of a top-level getter, this will be the return value of
+`getState()`.
 
-You can subscribe to state change notifications on Getters using "filters" as with any other properties of the state.
+You can subscribe to state change notifications on getters using "filters" as with any other property of the state.
 
 ```javascript
 defineGetter('countTimesTwo', state => state.count * 2);
@@ -139,7 +143,7 @@ subscribe(console.log, 'countTimesTwo');
 // If `state.count` is changed to 1 to 2, then this prints "4 2"
 ```
 
-You can also define nested Getters.
+You can also define nested getters.
 
 ```javascript
 defineGetter('nested.countTimesTwo', nested => nested.count * 2);
