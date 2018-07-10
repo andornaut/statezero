@@ -134,7 +134,7 @@ defineGetter('countTimesTwo', state => state.count * 2);
 
 subscribe(console.log, 'countTimesTwo');
 
-// If `state.count` is changed to 1 to 2, then this prints "2 1"
+// If `state.count` is changed to 1 to 2, then this prints "4 2"
 ```
 
 You can also define nested Getters.
@@ -144,7 +144,7 @@ defineGetter('nested.countTimesTwo', nested => nested.count * 2);
 
 subscribe(console.log, 'nested.countTimesTwo');
 
-// If `state.nested.count` is changed from 1 to 2, then this prints "4 2"
+// If `state.nested.count` is changed from 2 to 3, then this prints "6 4"
 ```
 
 See [./test](./test) for more examples.
