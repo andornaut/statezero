@@ -84,8 +84,8 @@ subscribe(fn, state => state.a.b.c); // Function "filter" argument
 subscribe(fn); // undefined "filter" argument
 ```
 
-* `nextState` is the state prior to the state change
-* `previousState` is the state after the state change
+* `nextState` is the state after the state change
+* `previousState` is the state prior to the state change
 
 | "filter" argument                           | Value of arguments to "fn"               |
 | ------------------------------------------- | ---------------------------------------- |
