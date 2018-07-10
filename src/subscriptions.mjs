@@ -13,7 +13,8 @@ const applyFilter = (callback, filter) => (next, prev) => {
   }
 };
 
-const createArrayFilter = paths => _state => pick(_state, paths);
+
+const createArrayFilter = paths => _state => paths.map(path => get(_state, path));
 
 const createStringFilter = path => _state => get(_state, path);
 

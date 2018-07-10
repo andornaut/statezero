@@ -83,7 +83,7 @@ const fn = (newState, previousState) => {
   console.log('To', JSON.stringify(newState));
 };
 subscribe(fn, 'a.b.c'); // String "filter" path in "dot notation"
-subscribe(fn, ['a.b.c', 'd.e.f']); // Array "filter" paths in "dot notation"
+subscribe(fn, ['a.b.c', 'd.e.f']); // Array "filter" paths, each in "dot notation"
 subscribe(fn, state => state.a.b.c); // Function "filter"
 subscribe(fn); // Undefined "filter" - subscribe to every state change
 ```
@@ -94,7 +94,7 @@ each of which depends on the "filter" argument that you supplied.
 | "filter" argument                           | Value of `newState` and `previousState`  |
 | ------------------------------------------- | ---------------------------------------- |
 | String path, eg. `"a.b"`                    | `getState().a.b`                         |
-| Array of paths, eg. `["a", "c"]`            | `{ a: getState().a, c: getState().c }`   |
+| Array of paths, eg. `["a", "c"]`            | `[getState().a, getState().c]`           |
 | Function, eg. `({ a, c } => { a, d: c.d })` | `{ a: getState().a, d: getState().c.d }` |
 | Other, eg. `undefined`                      | `getState()`                             |
 
