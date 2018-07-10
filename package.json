@@ -39,10 +39,10 @@
   "scripts": {
     "build": "rollup --config",
     "format": "prettier-eslint --write \"{src,test}/**/*.{css,js,json,md}\"",
-    "lint": "eslint src/**/*.js",
     "precommit": "lint-staged",
     "jest": "jest",
     "prepublish": "rm -rf dist/ && npm run format && npm run build",
+    "static-analysis": "eslint --max-warnings 0 src/**/*.js",
     "test": "npm run build && npm run jest"
   }
 }
