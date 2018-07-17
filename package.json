@@ -3,7 +3,11 @@
   "version": "0.0.11",
   "author": "andornaut",
   "description": "Small, simple, functional JavaScript library for managing immutable state",
-  "keywords": ["functional", "immutable", "state"],
+  "keywords": [
+    "functional",
+    "immutable",
+    "state"
+  ],
   "license": "MIT",
   "main": "dist/statezero.cjs.js",
   "browser": "dist/statezero.umd.js",
@@ -23,26 +27,25 @@
     "lodash-es": "^4.17.10"
   },
   "devDependencies": {
-    "eslint": "^4.19.1",
-    "eslint-config-airbnb-base": "^12.1.0",
-    "eslint-plugin-html": "^4.0.2",
-    "eslint-plugin-import": "^2.10.0",
+    "eslint": "^5.1.0",
+    "eslint-config-airbnb-base": "^13.0.0",
+    "eslint-plugin-html": "^4.0.5",
+    "eslint-plugin-import": "^2.13.0",
     "husky": "^0.14.3",
-    "jest": "^23.3.0",
+    "jest": "^23.4.1",
     "lint-staged": "^7.2.0",
-    "prettier-eslint": "^8.8.1",
+    "prettier-eslint": "^8.8.2",
     "prettier-eslint-cli": "^4.7.1",
-    "rollup": "^0.57.1",
-    "rollup-plugin-commonjs": "^9.1.0",
+    "rollup": "^0.62.0",
+    "rollup-plugin-commonjs": "^9.1.3",
     "rollup-plugin-node-resolve": "^3.3.0"
   },
   "scripts": {
     "build": "rollup --config",
-    "format": "prettier-eslint --write \"{src,test}/**/*.{css,js,json,md}\"",
+    "format": "prettier-eslint --write \"{src,test}/**/*.{css,js,json,md,mjs}\"",
     "precommit": "lint-staged",
-    "jest": "jest",
     "prepublish": "rm -rf dist/ && npm run format && npm run build",
-    "static-analysis": "eslint --max-warnings 0 src/**/*.js",
-    "test": "npm run build && npm run jest"
+    "static-analysis": "eslint --max-warnings 0 src/**/*.{js,mjs}",
+    "test": "npm run build && jest"
   }
 }

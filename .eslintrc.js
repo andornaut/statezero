@@ -8,6 +8,7 @@ module.exports = {
   rules: {
     'class-methods-use-this': 0,
     'guard-for-in': 0,
+    'import/extensions': 0,
     'import/prefer-default-export': 0,
     'max-len': ['error', { code: 120 }],
     'no-continue': 0,
