@@ -1,7 +1,6 @@
 import get from 'lodash-es/get';
 import isArray from 'lodash-es/isArray';
 import isString from 'lodash-es/isString';
-import pick from 'lodash-es/pick';
 
 export const subscribers = new Set();
 
@@ -12,7 +11,6 @@ const applyFilter = (callback, filter) => (next, prev) => {
     callback(next, prev);
   }
 };
-
 
 const createArrayFilter = paths => _state => paths.map(path => get(_state, path));
 
