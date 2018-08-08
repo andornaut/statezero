@@ -53,7 +53,7 @@ export const subscribeOnce = (callback, filter) => {
   return subscription;
 };
 
-export const unsubscribe = (callback) => {
+export const unsubscribe = callback => {
   subscribers.delete(callback);
 };
 

@@ -1,4 +1,4 @@
-const getterDescriptors = (obj) => {
+const getterDescriptors = obj => {
   const descriptorEntries = Object.entries(Object.getOwnPropertyDescriptors(obj));
 
   return descriptorEntries.reduce((accumulator, [name, descriptor]) => {
@@ -10,7 +10,7 @@ const getterDescriptors = (obj) => {
 };
 
 // Derived from: https://stackoverflow.com/questions/728360/how-do-i-correctly-clone-a-javascript-object/728694#728694
-export const clone = (value) => {
+export const clone = value => {
   if (value === undefined || value === null || typeof value !== 'object') {
     return value;
   }
