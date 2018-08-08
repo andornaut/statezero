@@ -2,7 +2,11 @@ const {
   defineGetter, getState, subscribe, unsubscribe, unsubscribeAll,
 } = require('../dist/statezero.umd');
 const {
-  getCountTimesTwo, incrementCount, incrementCountAndDeeplyNestedCount, resetState,
+  assignState,
+  getCountTimesTwo,
+  incrementCount,
+  incrementCountAndDeeplyNestedCount,
+  resetState,
 } = require('./helpers');
 
 beforeEach(resetState);
@@ -97,6 +101,18 @@ test('unfiltered subscriber is notified', (done) => {
 
   subscribe(subscriber);
   incrementCount();
+});
+
+test('string-filtered subscriber is notified when function changes', (done) => {
+  const fn = () => 1;
+
+  const subscriber = (state) => {
+    expect(state).toBe(fn);
+    done();
+  };
+
+  subscribe(subscriber, 'fn');
+  assignState({ fn });
 });
 
 test('unsubscribed filtered-subscriber is NOT notified', (done) => {

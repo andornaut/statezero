@@ -1,5 +1,6 @@
 import get from 'lodash-es/get';
 import isArray from 'lodash-es/isArray';
+import isEqual from 'lodash-es/isEqual';
 import isString from 'lodash-es/isString';
 
 export const subscribers = new Set();
@@ -7,7 +8,7 @@ export const subscribers = new Set();
 const applyFilter = (callback, filter) => (next, prev) => {
   next = filter(next);
   prev = filter(prev);
-  if (JSON.stringify(next) !== JSON.stringify(prev)) {
+  if (!isEqual(next, prev)) {
     callback(next, prev);
   }
 };

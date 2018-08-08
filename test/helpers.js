@@ -2,6 +2,11 @@ const { action } = require('../dist/statezero.umd');
 
 const getCountTimesTwo = state => state.count * 2;
 
+const assignState = action(({ commit, state }, newState) => {
+  Object.assign(state, newState);
+  commit(state);
+});
+
 const count = (obj) => {
   obj.count = (obj.count || 0) + 1;
 };
@@ -30,6 +35,7 @@ const resetState = action(({ commit }) => {
 });
 
 module.exports = {
+  assignState,
   getCountTimesTwo,
   incrementCount,
   incrementCountAndDeeplyNestedCount,
