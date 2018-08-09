@@ -7,17 +7,28 @@ import { clone } from './clone.mjs';
 import * as subscriptions from './subscriptions.mjs';
 
 let state = deepFreeze({});
+let prevStateForNotify;
 
-const notify = (newState, prevState) => {
-  for (const subscriber of subscriptions.subscribers) {
-    subscriber(newState, prevState);
+const notify = (prevState) => {
+  // Debounce notifications
+  if (prevStateForNotify !== undefined) {
+    return;
   }
+  prevStateForNotify = prevState;
+
+  setTimeout(() => {
+    const prevStateForSubscriber = prevStateForNotify;
+    prevStateForNotify = undefined;
+    for (const subscriber of subscriptions.subscribers) {
+      subscriber(state, prevStateForSubscriber);
+    }
+  });
 };
 
 const commit = (newState) => {
   const prevState = state;
   state = deepFreeze(newState);
-  notify(state, prevState);
+  notify(prevState);
 };
 
 export const action = fn => (...args) => fn({ commit, state: clone(state) }, ...args);

@@ -9,7 +9,12 @@ const {
   resetState,
 } = require('./helpers');
 
-beforeEach(resetState);
+beforeEach((done) => {
+  subscribe(() => {
+    done();
+  });
+  resetState();
+});
 
 afterEach(unsubscribeAll);
 

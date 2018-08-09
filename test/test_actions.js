@@ -1,7 +1,12 @@
-const { getState } = require('../dist/statezero.umd');
+const { getState, subscribe } = require('../dist/statezero.umd');
 const { incrementCount, resetState } = require('./helpers');
 
-beforeEach(resetState);
+beforeEach((done) => {
+  subscribe(() => {
+    done();
+  });
+  resetState();
+});
 
 test('action mutates state', () => {
   incrementCount();

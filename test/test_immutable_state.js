@@ -1,7 +1,12 @@
-const { getState } = require('../dist/statezero.umd');
+const { getState, subscribe } = require('../dist/statezero.umd');
 const { incrementNestedCount, resetState } = require('./helpers');
 
-beforeEach(resetState);
+beforeEach((done) => {
+  subscribe(() => {
+    done();
+  });
+  resetState();
+});
 
 test('state is immutable', () => {
   getState().count = 5;

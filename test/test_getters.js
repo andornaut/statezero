@@ -1,9 +1,14 @@
-const { defineGetter, getState } = require('../dist/statezero.umd');
+const { defineGetter, getState, subscribe } = require('../dist/statezero.umd');
 const {
   getCountTimesTwo, incrementCount, incrementNestedCount, resetState,
 } = require('./helpers');
 
-beforeEach(resetState);
+beforeEach((done) => {
+  subscribe(() => {
+    done();
+  });
+  resetState();
+});
 
 test('getters added after an action is called return the updated state', () => {
   incrementCount();
