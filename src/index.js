@@ -28,7 +28,7 @@ const notify = (prevState) => {
 
 const commit = (nextState) => {
   if (!isPlainObject(nextState)) {
-    throw new Error(`commit() must be called with an Object "nextState" argument; not: ${nextState}`);
+    throw new Error(`commit() must be called with a plain object "nextState" argument; not: ${nextState}`);
   }
   const prevState = state;
   state = deepFreeze(nextState);

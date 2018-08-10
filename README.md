@@ -22,22 +22,22 @@ import { action, getState, subscribe } from 'statezero';
 
 Statezero maintains a single state graph, which is initialized to an empty object. Users can:
 
-* Retrieve the current
+- Retrieve the current
   [frozen](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze)
   state by calling `getState()`
-* Modify the state by calling "actions", which are defined using `action()`
-* Subscribe to state change notifications by calling `subscribe()`
-* Subscribe to a single state change notification by calling `subscribeOnce()`
-* Unsubscribe from state change notifications by calling `unsubscribe()`
-* Unsubscribe all subscribers by calling `unsubscribeAll()`
-* Define [getters](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get)
+- Modify the state by calling "actions", which are defined using `action()`
+- Subscribe to state change notifications by calling `subscribe()`
+- Subscribe to a single state change notification by calling `subscribeOnce()`
+- Unsubscribe from state change notifications by calling `unsubscribe()`
+- Unsubscribe all subscribers by calling `unsubscribeAll()`
+- Define [getters](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get)
   (computed properties) by calling `defineGetter()`
 
 ### Immutable state
 
-Statezero maintains a single, immutable, global state object. Once your code has a reference to a copy of the state -
+Statezero maintains a single state graph. Once your code has a reference to a copy of the state object -
 by calling `getState()` - any changes that you attempt to make to it will not affect any other values returned by
-`getState()`. Instead, you can modify state by calling "actions".
+`getState()`. Instead, you should modify state by calling "actions".
 
 ### Actions
 
@@ -46,8 +46,9 @@ that you define, "...args" are optional arguments that are passed to "fn" when t
 value is a function that can modify state.
 
 The function that you pass to `action()` is itself passed a `context` argument by statezero, and it can also accept
-arbitrary additional arguments. Typically, you would destructure `context` into `{commit, state}`, where `commit` is a
-function that can be used to set the new state and `state` is a mutable copy of the current state.
+arbitrary additional arguments. Typically, you would destructure `context` into `{ commit, state }`. `commit` is a
+function that can be used to set the state; it accepts a single `nextState` argument, which must be a
+[plain object](https://lodash.com/docs/4.17.10#isPlainObject). `state` is a mutable copy of the current state.
 
 ```javascript
 const incrementCount = action(({ commit, state }) => {
@@ -74,13 +75,13 @@ You can subscribe to state change notifications by calling `subscribe(fn, filter
 define, "filter" is an optional String, Array or Function that selects the part of the state that when changed will
 trigger a call to "fn", and the return value is a subscription, which you can use to unsubscribe.
 
-When the (optionally filtered) state changes, statezero will call your "fn" function with two arguments: `newState` and
-`previousState`.
+When the (optionally filtered) state changes, statezero will call your "fn" function with two arguments: `nextState` and
+`prevState`.
 
 ```javascript
-const fn = (newState, previousState) => {
-  console.log('From', JSON.stringify(previousState));
-  console.log('To', JSON.stringify(newState));
+const fn = (nextState, prevState) => {
+  console.log('From', JSON.stringify(prevState));
+  console.log('To', JSON.stringify(nextState));
 };
 subscribe(fn, 'a.b.c'); // String "filter" path in "dot notation"
 subscribe(fn, ['a.b.c', 'd.e.f']); // Array "filter" paths, each in "dot notation"
@@ -88,10 +89,10 @@ subscribe(fn, state => state.a.b.c); // Function "filter"
 subscribe(fn); // Undefined "filter" - subscribe to every state change
 ```
 
-`newState` is the new/current state and `previousState` is the old state (just prior to the state change), the value of
+`nextState` is the new/current state and `prevState` is the old state (just prior to the state change), the value of
 each of which depends on the "filter" argument that you supplied.
 
-| "filter" argument                           | Value of `newState` and `previousState`  |
+| "filter" argument                           | Value of `nextState` and `prevState`     |
 | ------------------------------------------- | ---------------------------------------- |
 | String path, eg. `"a.b"`                    | `getState().a.b`                         |
 | Array of paths, eg. `["a", "c"]`            | `[getState().a, getState().c]`           |
