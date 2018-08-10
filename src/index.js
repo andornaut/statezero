@@ -1,6 +1,7 @@
 import deepFreeze from 'deep-freeze-strict';
 import get from 'lodash-es/get';
 import isArray from 'lodash-es/isArray';
+import isPlainObject from 'lodash-es/isPlainObject';
 import set from 'lodash-es/set';
 
 import { clone } from './clone.mjs';
@@ -25,9 +26,12 @@ const notify = (prevState) => {
   });
 };
 
-const commit = (newState) => {
+const commit = (nextState) => {
+  if (!isPlainObject(nextState)) {
+    throw new Error(`commit() must be called with an Object "nextState" argument; not: ${nextState}`);
+  }
   const prevState = state;
-  state = deepFreeze(newState);
+  state = deepFreeze(nextState);
   notify(prevState);
 };
 

@@ -88,6 +88,18 @@ test('getter-subscriber is called', (done) => {
   incrementCount();
 });
 
+test('string-filtered notification are batched', (done) => {
+  const subscriber = (state) => {
+    expect(state).toBe(3);
+    done();
+  };
+
+  subscribe(subscriber, 'count');
+  incrementCount();
+  incrementCount();
+  incrementCount();
+});
+
 test('string-filtered subscriber is notified', (done) => {
   const subscriber = (state) => {
     expect(state).toBe(1);
@@ -95,16 +107,6 @@ test('string-filtered subscriber is notified', (done) => {
   };
 
   subscribe(subscriber, 'count');
-  incrementCount();
-});
-
-test('unfiltered subscriber is notified', (done) => {
-  const subscriber = (state) => {
-    expect(state.count).toBe(1);
-    done();
-  };
-
-  subscribe(subscriber);
   incrementCount();
 });
 
@@ -118,6 +120,49 @@ test('string-filtered subscriber is notified when function changes', (done) => {
 
   subscribe(subscriber, 'fn');
   assignState({ fn });
+});
+
+test('string-filtered subscriber prevState argument is the initial value from the same "tick"', (done) => {
+  const subscriber = (initial, prevInitial) => {
+    expect(initial).toBe(true);
+    expect(prevInitial).toBeUndefined();
+    done();
+  };
+
+  // state.initial is undefined initially in this "tick".
+  assignState({ initial: true });
+  subscribe(subscriber, 'initial');
+  assignState({ initial: false });
+  assignState({ initial: true });
+});
+
+test.each([null, 0, 1, {}])('subscribe called with invalid "filter" argument throws error', (filter) => {
+  expect(() => {
+    subscribe(() => null, filter);
+  }).toThrow();
+});
+
+test('unfiltered subscriber is notified once when a change is made then reverted', (done) => {
+  const subscriber = ({ initial }, { prevInitial }) => {
+    expect(initial).toBe(true);
+    expect(prevInitial).toBeUndefined();
+    done();
+  };
+
+  assignState({ initial: true });
+  subscribe(subscriber);
+  assignState({ initial: false });
+  assignState({ initial: true });
+});
+
+test('unfiltered subscriber is notified', (done) => {
+  const subscriber = (state) => {
+    expect(state.count).toBe(1);
+    done();
+  };
+
+  subscribe(subscriber);
+  incrementCount();
 });
 
 test('unsubscribed filtered-subscriber is NOT notified', (done) => {
