@@ -31,6 +31,24 @@ test('getters added before an action is called return the updated state', () => 
   expect(countTimesTwo).toBe(4);
 });
 
+test('getters are not enumerable by default', () => {
+  defineGetter('nested.enumerable', () => null);
+
+  const { nested } = getState();
+  const { enumerable } = Object.getOwnPropertyDescriptor(nested, 'enumerable');
+
+  expect(enumerable).toBe(false);
+});
+
+test('getters can be made to be enumerable', () => {
+  defineGetter('nested.enumerable', () => null, true);
+
+  const { nested } = getState();
+  const { enumerable } = Object.getOwnPropertyDescriptor(nested, 'enumerable');
+
+  expect(enumerable).toBe(true);
+});
+
 test('nested getters added after an action is called return the updated state', () => {
   incrementNestedCount();
 

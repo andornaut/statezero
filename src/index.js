@@ -43,8 +43,9 @@ export const action = fn => (...args) => fn({ commit, state: clone(state) }, ...
  * @param path: A JSON path as a string eg. "a.b.c", or and array eg. ['a', 'b', 'c'] or property name like "c".
  *  If a parent path component does not exist, then it will be created as an empty object.
  * @param fn: A function which takes state as its only parameter and returns a value.
+ * @param enumerable: A boolean which determine whether this property shows up during enumeration.
  */
-export const defineGetter = action((context, path, fn) => {
+export const defineGetter = action((context, path, fn, enumerable = false) => {
   const pathArray = isArray(path) ? path : path.split('.');
   const lastIdx = pathArray.length - 1;
   const propName = pathArray[lastIdx];
@@ -57,11 +58,13 @@ export const defineGetter = action((context, path, fn) => {
     set(context.state, parentPath, obj);
   }
 
-  Object.defineProperty(obj, propName, {
+  const descriptor = {
     get() {
       return fn.call(this, this);
     },
-  });
+    enumerable,
+  };
+  Object.defineProperty(obj, propName, descriptor);
   context.commit(context.state);
 });
 

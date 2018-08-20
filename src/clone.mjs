@@ -15,16 +15,16 @@ export const clone = (value) => {
     return value;
   }
 
-  if (value instanceof Date) {
-    return new Date(value.getTime());
-  }
-
   if (value instanceof Array) {
     const copy = [];
     for (let i = 0, len = value.length; i < len; i += 1) {
       copy[i] = clone(value[i]);
     }
     return copy;
+  }
+
+  if (value instanceof Date) {
+    return new Date(value.getTime());
   }
 
   if (value instanceof Object) {

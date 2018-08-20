@@ -155,6 +155,18 @@ subscribe(console.log, 'nested.countTimesTwo');
 // If `state.nested.count` is changed from 2 to 3, then this prints "6 4"
 ```
 
+Getters can be
+[enumerable](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Enumerability_and_ownership_of_properties).
+
+```
+  // The last argument defaults to `false`
+  defineGetter('nested.property', () => null, true);
+  const { enumerable } = Object.getOwnPropertyDescriptor(getState().nested, 'property');
+  console.log(enumerable);
+
+  // Prints "true"
+```
+
 See [./test](./test) for more examples.
 
 ## Developing
