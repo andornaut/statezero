@@ -60,7 +60,7 @@ export const defineGetter = action((context, path, fn, enumerable = false) => {
 
   const descriptor = {
     get() {
-      return fn.call(this, this);
+      return fn.call(this, this, state);
     },
     enumerable,
   };

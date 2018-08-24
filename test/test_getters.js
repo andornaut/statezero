@@ -67,3 +67,11 @@ test('nested getters added before an action is called return the updated state',
   expect(countTimesTwo).toBe(count * 2);
   expect(countTimesTwo).toBe(4);
 });
+
+test('nested getters can access top-level state', () => {
+  incrementCount();
+
+  defineGetter('nested.topLevelCount', (_, state) => state.count);
+
+  expect(getState().nested.topLevelCount).toBe(1);
+});
