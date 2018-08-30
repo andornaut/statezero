@@ -18,6 +18,46 @@ beforeEach((done) => {
 
 afterEach(unsubscribeAll);
 
+test('subscribers on getters are called the expected number times', (done) => {
+  defineGetter('countTimesTwo', getCountTimesTwo);
+
+  // Set timeout here to let the defineGetter() state change notification to fire before subscribing
+  setTimeout(() => {
+    let calledCount = 0;
+    const subscriber = () => {
+      calledCount += 1;
+    };
+
+    subscribe(subscriber, 'countTimesTwo');
+    incrementCount();
+    setTimeout(() => {
+      incrementCount();
+      setTimeout(() => {
+        expect(calledCount).toBe(2);
+        done();
+      });
+    });
+  });
+});
+
+test('subscribers on non-getters are called the expected number times', (done) => {
+  let calledCount = 0;
+  const subscriber = () => {
+    calledCount += 1;
+  };
+
+  subscribe(subscriber, 'count');
+
+  incrementCount();
+  setTimeout(() => {
+    incrementCount();
+    setTimeout(() => {
+      expect(calledCount).toBe(2);
+      done();
+    });
+  });
+});
+
 test('array-filtered subscriber is notified', (done) => {
   const subscriber = ([count]) => {
     expect(count).toBe(1);

@@ -1,6 +1,6 @@
 const { action } = require('../dist/statezero.umd');
 
-const getCountTimesTwo = state => state.count * 2;
+const getCountTimesTwo = state => (state.count || 0) * 2;
 
 const assignState = action(({ commit, state }, newState) => {
   Object.assign(state, newState);
