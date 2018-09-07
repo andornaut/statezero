@@ -23,7 +23,7 @@ beforeEach((done) => {
 
 afterEach(unsubscribeAll);
 
-test('subscribersAsync on getters are called the expected number times', (done) => {
+test('subscriptions on getters are called the expected number times', (done) => {
   defineGetter('countTimesTwo', getCountTimesTwo);
 
   // Set timeout here to let the defineGetter() state change notification to fire before subscribing
@@ -45,7 +45,7 @@ test('subscribersAsync on getters are called the expected number times', (done) 
   });
 });
 
-test('subscribersAsync on non-getters are called the expected number times', (done) => {
+test('subscriptions on non-getters are called the expected number times', (done) => {
   let calledCount = 0;
   const subscriber = () => {
     calledCount += 1;
