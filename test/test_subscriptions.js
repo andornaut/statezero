@@ -181,7 +181,7 @@ test('string-filtered subscriber prevState argument is the initial value from th
   assignState({ initial: true });
 });
 
-test.only('subscriberSync subscriber is called synchronously', () => {
+test('subscriberSync subscriber is called synchronously', () => {
   let calledWithVal;
   const subscriber = (val) => {
     calledWithVal = val;
