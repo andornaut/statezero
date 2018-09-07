@@ -26,12 +26,18 @@ Statezero maintains a single state graph, which is initialized to an empty objec
   [frozen](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze)
   state by calling `getState()`
 - Modify the state by calling "actions", which are defined using `action()`
-- Subscribe to state change notifications by calling `subscribe()`
-- Subscribe to a single state change notification by calling `subscribeOnce()`
+- Subscribe to state change notifications by calling `subscribe()` or `subscribeSync()`
+- Subscribe to a single state change notification by calling `subscribeOnce()` or `subscribeOnceSync()`
 - Unsubscribe from state change notifications by calling `unsubscribe()`
 - Unsubscribe all subscribers by calling `unsubscribeAll()`
 - Define [getters](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get)
   (computed properties) by calling `defineGetter()`
+
+### Async vs Sync
+
+Callbacks passed to `subscribe()` or `subscribeOnce()` are executed on relevant state changes on the
+[next tick](https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/setImmediate/Overview.html). This is fine for many cases,
+but if you want the callbacks to be invoked synchronously, then you can use `subscribeSync()` or `subscribeOnceSync()`.
 
 ### Immutable state
 

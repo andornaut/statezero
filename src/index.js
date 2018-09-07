@@ -10,7 +10,7 @@ import * as subscriptions from './subscriptions.mjs';
 let state = deepFreeze({});
 let prevStateForNotify;
 
-const notify = (prevState) => {
+const notifyAsync = (prevState) => {
   // Debounce notifications
   if (prevStateForNotify !== undefined) {
     return;
@@ -20,10 +20,16 @@ const notify = (prevState) => {
   setTimeout(() => {
     const prevStateForSubscriber = prevStateForNotify;
     prevStateForNotify = undefined;
-    for (const subscriber of subscriptions.subscribers) {
+    for (const subscriber of subscriptions.subscribersAsync) {
       subscriber(state, prevStateForSubscriber);
     }
   });
+};
+
+const notifySync = (prevState) => {
+  for (const subscriber of subscriptions.subscribersSync) {
+    subscriber(state, prevState);
+  }
 };
 
 const commit = (nextState) => {
@@ -32,7 +38,8 @@ const commit = (nextState) => {
   }
   const prevState = state;
   state = deepFreeze(nextState);
-  notify(prevState);
+  notifyAsync(prevState);
+  notifySync(prevState);
 };
 
 export const action = fn => (...args) => fn({ commit, state: clone(state) }, ...args);
@@ -71,5 +78,10 @@ export const defineGetter = action((context, path, fn, enumerable = false) => {
 export const getState = () => state;
 
 export const {
-  subscribeOnce, subscribe, unsubscribeAll, unsubscribe,
+  subscribeOnce,
+  subscribeOnceSync,
+  subscribe,
+  subscribeSync,
+  unsubscribeAll,
+  unsubscribe,
 } = subscriptions;

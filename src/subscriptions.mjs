@@ -4,7 +4,8 @@ import isEqual from 'lodash-es/isEqual';
 import isFunction from 'lodash-es/isFunction';
 import isString from 'lodash-es/isString';
 
-export const subscribers = new Set();
+export const subscribersAsync = new Set();
+export const subscribersSync = new Set();
 
 const applyFilter = (callback, filter) => (nextState, prevState) => {
   nextState = filter(nextState);
@@ -26,8 +27,10 @@ const createStringFilter = path => _state => get(_state, path);
  *  - JSON path string, eg: 'a'
  *  - Array of JSON path strings, eg: ['a', 'b']
  *  - A function which returns the filtered state, eg: (newState, oldState) => { a: newState.a, b: newState.b }
+ * @param isSync: If true, then notifications will be executed synchronously; otherwise, they will be executed on the
+ *  next tick
  */
-export const subscribe = (callback, filter) => {
+export const subscribe = (callback, filter, isSync = false) => {
   // Convert an array or string filter into a function.
   if (isString(filter)) {
     filter = createStringFilter(filter);
@@ -43,27 +46,37 @@ export const subscribe = (callback, filter) => {
     );
   }
 
-  subscribers.add(callback);
+  if (isSync) {
+    subscribersSync.add(callback);
+  } else {
+    subscribersAsync.add(callback);
+  }
 
   // If a `filter` was provided, then the caller will need to use the returned `callback` in order to `unsubscribe()`.
   return callback;
 };
 
-export const subscribeOnce = (callback, filter) => {
+export const subscribeSync = (callback, filter) => subscribe(callback, filter, true);
+
+export const subscribeOnce = (callback, filter, isSync = false) => {
   const wrapper = (...args) => {
     callback(...args);
     // eslint-disable-next-line no-use-before-define
     unsubscribe(subscription);
   };
 
-  const subscription = subscribe(wrapper, filter);
+  const subscription = subscribe(wrapper, filter, isSync);
   return subscription;
 };
 
+export const subscribeOnceSync = (callback, filter) => subscribeOnce(callback, filter, true);
+
 export const unsubscribe = (callback) => {
-  subscribers.delete(callback);
+  subscribersAsync.delete(callback);
+  subscribersSync.delete(callback);
 };
 
 export const unsubscribeAll = () => {
-  subscribers.clear();
+  subscribersAsync.clear();
+  subscribersSync.clear();
 };

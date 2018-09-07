@@ -1,5 +1,10 @@
 const {
-  defineGetter, getState, subscribe, unsubscribe, unsubscribeAll,
+  defineGetter,
+  getState,
+  subscribe,
+  subscribeSync,
+  unsubscribe,
+  unsubscribeAll,
 } = require('../dist/statezero.umd');
 const {
   assignState,
@@ -18,7 +23,7 @@ beforeEach((done) => {
 
 afterEach(unsubscribeAll);
 
-test('subscribers on getters are called the expected number times', (done) => {
+test('subscribersAsync on getters are called the expected number times', (done) => {
   defineGetter('countTimesTwo', getCountTimesTwo);
 
   // Set timeout here to let the defineGetter() state change notification to fire before subscribing
@@ -40,7 +45,7 @@ test('subscribers on getters are called the expected number times', (done) => {
   });
 });
 
-test('subscribers on non-getters are called the expected number times', (done) => {
+test('subscribersAsync on non-getters are called the expected number times', (done) => {
   let calledCount = 0;
   const subscriber = () => {
     calledCount += 1;
@@ -174,6 +179,17 @@ test('string-filtered subscriber prevState argument is the initial value from th
   subscribe(subscriber, 'initial');
   assignState({ initial: false });
   assignState({ initial: true });
+});
+
+test.only('subscriberSync subscriber is called synchronously', () => {
+  let calledWithVal;
+  const subscriber = (val) => {
+    calledWithVal = val;
+  };
+
+  subscribeSync(subscriber, 'val');
+  assignState({ val: true });
+  expect(calledWithVal).toBe(true);
 });
 
 test.each([null, 0, 1, {}])('subscribe called with invalid "filter" argument throws error', (filter) => {
