@@ -75,3 +75,20 @@ test('nested getters can access top-level state', () => {
 
   expect(getState().nested.topLevelCount).toBe(1);
 });
+
+test('nested getters top-level state is immutable', () => {
+  incrementCount();
+
+  defineGetter('nested.topLevelCount', (_, state) => state.count);
+
+  const originalNested = getState().nested;
+  expect(originalNested.topLevelCount).toBe(1);
+
+  incrementCount();
+  expect(getState().nested.topLevelCount).toBe(2);
+
+  incrementCount();
+  expect(getState().nested.topLevelCount).toBe(3);
+
+  expect(originalNested.topLevelCount).toBe(1);
+});
