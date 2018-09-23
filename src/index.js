@@ -4,8 +4,8 @@ import isArray from 'lodash-es/isArray';
 import isPlainObject from 'lodash-es/isPlainObject';
 import set from 'lodash-es/set';
 
-import { clone } from './clone.mjs';
-import * as subscriptions from './subscriptions.mjs';
+import { clone } from './clone';
+import * as subscriptions from './subscriptions';
 
 let state = deepFreeze({});
 let prevStateForNotify;
