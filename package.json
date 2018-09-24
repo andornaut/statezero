@@ -58,7 +58,7 @@
   "scripts": {
     "build": "webpack --mode=development",
     "build-production": "webpack --mode=production",
-    "format": "prettier-eslint --write \"{src/**,/test/**/,./}*.{css,js,jsx,json,md}\"",
+    "format": "prettier-eslint --write \"{src/**,/test/**/,./}*.{css,js,json,jsx,md}\"",
     "precommit": "lint-staged",
     "prepublish": "npm run test && npm run build-production",
     "static-analysis": "eslint --max-warnings 0 {src,test}/**/*.js",
