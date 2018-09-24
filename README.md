@@ -4,11 +4,11 @@ Small, simple, functional JavaScript library for managing immutable state.
 
 Statezero is used by [Jetstart - a library for building web interfaces](https://github.com/andornaut/jetstart).
 
-## Installation
+## Getting Started
 
 Install from [npm](https://www.npmjs.com/package/statezero).
 
-```
+```bash
 npm install statezero --save
 ```
 
