@@ -140,7 +140,7 @@ avoid [cycles](https://en.wikipedia.org/wiki/Circular_dependency) in getters.
 The function that you pass to `defineGetter()` is itself passed two arguments by statezero: `parent` and `state`.
 `parent` corresponds to the object on which the getter was defined; in the case of a top-level getter, this is the
 return value of `getState()`.
-`root` corresponds to the return value of `getState()`.
+`state` corresponds to the return value of `getState()`.
 
 You can subscribe to state change notifications on getters using "filters" as with any other property of the state.
 

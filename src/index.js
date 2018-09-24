@@ -4,7 +4,7 @@ import isArray from 'lodash-es/isArray';
 import isPlainObject from 'lodash-es/isPlainObject';
 import set from 'lodash-es/set';
 
-import { clone } from './clone';
+import { clone, ROOT } from './clone';
 import * as subscriptions from './subscriptions';
 
 let state = deepFreeze({});
@@ -67,11 +67,18 @@ export const defineGetter = action((context, path, fn, enumerable = false) => {
 
   const descriptor = {
     get() {
-      return fn.call(this, this, state);
+      return fn.call(this, this, this[ROOT]);
     },
     enumerable,
   };
-  Object.defineProperty(obj, propName, descriptor);
+
+  Object.defineProperties(obj, {
+    [propName]: descriptor,
+    [ROOT]: {
+      writable: true,
+      value: context.state,
+    },
+  });
   context.commit(context.state);
 });
 
