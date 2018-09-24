@@ -85,4 +85,23 @@ describe('defineGetter()', () => {
       expect(getState().nested.topLevelCount).to.equal(1);
     });
   });
+
+  describe('nested getters top-level state', () => {
+    it('should be immutable', () => {
+      incrementCount();
+
+      defineGetter('nested.topLevelCount', (_, state) => state.count);
+
+      const originalNested = getState().nested;
+      expect(originalNested.topLevelCount).to.equal(1);
+
+      incrementCount();
+      expect(getState().nested.topLevelCount).to.equal(2);
+
+      incrementCount();
+      expect(getState().nested.topLevelCount).to.equal(3);
+
+      expect(originalNested.topLevelCount).to.equal(1);
+    });
+  });
 });
