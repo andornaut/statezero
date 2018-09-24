@@ -11,7 +11,6 @@ module.exports = {
   rules: {
     'class-methods-use-this': 0,
     'guard-for-in': 0,
-    // Allow const x => y => x * y;
     'implicit-arrow-linebreak': 0,
     'import/no-extraneous-dependencies': ['error', { devDependencies: ['test/**/**', 'webpack.config.js'] }],
     'import/prefer-default-export': 0,
@@ -28,7 +27,6 @@ module.exports = {
     'no-restricted-syntax': ['error', 'WithStatement'],
     'no-underscore-dangle': 0,
     'no-unused-expressions': ['error', { allowTaggedTemplates: true }],
-    // Required for including regex in string attribute values
     'no-useless-escape': 0,
   },
 };

@@ -61,7 +61,7 @@
     "format": "prettier-eslint --write \"{src/**,/test/**/,./}*.{css,js,jsx,json,md}\"",
     "precommit": "lint-staged",
     "prepublish": "npm run test && npm run build-production",
-    "static-analysis": "eslint --max-warnings 0 src/**/*.js",
+    "static-analysis": "eslint --max-warnings 0 {src,test}/**/*.js",
     "test": "karma start",
     "test-watch": "karma start --WATCH"
   }

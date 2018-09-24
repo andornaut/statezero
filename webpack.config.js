@@ -2,6 +2,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const path = require('path');
 
 const srcPath = path.join(__dirname, 'src');
+const testPath = path.join(__dirname, 'test');
 
 module.exports = {
   module: {
@@ -18,7 +19,7 @@ module.exports = {
       },
       {
         test: /\.js$/,
-        include: [srcPath],
+        include: [srcPath, testPath],
         enforce: 'pre',
         loader: 'eslint-loader',
       },
