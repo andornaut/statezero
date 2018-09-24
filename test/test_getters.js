@@ -1,4 +1,5 @@
-import { defineGetter, getState } from '../src';
+import { getState } from '../src';
+import { defineGetter } from '../src/getters';
 import {
   clearStateThenResolve, getCountTimesTwo, incrementCount, incrementNestedCount,
 } from './helpers';

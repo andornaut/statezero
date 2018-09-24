@@ -1,0 +1,44 @@
+import get from 'lodash-es/get';
+import isArray from 'lodash-es/isArray';
+import set from 'lodash-es/set';
+
+import { ROOT } from './clone';
+import { action } from './state';
+
+/**
+ * Define a getter (computed property) on the state.
+ *
+ * @param path: A JSON path as a string eg. "a.b.c", or and array eg. ['a', 'b', 'c'] or property name like "c".
+ *  If a parent path component does not exist, then it will be created as an empty object.
+ * @param fn: A function which takes state as its only parameter and returns a value.
+ * @param enumerable: A boolean which determine whether this property shows up during enumeration.
+ */
+export const defineGetter = action((context, path, fn, enumerable = false) => {
+  const pathArray = isArray(path) ? path : path.split('.');
+  const lastIdx = pathArray.length - 1;
+  const propName = pathArray[lastIdx];
+  const parentPath = pathArray.slice(0, lastIdx);
+
+  let obj = context.state;
+  if (parentPath.length) {
+    obj = get(context.state, parentPath, {});
+    // If parentPath didn't exist (the default case of set() above), then set it.
+    set(context.state, parentPath, obj);
+  }
+
+  const descriptor = {
+    get() {
+      return fn.call(this, this, this[ROOT]);
+    },
+    enumerable,
+  };
+
+  Object.defineProperties(obj, {
+    [propName]: descriptor,
+    [ROOT]: {
+      writable: true,
+      value: context.state,
+    },
+  });
+  context.commit(context.state);
+});

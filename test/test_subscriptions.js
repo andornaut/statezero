@@ -1,8 +1,9 @@
 import sinon from 'sinon';
 
 import {
-  defineGetter, getState, subscribe, subscribeSync, unsubscribe,
+  getState, subscribe, subscribeSync, unsubscribe,
 } from '../src';
+import { defineGetter } from '../src/getters';
 import {
   assignState,
   clearStateThenResolve,
