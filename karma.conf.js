@@ -1,4 +1,4 @@
-const webpackConfig = require('./webpack.config');
+const webpackConfig = require('./webpack.config')({}, { mode: 'development' });
 
 const TEST_FILES = 'test/index.js';
 
