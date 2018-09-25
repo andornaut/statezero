@@ -12,10 +12,28 @@ Install from [npm](https://www.npmjs.com/package/statezero).
 npm install statezero --save
 ```
 
-Import statezero functions.
+Statezero is packaged using the [Universal Module Definition](https://github.com/umdjs/umd) pattern, so it can be loaded
+in various environments:
+
+### Browser Global
+
+```html
+<script src="./node_modules/statezero/dist/statezero.js"></script>
+<script>
+  const { action, subscribe } = window.statezero;
+</script>
+```
+
+### ES6 Module
 
 ```javascript
-import { action, getState, subscribe } from 'statezero';
+import { action, subscribe } from 'statezero';
+```
+
+### Node
+
+```javascript
+const { action, subscribe } = require('statezero');
 ```
 
 ## Usage

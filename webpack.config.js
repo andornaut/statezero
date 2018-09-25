@@ -28,6 +28,13 @@ module.exports = (env, argv) => {
         },
       ],
     },
+    output: {
+      filename: 'statezero.js',
+      // https://github.com/webpack/webpack/issues/6525
+      globalObject: 'typeof self !== "undefined" ? self : this',
+      library: 'statezero',
+      libraryTarget: 'umd',
+    },
     plugins: [new CleanWebpackPlugin(['dist'])],
   };
 };
