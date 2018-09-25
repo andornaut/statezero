@@ -29,7 +29,7 @@ describe('getState()', () => {
   beforeEach(clearStateThenResolve);
 
   describe('attempt to mutate top-level state', () => {
-    it('should be unchanged', () => {
+    it('should throw an error', () => {
       incrementCount();
 
       expect(() => {
@@ -39,12 +39,26 @@ describe('getState()', () => {
   });
 
   describe('attempt to mutate nested state', () => {
-    it('should be unchanged', () => {
+    it('should throw an error', () => {
       incrementNestedCount();
 
       expect(() => {
         getState().nested.count = 2;
       }).to.throw();
+    });
+  });
+
+  describe('when a "path" argument is supplied and valid', () => {
+    it('should return the state at the given path', () => {
+      incrementNestedCount();
+
+      expect(getState('nested.count')).to.equal(1);
+    });
+  });
+
+  describe('when a "path" argument is supplied and is not valid', () => {
+    it('should return undefined', () => {
+      expect(getState('invalid.path')).to.be.undefined;
     });
   });
 });

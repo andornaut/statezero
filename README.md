@@ -63,6 +63,21 @@ Statezero maintains a single state graph. Once your code has a reference to a co
 by calling `getState()` - any changes that you attempt to make to it will not affect any other values returned by
 `getState()`. Instead, you should modify state by calling "actions".
 
+`getState()` accepts an optional argument "path" in dot notation to retrieve a sub-set of the state.
+
+```javascript
+const setCount = action(({ commit, state }, count) => {
+  state.count = count;
+  commit(state);
+});
+
+setCount(1);
+
+getState(); // returns { count: 1 }
+getState('count');
+returns; // 1
+```
+
 ### Actions
 
 Actions are functions that can modify state. They are defined by calling `action(fn, ...args)`, where "fn" is a function
@@ -107,8 +122,8 @@ const fn = (nextState, prevState) => {
   console.log('From', JSON.stringify(prevState));
   console.log('To', JSON.stringify(nextState));
 };
-subscribe(fn, 'a.b.c'); // String "filter" path in "dot notation"
-subscribe(fn, ['a.b.c', 'd.e.f']); // Array "filter" paths, each in "dot notation"
+subscribe(fn, 'a.b.c'); // String "filter" path in dot notation
+subscribe(fn, ['a.b.c', 'd.e.f']); // Array "filter" paths, each in dot notation
 subscribe(fn, state => state.a.b.c); // Function "filter"
 subscribe(fn); // Undefined "filter" - subscribe to every state change
 ```

@@ -1,4 +1,5 @@
 import deepFreeze from 'deep-freeze-strict';
+import get from 'lodash-es/get';
 import isPlainObject from 'lodash-es/isPlainObject';
 
 import { clone } from './clone';
@@ -41,4 +42,4 @@ const commit = (nextState) => {
 
 export const action = fn => (...args) => fn({ commit, state: clone(state) }, ...args);
 
-export const getState = () => state;
+export const getState = path => (path ? get(state, path) : state);
