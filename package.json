@@ -9,10 +9,7 @@
     "state"
   ],
   "license": "MIT",
-  "main": "dist/main.js",
-  "jsnext:main": "src/index.js",
-  "module": "src/index.js",
-  "sideEffects": false,
+  "main": "dist/statezero.js",
   "bugs": {
     "url": "https://github.com/andornaut/statezero/issues"
   },
@@ -52,7 +49,7 @@
     "prettier-eslint-cli": "^4.7.1",
     "sinon": "^6.3.4",
     "sinon-chai": "^3.2.0",
-    "webpack": "^4.19.0",
+    "webpack": "^4.20.1",
     "webpack-cli": "^3.1.0"
   },
   "scripts": {
