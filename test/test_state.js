@@ -6,15 +6,17 @@ function Foo() {}
 describe('action()', () => {
   beforeEach(clearStateThenResolve);
 
-  it('mutates state', () => {
-    incrementCount();
+  describe('when called', () => {
+    it('should update the state', () => {
+      incrementCount();
 
-    expect(getState().count).to.equal(1);
+      expect(getState().count).to.equal(1);
+    });
   });
 
-  describe('commit called with invalid "nextState" argument throw an error', () => {
+  describe('when commit is called with invalid "nextState" argument', () => {
     [new Foo(), null, undefined, 0, 1, []].forEach((nextState) => {
-      it(`nextState: ${nextState}`, () => {
+      it(`should throw an error. nextState: ${nextState}`, () => {
         action(({ commit }) => {
           expect(() => {
             commit(nextState);
@@ -28,7 +30,7 @@ describe('action()', () => {
 describe('getState()', () => {
   beforeEach(clearStateThenResolve);
 
-  describe('attempt to mutate top-level state', () => {
+  describe('when attempting to assign a new value to a state property', () => {
     it('should throw an error', () => {
       incrementCount();
 
@@ -38,7 +40,7 @@ describe('getState()', () => {
     });
   });
 
-  describe('attempt to mutate nested state', () => {
+  describe('when attempting to assign a new value to a nested state property', () => {
     it('should throw an error', () => {
       incrementNestedCount();
 
@@ -48,7 +50,7 @@ describe('getState()', () => {
     });
   });
 
-  describe('when a "path" argument is supplied and valid', () => {
+  describe('when a "path" argument is supplied and is valid', () => {
     it('should return the state at the given path', () => {
       incrementNestedCount();
 

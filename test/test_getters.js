@@ -7,33 +7,33 @@ import {
 describe('defineGetter()', () => {
   beforeEach(clearStateThenResolve);
 
-  describe('getters are added after an action', () => {
+  describe('when a getter is defined after calling action', () => {
     it('should return the updated state', () => {
       incrementCount();
-
       defineGetter('countTimesTwo', getCountTimesTwo);
 
       const { count, countTimesTwo } = getState();
+
       expect(countTimesTwo).to.equal(count * 2);
       expect(countTimesTwo).to.equal(2);
     });
   });
 
-  describe('getters added before an action is called', () => {
+  describe('when a getter is defined before calling an action', () => {
     it('should return the updated state', () => {
       defineGetter('countTimesTwo', getCountTimesTwo);
-
       incrementCount();
       incrementCount();
 
       const { count, countTimesTwo } = getState();
+
       expect(countTimesTwo).to.equal(count * 2);
       expect(countTimesTwo).to.equal(4);
     });
   });
 
-  describe('getter is defined with default options', () => {
-    it('is not enumerable', () => {
+  describe('when a getter is defined with default options', () => {
+    it('should not be enumerable', () => {
       defineGetter('nested.enumerable', () => null);
 
       const { nested } = getState();
@@ -43,8 +43,8 @@ describe('defineGetter()', () => {
     });
   });
 
-  describe('getters defined with enumerable=true', () => {
-    it('is enumerable', () => {
+  describe('when a getter is defined with enumerable=true', () => {
+    it('should be enumerable', () => {
       defineGetter('nested.enumerable', () => null, true);
 
       const { nested } = getState();
@@ -54,20 +54,18 @@ describe('defineGetter()', () => {
     });
   });
 
-  describe('nested getters added after an action is called', () => {
+  describe('when a nested getter is defined after calling an action', () => {
     it('should return the updated state', () => {
       incrementNestedCount();
-
       defineGetter('nested.countTimesTwo', getCountTimesTwo);
 
       expect(getState().nested.countTimesTwo).to.equal(2);
     });
   });
 
-  describe('nested getters added before an action is called', () => {
+  describe('when a nested getter is defined before calling an action', () => {
     it('should return the updated state', () => {
       defineGetter('nested.countTimesTwo', getCountTimesTwo);
-
       incrementNestedCount();
       incrementNestedCount();
 
@@ -77,20 +75,18 @@ describe('defineGetter()', () => {
     });
   });
 
-  describe('nested getters', () => {
-    it('should be able to access top-level state', () => {
+  describe('when a nested getter is defined', () => {
+    it('should be able to access the root state', () => {
       incrementCount();
-
       defineGetter('nested.topLevelCount', (_, state) => state.count);
 
       expect(getState().nested.topLevelCount).to.equal(1);
     });
   });
 
-  describe('nested getters top-level state', () => {
+  describe('when a nested getter accesses the root state', () => {
     it('should be immutable', () => {
       incrementCount();
-
       defineGetter('nested.topLevelCount', (_, state) => state.count);
 
       const originalNested = getState().nested;
