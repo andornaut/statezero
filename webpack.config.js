@@ -4,8 +4,8 @@ const path = require('path');
 const srcPath = path.join(__dirname, 'src');
 const testPath = path.join(__dirname, 'test');
 
-module.exports = (env, argv) => {
-  const mode = argv ? argv.mode : 'production';
+module.exports = (env, argv = {}) => {
+  const mode = argv.mode || 'production';
   return {
     mode,
     module: {
