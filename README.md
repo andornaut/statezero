@@ -170,15 +170,15 @@ path of the
 that you wish to define. Any non-existent ancestors in the "path" will be created as empty objects. Note that you should
 avoid [cycles](https://en.wikipedia.org/wiki/Circular_dependency) in getters.
 
-The function that you pass to `defineGetter()` is itself passed two arguments by statezero: `parent` and `state`.
+The function that you pass to `defineGetter()` is itself passed two arguments by statezero: `parent` and `root`.
 `parent` corresponds to the object on which the getter was defined; in the case of a top-level getter, this is the
 return value of `getState()`.
-`state` corresponds to the return value of `getState()`.
+`root` corresponds to the return value of `getState()`.
 
 You can subscribe to state change notifications on getters using "filters" as with any other property of the state.
 
 ```javascript
-defineGetter('countTimesTwo', state => state.count * 2);
+defineGetter('countTimesTwo', parent => parent.count * 2);
 
 subscribe(console.log, 'countTimesTwo');
 
@@ -188,11 +188,21 @@ subscribe(console.log, 'countTimesTwo');
 You can also define nested getters.
 
 ```javascript
-defineGetter('nested.countTimesTwo', nested => nested.count * 2);
+defineGetter('nested.countTimesTwo', parent => parent.count * 2);
 
 subscribe(console.log, 'nested.countTimesTwo');
 
 // If `state.nested.count` is changed from 2 to 3, then this prints "6 4"
+```
+
+Getter functions are called with the root state as the second argument.
+
+```javascript
+defineGetter('nested.countTimesTwoTimesRootCount', (parent, root) => parent.count * 2 * root.count);
+
+subscribe(console.log, 'nested.countTimesTwoTimesRootCount');
+
+// If `state.count` is changed to 1 to 2 and `state.nested.count` is changed from 2 to 3, then this prints "12 4"
 ```
 
 Getters can be
