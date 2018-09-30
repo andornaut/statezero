@@ -35,10 +35,6 @@ const cloneGetters = (original, cloned, root) => {
 };
 
 export const clone = (obj) => {
-  if (!isPlainObject(obj)) {
-    throw new Error(`clone() must be called with a plain object "obj" argument; not: ${obj}`);
-  }
-
   const cloned = JSON.parse(JSON.stringify(obj));
   cloneGetters(obj, cloned, cloned);
   return cloned;
