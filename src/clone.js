@@ -15,51 +15,31 @@ const getterDescriptors = (obj) => {
 };
 
 // Derived from: https://stackoverflow.com/questions/728360/how-do-i-correctly-clone-a-javascript-object/728694#728694
-const _clone = (value, root) => {
-  if (value === undefined || value === null || typeof value !== 'object') {
-    return value;
+const cloneGetters = (original, cloned, root) => {
+  const getters = getterDescriptors(original);
+  if (Object.keys(getters)) {
+    Object.defineProperty(cloned, ROOT, {
+      writable: true,
+      value: root,
+    });
   }
+  Object.defineProperties(cloned, getters);
 
-  if (value instanceof Array) {
-    const copy = [];
-    for (let i = 0, len = value.length; i < len; i += 1) {
-      // `root` is only undefined when value is the top-level object (which is by definition not an Array).
-      copy[i] = _clone(value[i], root);
+  // Includes non-enumerable properties
+  for (const propName of Object.getOwnPropertyNames(original)) {
+    const originalProp = original[propName];
+    if (isPlainObject(originalProp)) {
+      cloneGetters(originalProp, cloned[propName], root);
     }
-    return copy;
   }
-
-  if (value instanceof Date) {
-    return new Date(value.getTime());
-  }
-
-  if (value instanceof Object) {
-    const copy = {};
-    // `root` is undefined when `value` is the top-level state object
-    root = root || copy;
-    for (const propName of Object.getOwnPropertyNames(value)) {
-      // Includes non-enumerable properties
-      copy[propName] = _clone(value[propName], root);
-    }
-
-    const getters = getterDescriptors(value);
-    if (root && Object.keys(getters)) {
-      Object.defineProperty(copy, ROOT, {
-        writable: true,
-        value: root,
-      });
-    }
-    Object.defineProperties(copy, getters);
-    return copy;
-  }
-
-  throw new Error(`Cannot clone: '${value} of type ${typeof value}`);
 };
 
 export const clone = (obj) => {
   if (!isPlainObject(obj)) {
     throw new Error(`clone() must be called with a plain object "obj" argument; not: ${obj}`);
   }
-  // Enforce that _clone() is only ever called externally with a plain object and `root=undefined`.
-  return _clone(obj);
+
+  const cloned = JSON.parse(JSON.stringify(obj));
+  cloneGetters(obj, cloned, cloned);
+  return cloned;
 };

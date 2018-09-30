@@ -57,7 +57,11 @@ Callbacks passed to `subscribe()` or `subscribeOnce()` are executed on relevant 
 [next tick](https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/setImmediate/Overview.html). This is fine for many cases,
 but if you want the callbacks to be invoked synchronously, then you can use `subscribeSync()` or `subscribeOnceSync()`.
 
-### Immutable state
+### State
+
+Note that all state managed by statezero must be JSON serializable. Among other things, note that any Date objects
+will be converted to their string representation via
+[Date.toJSON](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toJSON).
 
 Statezero maintains a single state graph. Once your code has a reference to a copy of the state object -
 by calling `getState()` - any changes that you attempt to make to it will not affect any other values returned by
@@ -86,7 +90,7 @@ value is a function that can modify state.
 
 The function that you pass to `action()` is itself passed a `context` argument by statezero, and it can also accept
 arbitrary additional arguments. Typically, you would destructure `context` into `{ commit, state }`. `commit` is a
-function that can be used to set the state; it accepts a single `nextState` argument, which must be a
+function that can be used to set the state; it accepts a single `nextState` argument, which must be a JSON-serializable
 [plain object](https://lodash.com/docs/4.17.10#isPlainObject). `state` is a mutable copy of the current state.
 
 ```javascript

@@ -9,6 +9,15 @@ const createOriginal = () => ({
 });
 
 describe('clone()', () => {
+  describe('when a cycle exists', () => {
+    it('should throw an error', () => {
+      const original = createOriginal();
+      original.cycle = original;
+
+      expect(() => clone(original)).to.throw(TypeError, 'Converting circular structure to JSON');
+    });
+  });
+
   describe("when mutating the cloned object's nested array", () => {
     it('should not mutate the original', () => {
       const original = createOriginal();
@@ -20,6 +29,7 @@ describe('clone()', () => {
       expect(original.array.length).to.equal(2);
     });
   });
+
   describe("when mutating the original object's nested array", () => {
     it('should not mutate the clone', () => {
       const original = createOriginal();
@@ -32,16 +42,13 @@ describe('clone()', () => {
     });
   });
 
-  describe("when mutating original object's nested date", () => {
-    it('should not mutate the clone', () => {
+  describe('when cloning a date', () => {
+    it('the clone should contain a string date representation instead of Date object', () => {
       const original = createOriginal();
       const cloned = clone(original);
-      const originalTime = original.b.date.getTime();
+      const originalTime = original.b.date.toJSON();
 
-      original.b.date.setTime(0);
-
-      expect(original.b.date.getTime()).to.equal(0);
-      expect(cloned.b.date.getTime()).to.equal(originalTime);
+      expect(cloned.b.date).to.equal(originalTime);
     });
   });
 
