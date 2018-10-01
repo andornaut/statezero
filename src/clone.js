@@ -1,3 +1,4 @@
+import cloneDeep from 'lodash-es/cloneDeep';
 import isPlainObject from 'lodash-es/isPlainObject';
 
 // Keep track of the top-level state object during cloning in order to give getters access to it
@@ -35,7 +36,8 @@ const cloneGetters = (original, cloned, root) => {
 };
 
 export const clone = (obj) => {
-  const cloned = JSON.parse(JSON.stringify(obj));
+  // Will throw a TypeError if there are cycles.
+  const cloned = cloneDeep(obj);
   cloneGetters(obj, cloned, cloned);
   return cloned;
 };

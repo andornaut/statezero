@@ -14,7 +14,7 @@ describe('clone()', () => {
       const original = createOriginal();
       original.cycle = original;
 
-      expect(() => clone(original)).to.throw(TypeError, 'Converting circular structure to JSON');
+      expect(() => clone(original)).to.throw(RangeError, 'Maximum call stack size exceeded');
     });
   });
 
@@ -43,12 +43,15 @@ describe('clone()', () => {
   });
 
   describe('when cloning a date', () => {
-    it('the clone should contain a string date representation instead of Date object', () => {
+    it('should not mutate the clone', () => {
       const original = createOriginal();
       const cloned = clone(original);
-      const originalTime = original.b.date.toJSON();
+      const originalTime = original.b.date.getTime();
 
-      expect(cloned.b.date).to.equal(originalTime);
+      original.b.date.setTime(0);
+
+      expect(original.b.date.getTime()).to.equal(0);
+      expect(cloned.b.date.getTime()).to.equal(originalTime);
     });
   });
 
