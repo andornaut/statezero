@@ -15,7 +15,6 @@ const getterDescriptors = (obj) => {
   }, {});
 };
 
-// Derived from: https://stackoverflow.com/questions/728360/how-do-i-correctly-clone-a-javascript-object/728694#728694
 const cloneGetters = (original, cloned, root) => {
   const getters = getterDescriptors(original);
   if (Object.keys(getters)) {
