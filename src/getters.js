@@ -33,12 +33,13 @@ export const defineGetter = action((context, path, fn, enumerable = false) => {
     enumerable,
   };
 
-  Object.defineProperties(obj, {
+  const descriptors = {
     [propName]: descriptor,
-    [ROOT]: {
-      writable: true,
-      value: context.state,
-    },
-  });
+  };
+  if (!obj[ROOT]) {
+    // This is the first time that a getter has been defined on `obj`, so set its ROOT prop.
+    descriptors[ROOT] = { value: context.state };
+  }
+  Object.defineProperties(obj, descriptors);
   context.commit(context.state);
 });

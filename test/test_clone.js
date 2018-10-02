@@ -14,7 +14,7 @@ describe('clone()', () => {
       const original = createOriginal();
       original.cycle = original;
 
-      expect(() => clone(original)).to.throw(RangeError, 'Maximum call stack size exceeded');
+      expect(() => clone(original)).to.throw(TypeError, 'Cannot clone object graph that contains cycles');
     });
   });
 
