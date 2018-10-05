@@ -1,6 +1,8 @@
 import deepFreeze from 'deep-freeze-strict';
 import get from 'lodash-es/get';
+import isArray from 'lodash-es/isArray';
 import isPlainObject from 'lodash-es/isPlainObject';
+import isString from 'lodash-es/isString';
 
 import { clone } from './clone';
 import { subscribersAsync, subscribersSync } from './subscriptions';
@@ -32,7 +34,7 @@ const notifySync = (prevState) => {
 
 const commit = (nextState) => {
   if (!isPlainObject(nextState)) {
-    throw new Error(`commit() must be called with a plain object "nextState" argument; not: ${nextState}`);
+    throw new Error(`statezero: commit() must be called with a plain object "nextState" argument; not: ${nextState}`);
   }
   const prevState = state;
   state = deepFreeze(nextState);
@@ -42,4 +44,17 @@ const commit = (nextState) => {
 
 export const action = fn => (...args) => fn({ commit, state: clone(state) }, ...args);
 
-export const getState = path => (path ? get(state, path) : state);
+export const getState = (filter) => {
+  if (filter === undefined) {
+    return state;
+  }
+  if (isString(filter)) {
+    return get(state, filter);
+  }
+  if (isArray(filter)) {
+    return filter.map(path => get(state, path));
+  }
+  throw new Error(
+    `statezero: getState() must be called with an Array/String/undefined "filter" argument; not ${filter}`,
+  );
+};

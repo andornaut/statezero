@@ -57,11 +57,13 @@ Statezero maintains a single state graph. Once your code has a reference to a co
 by calling `getState()` - any changes that you attempt to make to it will not affect any other values returned by
 `getState()`. Instead, you should modify state by calling "actions".
 
-`getState()` accepts an optional argument "path" in dot notation to retrieve a sub-set of the state.
+`getState()` accepts an optional "filter" argument, which can be used to select a subset of the state to return.
+"filter" should should be a String path in dot notation or an Array of the same.
 
 ```javascript
 const setCount = action(({ commit, state }, count) => {
   state.count = count;
+  state.countTimesTwo = count * 2;
   commit(state);
 });
 
@@ -70,6 +72,8 @@ setCount(1);
 getState(); // returns { count: 1 }
 getState('count');
 returns; // 1
+getState('count', 'countTimesTwo');
+// returns [1, 2]
 ```
 
 ### Actions

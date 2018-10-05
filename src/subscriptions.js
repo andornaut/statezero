@@ -42,7 +42,7 @@ export const subscribe = (callback, filter, isSync = false) => {
     callback = applyFilter(callback, filter);
   } else if (filter !== undefined) {
     throw new Error(
-      `subscribe() must be called with an Array/Function/String/undefined "filter" argument; not ${filter}`,
+      `statezero: subscribe() must be called with an Array/Function/String/undefined "filter" argument; not ${filter}`,
     );
   }
 

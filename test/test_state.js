@@ -50,7 +50,16 @@ describe('getState()', () => {
     });
   });
 
-  describe('when a "path" argument is supplied and is valid', () => {
+  describe('when an array "filter" argument is supplied', () => {
+    it('should return the state at the given path', () => {
+      incrementCount();
+      incrementNestedCount();
+
+      expect(getState(['nested.count', 'count'])).to.have.members([1, 1]);
+    });
+  });
+
+  describe('when a string "filter" argument is supplied', () => {
     it('should return the state at the given path', () => {
       incrementNestedCount();
 
@@ -58,9 +67,15 @@ describe('getState()', () => {
     });
   });
 
-  describe('when a "path" argument is supplied and is not valid', () => {
+  describe('when a non-existent string "filter" argument is supplied', () => {
     it('should return undefined', () => {
       expect(getState('invalid.path')).to.be.undefined;
+    });
+  });
+
+  describe('when an unsupported type "filter" argument is supplied', () => {
+    it('should throw an error', () => {
+      expect(() => getState(() => null)).to.throw(Error, /statezero: getState\(\) must be called with/);
     });
   });
 });
