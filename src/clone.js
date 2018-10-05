@@ -42,7 +42,8 @@ export const clone = (obj) => {
     }
 
     for (const propName of Object.getOwnPropertyNames(value)) {
-      cloned[propName] = cloneDeepWith(value[propName], customizer);
+      const originalVal = value[propName];
+      cloned[propName] = typeof originalVal === 'object' ? cloneDeepWith(originalVal, customizer) : originalVal;
     }
 
     const descriptors = getterDescriptors(value);
@@ -51,7 +52,6 @@ export const clone = (obj) => {
       descriptors[ROOT] = { value: root };
       Object.defineProperties(cloned, descriptors);
     }
-
     return cloned;
   };
 

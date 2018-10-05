@@ -9,6 +9,18 @@ const createOriginal = () => ({
 });
 
 describe('clone()', () => {
+  describe('when a function is in the state', () => {
+    it('should be successful', () => {
+      const original = {};
+      original.fn = () => null;
+
+      const cloned = clone(original);
+
+      expect(typeof original.fn).to.equal('function');
+      expect(typeof cloned.fn).to.equal('function');
+    });
+  });
+
   describe('when a cycle of objects exists', () => {
     it('should be successful', () => {
       const original = {};
