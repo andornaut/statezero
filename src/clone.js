@@ -17,17 +17,6 @@ const getterDescriptors = (obj) => {
 
 /* Clone the given object.
  *
- * Cycles are supported for objects, but not for collections.
- *
- * // Supported
- * const obj = {};
- * obj.child = obj;
- *
- * // Not supported
- * const arr = [];
- * arr.push(arr);
- * const obj = { arr };
- *
  * @param obj: An object such that `isPlainObject(obj)===true`
  */
 export const clone = (obj) => {
@@ -41,7 +30,7 @@ export const clone = (obj) => {
     }
 
     let cloned = seen.get(value);
-    if (cloned !== undefined) {
+    if (cloned) {
       return cloned;
     }
 
