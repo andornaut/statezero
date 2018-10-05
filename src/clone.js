@@ -15,8 +15,23 @@ const getterDescriptors = (obj) => {
   }, {});
 };
 
+/* Clone the given object.
+ *
+ * Cycles are supported for objects, but not for collections.
+ *
+ * // Supported
+ * const obj = {};
+ * obj.child = obj;
+ *
+ * // Not supported
+ * const arr = [];
+ * arr.push(arr);
+ * const obj = { arr };
+ *
+ * @param obj: An object such that `isPlainObject(obj)===true`
+ */
 export const clone = (obj) => {
-  const seen = new WeakSet();
+  const seen = new WeakMap();
   let root;
 
   const customizer = (value) => {
@@ -24,12 +39,14 @@ export const clone = (obj) => {
       // Default clone operation
       return undefined;
     }
-    if (seen.has(value)) {
-      throw new TypeError('Cannot clone object graph that contains cycles');
-    }
-    seen.add(value);
 
-    const cloned = {};
+    let cloned = seen.get(value);
+    if (cloned !== undefined) {
+      return cloned;
+    }
+
+    cloned = {};
+    seen.set(value, cloned);
 
     if (!root) {
       root = cloned;
@@ -45,6 +62,7 @@ export const clone = (obj) => {
       descriptors[ROOT] = { value: root };
       Object.defineProperties(cloned, descriptors);
     }
+
     return cloned;
   };
 

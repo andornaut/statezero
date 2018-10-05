@@ -9,12 +9,28 @@ const createOriginal = () => ({
 });
 
 describe('clone()', () => {
-  describe('when a cycle exists', () => {
-    it('should throw an error', () => {
-      const original = createOriginal();
-      original.cycle = original;
+  describe('when a cycle of objects exists', () => {
+    it('should be successful', () => {
+      const original = {};
+      original.child = original;
 
-      expect(() => clone(original)).to.throw(TypeError, 'Cannot clone object graph that contains cycles');
+      const cloned = clone(original);
+
+      expect(cloned.child).to.equal(cloned);
+      expect(cloned.child).to.not.equal(original);
+    });
+  });
+
+  describe('when a cycle of arrays exists', () => {
+    it('should be successful', () => {
+      const arr = [];
+      arr.push(arr);
+      const original = { arr };
+
+      const cloned = clone(original);
+
+      expect(cloned.arr).to.equal(cloned.arr[0]);
+      expect(cloned.arr).to.not.equal(original.arr[0]);
     });
   });
 
