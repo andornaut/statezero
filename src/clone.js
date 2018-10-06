@@ -15,9 +15,12 @@ const getterDescriptors = (obj) => {
   }, {});
 };
 
-/* Clone the given object.
+/* Deep clone the given object.
  *
- * @param obj: An object such that `isPlainObject(obj)===true`
+ * An empty object is returned for uncloneable values such as error objects, DOM nodes, and WeakMaps; with the
+ * exception of functions, which are returned as is.
+ *
+ * @param obj: An object such that `isPlainObject(obj)` evaluates to `true`
  */
 export const clone = (obj) => {
   const seen = new WeakMap();
@@ -25,7 +28,8 @@ export const clone = (obj) => {
 
   const customizer = (value) => {
     if (!isPlainObject(value)) {
-      // Default clone operation
+      // Default lodash clone() operation
+      // https://lodash.com/docs/4.17.10#clone
       return undefined;
     }
 
