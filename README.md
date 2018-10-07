@@ -72,7 +72,7 @@ setCount(1);
 getState(); // returns { count: 1 }
 getState('count');
 returns; // 1
-getState('count', 'countTimesTwo');
+getState(['count', 'countTimesTwo']);
 // returns [1, 2]
 ```
 
