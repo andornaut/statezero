@@ -19,6 +19,7 @@
     "url": "https://github.com/andornaut/statezero.git"
   },
   "dependencies": {
+    "deep-diff": "^1.0.2",
     "deep-freeze-strict": "^1.1.1",
     "lodash-es": "^4.17.10"
   },

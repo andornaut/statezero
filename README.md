@@ -30,6 +30,13 @@ in various environments:
 import { action, subscribe } from 'statezero';
 ```
 
+### ES6 Module with tree shaking (not transpiled)
+
+```javascript
+// Note that the import path ends with '/src'
+import { action, subscribe } from 'statezero/src';
+```
+
 ### Node
 
 ```javascript
@@ -222,6 +229,22 @@ Getters can be
 ```
 
 See [./test](./test) for more examples.
+
+### Logging
+
+```javascript
+import { startLogging, stopLogging } from 'statezero';
+
+startLogging();
+
+// When an action is called, a table is printed to the console which describes the changes.
+
+stopLogging();
+```
+
+`startLogging(filter, logger)` accepts two optional arguments. `filter` can be used to filter the state changes that
+are logged; if not specified then all changes are logged. `logger` can be used to override the default log function of
+[`console.table`](https://developer.mozilla.org/en-US/docs/Web/API/Console/table).
 
 ## Developing
 
