@@ -33,7 +33,9 @@ const logStateChanges = (state, prevState) => {
 };
 
 export const startLogging = (filter, logger) => {
-  log = logger;
+  if (logger) {
+    log = logger;
+  }
   subscription = subscribe(logStateChanges, filter);
 };
 
