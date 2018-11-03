@@ -59,6 +59,16 @@ describe('getState()', () => {
     });
   });
 
+  describe('when an function "filter" argument is supplied', () => {
+    it('should return the state at the given path', () => {
+      incrementNestedCount();
+
+      const filter = state => state.nested.count;
+
+      expect(getState(filter)).to.equal(1);
+    });
+  });
+
   describe('when a string "filter" argument is supplied', () => {
     it('should return the state at the given path', () => {
       incrementNestedCount();
@@ -75,7 +85,7 @@ describe('getState()', () => {
 
   describe('when an unsupported type "filter" argument is supplied', () => {
     it('should throw an error', () => {
-      expect(() => getState(() => null)).to.throw(Error, /statezero: getState\(\) must be called with/);
+      expect(() => getState({})).to.throw(Error, /statezero: getState\(\) must be called with/);
     });
   });
 });

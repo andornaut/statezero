@@ -1,6 +1,7 @@
 import deepFreeze from 'deep-freeze-strict';
 import get from 'lodash-es/get';
 import isArray from 'lodash-es/isArray';
+import isFunction from 'lodash-es/isFunction';
 import isPlainObject from 'lodash-es/isPlainObject';
 import isString from 'lodash-es/isString';
 
@@ -54,7 +55,10 @@ export const getState = (filter) => {
   if (isArray(filter)) {
     return filter.map(path => get(state, path));
   }
+  if (isFunction(filter)) {
+    return filter(state);
+  }
   throw new Error(
-    `statezero: getState() must be called with an Array/String/undefined "filter" argument; not ${filter}`,
+    `statezero: getState() must be called with an Array/Function/String/undefined "filter" argument; not ${filter}`,
   );
 };
