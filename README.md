@@ -4,6 +4,9 @@ Small, simple, functional JavaScript library for managing immutable state.
 
 Statezero is used by [Jetstart - a library for building web interfaces](https://github.com/andornaut/jetstart).
 
+[React Hooks](https://reactjs.org/docs/hooks-intro.html) are provided via
+[statezero-react-hooks](https://github.com/andornaut/statezero-react-hooks).
+
 ## Getting Started
 
 Install from [npm](https://www.npmjs.com/package/statezero).
