@@ -4,6 +4,7 @@ import isArray from 'lodash-es/isArray';
 import isFunction from 'lodash-es/isFunction';
 import isPlainObject from 'lodash-es/isPlainObject';
 import isString from 'lodash-es/isString';
+import set from 'lodash-es/set';
 
 import { clone } from './clone';
 import { subscribersAsync, subscribersSync } from './subscriptions';
@@ -62,3 +63,15 @@ export const getState = (filter) => {
     `statezero: getState() must be called with an Array/Function/String/undefined "filter" argument; not ${filter}`,
   );
 };
+
+// eslint-disable-next-line no-shadow
+export const setState = action(({ commit, state }, filter, value) => {
+  if (filter === undefined || filter === null || filter === '') {
+    state = value;
+  } else if (isString(filter)) {
+    set(state, filter, value);
+  } else {
+    throw new Error(`statezero: setState() must be called with an String/undefined "filter" argument; not ${filter}`);
+  }
+  commit(state);
+});

@@ -53,7 +53,8 @@ Statezero maintains a single state graph, which is initialized to an empty objec
 - Retrieve the current
   [frozen](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze)
   state by calling `getState()`
-- Modify the state by calling "actions", which are defined using `action()`
+- Modify the state by calling the `setState()` action.
+- Modify the state by calling other actions, which are defined using `action()`
 - Subscribe to state change notifications by calling `subscribe()` or `subscribeSync()`
 - Subscribe to a single state change notification by calling `subscribeOnce()` or `subscribeOnceSync()`
 - Unsubscribe from state change notifications by calling `unsubscribe()`
@@ -97,16 +98,16 @@ arbitrary additional arguments. Typically, you would destructure `context` into 
 function that can be used to set the state; it accepts a single `nextState` argument, which must be a JSON-serializable
 [plain object](https://lodash.com/docs/4.17.10#isPlainObject). `state` is a mutable copy of the current state.
 
+Statezero ships with one action `setState(filter, value)`, where "filter" is a String path in dot notation. If "filter"
+is undefined, null or empty-string then the entire state is replaced by the supplied "value".
+
 ```javascript
 const incrementCount = action(({ commit, state }) => {
   state.count = (state.count || 0) + 1;
   commit(state);
 });
 
-const setCount = action(({ commit, state }, count) => {
-  state.count = count;
-  commit(state);
-});
+const setCount = count => setState('count', count);
 
 setCount(1);
 // getState().count is 1
