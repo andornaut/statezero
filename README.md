@@ -98,8 +98,13 @@ arbitrary additional arguments. Typically, you would destructure `context` into 
 function that can be used to set the state; it accepts a single `nextState` argument, which must be a JSON-serializable
 [plain object](https://lodash.com/docs/4.17.10#isPlainObject). `state` is a mutable copy of the current state.
 
-Statezero ships with one action `setState(filter, value)`, where "filter" is a String path in dot notation. If "filter"
-is undefined, null or empty-string then the entire state is replaced by the supplied "value".
+Statezero ships with two actions:
+
+`setState(filter, value)`, where "filter" is a String path in dot notation.
+If "filter" is undefined, null or empty-string then the entire state is replaced by the supplied "value".
+
+`setShallowState(filter, value)`, where "filter" is a String path in dot notation.
+"filter" must be a non-empty string and "value" must be plain object.
 
 ```javascript
 const incrementCount = action(({ commit, state }) => {
@@ -116,6 +121,13 @@ incrementCount();
 setCount(5);
 // getState().count is 5
 ```
+
+### Shallow State
+
+Objects that are added to the state via `setShallowState()` can be deleted or replaced, but they cannot be mutated.
+In order to change the value of one of the properties of a shallow state object, you must replace the entire object
+using `setShallowState()`. Shallow state can be useful in cases where you want to store especially large objects,
+but do not wish to incur the performance penalty of tracking deep changes to all of its properties.
 
 ### Subscribing to state change notifications
 
