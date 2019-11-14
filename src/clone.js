@@ -1,6 +1,8 @@
 import cloneDeepWith from 'lodash-es/cloneDeepWith';
 import isPlainObject from 'lodash-es/isPlainObject';
 
+import { isShallow } from './shallow';
+
 // Keep track of the top-level state object during cloning so that getters can access it later
 export const ROOT = Symbol('statezero root state');
 
@@ -31,6 +33,10 @@ export const clone = (obj) => {
       // Default lodash clone() operation
       // https://lodash.com/docs/4.17.10#clone
       return undefined;
+    }
+
+    if (isShallow(value)) {
+      return value;
     }
 
     let cloned = seen.get(value);
