@@ -4,13 +4,13 @@ import isEqualWith from 'lodash-es/isEqualWith';
 import isFunction from 'lodash-es/isFunction';
 import isString from 'lodash-es/isString';
 
-import { isShallow } from './shallow';
+import { isImmutable } from './immutable';
 
 export const subscribersAsync = new Set();
 export const subscribersSync = new Set();
 
 const isEqualCustomizer = (value, othValue) => {
-  if (isShallow(value)) {
+  if (isImmutable(value)) {
     return value === othValue;
   }
   // When customizer returns undefined, comparisons are handled by lodash

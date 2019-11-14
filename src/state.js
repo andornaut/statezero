@@ -7,7 +7,7 @@ import isString from 'lodash-es/isString';
 import set from 'lodash-es/set';
 
 import { clone } from './clone';
-import { markShallow } from './shallow';
+import { markImmutable } from './immutable';
 import { subscribersAsync, subscribersSync } from './subscriptions';
 
 let state = deepFreeze({});
@@ -77,13 +77,13 @@ export const setState = action(({ commit, state }, filter, value) => {
   commit(state);
 });
 
-export const setShallowState = (filter, obj) => {
+export const setImmutableState = (filter, obj) => {
   if (!filter) {
-    throw new Error('statezero: setShallowState() must be called with a non-empty String "filter" argument');
+    throw new Error('statezero: setImmutableState() must be called with a non-empty String "filter" argument');
   }
   if (!isPlainObject(obj)) {
-    throw new Error(`statezero: setShallowState() must be called with a plain object "obj" argument; not: ${obj}`);
+    throw new Error(`statezero: setImmutableState() must be called with a plain object "obj" argument; not: ${obj}`);
   }
-  markShallow(obj);
+  markImmutable(obj);
   setState(filter, obj);
 };

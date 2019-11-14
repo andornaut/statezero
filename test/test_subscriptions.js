@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 
 import {
-  getState, setShallowState, setState, subscribe, subscribeSync, unsubscribe,
+  getState, setImmutableState, setState, subscribe, subscribeSync, unsubscribe,
 } from '../src';
 import { defineGetter } from '../src/getters';
 import {
@@ -15,8 +15,8 @@ import {
 describe('subscribe()', () => {
   beforeEach(clearStateThenResolve);
 
-  describe('when called on a shallow object', () => {
-    describe('and the object is replaced using setShallowState', () => {
+  describe('when called on a immutable object', () => {
+    describe('and the object is replaced using setImmutableState', () => {
       it('should invoke the callback', (done) => {
         const subscriber = ({ initial }) => {
           expect(initial).to.be.false;
@@ -24,9 +24,9 @@ describe('subscribe()', () => {
         };
 
         // state.initial is undefined initially in this "tick".
-        setShallowState('shallow', { initial: true });
-        subscribe(subscriber, 'shallow');
-        setShallowState('shallow', { initial: false });
+        setImmutableState('immutable', { initial: true });
+        subscribe(subscriber, 'immutable');
+        setImmutableState('immutable', { initial: false });
       });
     });
 
@@ -38,26 +38,26 @@ describe('subscribe()', () => {
         };
 
         // state.initial is undefined initially in this "tick".
-        setShallowState('shallow', { initial: true });
-        subscribe(subscriber, 'shallow');
-        setState('shallow', { initial: false });
+        setImmutableState('immutable', { initial: true });
+        subscribe(subscriber, 'immutable');
+        setState('immutable', { initial: false });
       });
     });
 
-    describe('and the object is mutated using setShallowState', () => {
+    describe('and the object is mutated using setImmutableState', () => {
       it('should throw an error', () => {
-        setShallowState('shallow', { initial: true });
+        setImmutableState('immutable', { initial: true });
         expect(() => {
-          setShallowState('shallow.initial', false);
+          setImmutableState('immutable.initial', false);
         }).to.throw();
       });
     });
 
     describe('and the object is mutated using setState', () => {
       it('should throw an error', () => {
-        setShallowState('shallow', { initial: true });
+        setImmutableState('immutable', { initial: true });
         expect(() => {
-          setState('shallow.initial', false);
+          setState('immutable.initial', false);
         }).to.throw();
       });
     });

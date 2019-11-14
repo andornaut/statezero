@@ -54,6 +54,7 @@ Statezero maintains a single state graph, which is initialized to an empty objec
   [frozen](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze)
   state by calling `getState()`
 - Modify the state by calling the `setState()` action.
+- Set or replace immutable objects by calling `setImmutableState()`. Immutable objects can be replaced or deleted, but not mutated. statezero performs better when large objects are stored as immutable state.
 - Modify the state by calling other actions, which are defined using `action()`
 - Subscribe to state change notifications by calling `subscribe()` or `subscribeSync()`
 - Subscribe to a single state change notification by calling `subscribeOnce()` or `subscribeOnceSync()`
@@ -69,7 +70,7 @@ by calling `getState()` - any changes that you attempt to make to it will not af
 `getState()`. Instead, you should modify state by calling "actions".
 
 `getState()` accepts an optional "filter" argument, which can be used to select a subset of the state to return.
-"filter" should should be a String path in dot notation, an Array of the same or a Function.
+"filter" should should be a string path in dot notation, an Array of the same or a Function.
 
 ```javascript
 const setCount = action(({ commit, state }, count) => {
@@ -100,11 +101,11 @@ function that can be used to set the state; it accepts a single `nextState` argu
 
 Statezero ships with two actions:
 
-`setState(filter, value)`, where "filter" is a String path in dot notation.
+`setState(filter, value)`, where "filter" is a string path in dot notation.
 If "filter" is undefined, null or empty-string then the entire state is replaced by the supplied "value".
 
-`setShallowState(filter, value)`, where "filter" is a String path in dot notation.
-"filter" must be a non-empty string and "value" must be plain object.
+`setImmutableState(filter, obj)`, where "filter" is a string path in dot notation.
+"filter" must be a non-empty string and "obj" must be plain object.
 
 ```javascript
 const incrementCount = action(({ commit, state }) => {
@@ -122,11 +123,11 @@ setCount(5);
 // getState().count is 5
 ```
 
-### Shallow State
+### Immutable State
 
-Objects that are added to the state via `setShallowState()` can be deleted or replaced, but they cannot be mutated.
-In order to change the value of one of the properties of a shallow state object, you must replace the entire object
-using `setShallowState()`. Shallow state can be useful in cases where you want to store especially large objects,
+Objects that are added to the state via `setImmutableState()` can be deleted or replaced, but they cannot be mutated.
+In order to change the value of one of the properties of a immutable state object, you must replace the entire object
+using `setImmutableState()`. Immutable state can be useful in cases where you want to store especially large objects,
 but do not wish to incur the performance penalty of tracking deep changes to all of its properties.
 
 ### Subscribing to state change notifications

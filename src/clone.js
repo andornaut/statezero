@@ -1,7 +1,7 @@
 import cloneDeepWith from 'lodash-es/cloneDeepWith';
 import isPlainObject from 'lodash-es/isPlainObject';
 
-import { isShallow } from './shallow';
+import { isImmutable } from './immutable';
 
 // Keep track of the top-level state object during cloning so that getters can access it later
 export const ROOT = Symbol('statezero root state');
@@ -35,7 +35,7 @@ export const clone = (obj) => {
       return undefined;
     }
 
-    if (isShallow(value)) {
+    if (isImmutable(value)) {
       return value;
     }
 
