@@ -54,8 +54,8 @@ Statezero maintains a single state graph, which is initialized to an empty objec
   [frozen](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze)
   state by calling `getState()`
 - Modify the state by calling the `setState()` action.
-- Set or replace immutable objects by calling `setImmutableState()`. Immutable objects can be replaced or deleted, but not mutated. statezero performs better when large objects are stored as immutable state.
 - Modify the state by calling other actions, which are defined using `action()`
+- Set or replace immutable objects by calling `setImmutableState()`. Immutable objects can be replaced or deleted, but not mutated. statezero performs better when large objects are stored as immutable state.
 - Subscribe to state change notifications by calling `subscribe()` or `subscribeSync()`
 - Subscribe to a single state change notification by calling `subscribeOnce()` or `subscribeOnceSync()`
 - Unsubscribe from state change notifications by calling `unsubscribe()`
@@ -126,7 +126,7 @@ setCount(5);
 ### Immutable State
 
 Objects that are added to the state via `setImmutableState()` can be deleted or replaced, but they cannot be mutated.
-In order to change the value of one of the properties of a immutable state object, you must replace the entire object
+In order to change the value of one of the properties of an immutable state object, you must replace the entire object
 using `setImmutableState()`. Immutable state can be useful in cases where you want to store especially large objects,
 but do not wish to incur the performance penalty of tracking deep changes to all of its properties.
 
