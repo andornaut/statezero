@@ -30,7 +30,7 @@ export const clone = (obj) => {
 
   const customizer = (value) => {
     if (!isPlainObject(value)) {
-      // Default lodash clone() operation
+      // When customizer returns undefined, comparisons are handled by lodash
       // https://lodash.com/docs/4.17.10#clone
       return undefined;
     }

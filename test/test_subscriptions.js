@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 
 import {
-  getState, subscribe, subscribeSync, unsubscribe,
+  getState, setShallowState, setState, subscribe, subscribeSync, unsubscribe,
 } from '../src';
 import { defineGetter } from '../src/getters';
 import {
@@ -14,6 +14,54 @@ import {
 
 describe('subscribe()', () => {
   beforeEach(clearStateThenResolve);
+
+  describe('when called on a shallow object', () => {
+    describe('and the object is replaced using setShallowState', () => {
+      it('should invoke the callback', (done) => {
+        const subscriber = ({ initial }) => {
+          expect(initial).to.be.false;
+          done();
+        };
+
+        // state.initial is undefined initially in this "tick".
+        setShallowState('shallow', { initial: true });
+        subscribe(subscriber, 'shallow');
+        setShallowState('shallow', { initial: false });
+      });
+    });
+
+    describe('and the object is replaced using setState', () => {
+      it('should invoke the callback', (done) => {
+        const subscriber = ({ initial }) => {
+          expect(initial).to.be.false;
+          done();
+        };
+
+        // state.initial is undefined initially in this "tick".
+        setShallowState('shallow', { initial: true });
+        subscribe(subscriber, 'shallow');
+        setState('shallow', { initial: false });
+      });
+    });
+
+    describe('and the object is mutated using setShallowState', () => {
+      it('should throw an error', () => {
+        setShallowState('shallow', { initial: true });
+        expect(() => {
+          setShallowState('shallow.initial', false);
+        }).to.throw();
+      });
+    });
+
+    describe('and the object is mutated using setState', () => {
+      it('should throw an error', () => {
+        setShallowState('shallow', { initial: true });
+        expect(() => {
+          setState('shallow.initial', false);
+        }).to.throw();
+      });
+    });
+  });
 
   describe('when called with a "filter" argument that is a path to a getter', () => {
     it("should invoke the callback with the getter's value", (done) => {

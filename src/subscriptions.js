@@ -1,16 +1,27 @@
 import get from 'lodash-es/get';
 import isArray from 'lodash-es/isArray';
-import isEqual from 'lodash-es/isEqual';
+import isEqualWith from 'lodash-es/isEqualWith';
 import isFunction from 'lodash-es/isFunction';
 import isString from 'lodash-es/isString';
+
+import { isShallow } from './shallow';
 
 export const subscribersAsync = new Set();
 export const subscribersSync = new Set();
 
+const isEqualCustomizer = (value, othValue) => {
+  if (isShallow(value)) {
+    return value === othValue;
+  }
+  // When customizer returns undefined, comparisons are handled by lodash
+  // https://lodash.com/docs/4.17.15#isEqualWith
+  return undefined;
+};
+
 const applyFilter = (callback, filter) => (nextState, prevState) => {
   nextState = filter(nextState);
   prevState = filter(prevState);
-  if (!isEqual(nextState, prevState)) {
+  if (!isEqualWith(nextState, prevState, isEqualCustomizer)) {
     callback(nextState, prevState);
   }
 };
