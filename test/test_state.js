@@ -1,4 +1,4 @@
-import { action, getState } from '../src';
+import { action, getState, setState } from '../src';
 import { clearStateThenResolve, incrementCount, incrementNestedCount } from './helpers';
 
 function Foo() {}
@@ -59,6 +59,16 @@ describe('getState()', () => {
     });
   });
 
+  describe('when an function "filter" argument is supplied', () => {
+    it('should return the state at the given path', () => {
+      incrementNestedCount();
+
+      const filter = state => state.nested.count;
+
+      expect(getState(filter)).to.equal(1);
+    });
+  });
+
   describe('when a string "filter" argument is supplied', () => {
     it('should return the state at the given path', () => {
       incrementNestedCount();
@@ -75,7 +85,29 @@ describe('getState()', () => {
 
   describe('when an unsupported type "filter" argument is supplied', () => {
     it('should throw an error', () => {
-      expect(() => getState(() => null)).to.throw(Error, /statezero: getState\(\) must be called with/);
+      expect(() => getState({})).to.throw(Error, /statezero: getState\(\) must be called with/);
+    });
+  });
+});
+
+describe('setState()', () => {
+  beforeEach(clearStateThenResolve);
+
+  describe('when supplied an empty-string filter argument', () => {
+    it('should replace the entire state', () => {
+      const newState = {};
+
+      setState('', newState);
+
+      expect(getState()).to.equal(newState);
+    });
+  });
+
+  describe('when supplied a string path filter argument', () => {
+    it('should replace the value at the given path', () => {
+      setState('a.b.c', 'C');
+
+      expect(getState().a.b.c).to.equal('C');
     });
   });
 });
