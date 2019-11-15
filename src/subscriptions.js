@@ -26,9 +26,9 @@ const applyFilter = (callback, filter) => (nextState, prevState) => {
   }
 };
 
-const createArrayFilter = paths => _state => paths.map(path => get(_state, path));
+const createArrayFilter = (paths) => (_state) => paths.map((path) => get(_state, path));
 
-const createStringFilter = path => _state => get(_state, path);
+const createStringFilter = (path) => (_state) => get(_state, path);
 
 /**
  * Subscribe to changes of state.

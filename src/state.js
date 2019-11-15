@@ -45,7 +45,7 @@ const commit = (nextState) => {
   notifySync(prevState);
 };
 
-export const action = fn => (...args) => fn({ commit, state: clone(state) }, ...args);
+export const action = (fn) => (...args) => fn({ commit, state: clone(state) }, ...args);
 
 export const getState = (filter) => {
   if (filter === undefined) {
@@ -55,7 +55,7 @@ export const getState = (filter) => {
     return get(state, filter);
   }
   if (isArray(filter)) {
-    return filter.map(path => get(state, path));
+    return filter.map((path) => get(state, path));
   }
   if (isFunction(filter)) {
     return filter(state);

@@ -113,7 +113,7 @@ const incrementCount = action(({ commit, state }) => {
   commit(state);
 });
 
-const setCount = count => setState('count', count);
+const setCount = (count) => setState('count', count);
 
 setCount(1);
 // getState().count is 1
@@ -146,7 +146,7 @@ const fn = (nextState, prevState) => {
 };
 subscribe(fn, 'a.b.c'); // String "filter" path in dot notation
 subscribe(fn, ['a.b.c', 'd.e.f']); // Array "filter" paths, each in dot notation
-subscribe(fn, state => state.a.b.c); // Function "filter"
+subscribe(fn, (state) => state.a.b.c); // Function "filter"
 subscribe(fn); // Undefined "filter" - subscribe to every state change
 ```
 
@@ -206,7 +206,7 @@ return value of `getState()`.
 You can subscribe to state change notifications on getters using "filters" as with any other property of the state.
 
 ```javascript
-defineGetter('countTimesTwo', parent => parent.count * 2);
+defineGetter('countTimesTwo', (parent) => parent.count * 2);
 
 subscribe(console.log, 'countTimesTwo');
 
@@ -216,7 +216,7 @@ subscribe(console.log, 'countTimesTwo');
 You can also define nested getters.
 
 ```javascript
-defineGetter('nested.countTimesTwo', parent => parent.count * 2);
+defineGetter('nested.countTimesTwo', (parent) => parent.count * 2);
 
 subscribe(console.log, 'nested.countTimesTwo');
 

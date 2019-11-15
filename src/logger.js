@@ -6,7 +6,7 @@ let subscription;
 
 // Ignore extra args to log() when using `console.log` fallback
 // eslint-disable-next-line no-console
-let log = console.table ? console.table : message => console.log(message);
+let log = console.table ? console.table : (message) => console.log(message);
 
 const CHANGE_TYPES = {
   N: 'New',
