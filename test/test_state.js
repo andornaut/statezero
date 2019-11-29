@@ -50,7 +50,7 @@ describe('getState()', () => {
     });
   });
 
-  describe('when an array "filter" argument is supplied', () => {
+  describe('when an array "selector" argument is supplied', () => {
     it('should return the state at the given path', () => {
       incrementCount();
       incrementNestedCount();
@@ -59,17 +59,17 @@ describe('getState()', () => {
     });
   });
 
-  describe('when an function "filter" argument is supplied', () => {
+  describe('when an function "selector" argument is supplied', () => {
     it('should return the state at the given path', () => {
       incrementNestedCount();
 
-      const filter = state => state.nested.count;
+      const selector = (state) => state.nested.count;
 
-      expect(getState(filter)).to.equal(1);
+      expect(getState(selector)).to.equal(1);
     });
   });
 
-  describe('when a string "filter" argument is supplied', () => {
+  describe('when a string "selector" argument is supplied', () => {
     it('should return the state at the given path', () => {
       incrementNestedCount();
 
@@ -77,13 +77,13 @@ describe('getState()', () => {
     });
   });
 
-  describe('when a non-existent string "filter" argument is supplied', () => {
+  describe('when a non-existent string "selector" argument is supplied', () => {
     it('should return undefined', () => {
       expect(getState('invalid.path')).to.be.undefined;
     });
   });
 
-  describe('when an unsupported type "filter" argument is supplied', () => {
+  describe('when an unsupported type "selector" argument is supplied', () => {
     it('should throw an error', () => {
       expect(() => getState({})).to.throw(Error, /statezero: getState\(\) must be called with/);
     });
@@ -93,7 +93,7 @@ describe('getState()', () => {
 describe('setState()', () => {
   beforeEach(clearStateThenResolve);
 
-  describe('when supplied an empty-string filter argument', () => {
+  describe('when supplied an empty-string selector argument', () => {
     it('should replace the entire state', () => {
       const newState = {};
 
@@ -103,7 +103,7 @@ describe('setState()', () => {
     });
   });
 
-  describe('when supplied a string path filter argument', () => {
+  describe('when supplied a string path selector argument', () => {
     it('should replace the value at the given path', () => {
       setState('a.b.c', 'C');
 

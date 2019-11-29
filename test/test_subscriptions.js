@@ -63,7 +63,7 @@ describe('subscribe()', () => {
     });
   });
 
-  describe('when called with a "filter" argument that is a path to a getter', () => {
+  describe('when called with a "selector" argument that is a path to a getter', () => {
     it("should invoke the callback with the getter's value", (done) => {
       defineGetter('countTimesTwo', getCountTimesTwo);
 
@@ -78,7 +78,7 @@ describe('subscribe()', () => {
     });
   });
 
-  describe('when called with a "filter" argument that is a path to a getter', () => {
+  describe('when called with a "selector" argument that is a path to a getter', () => {
     it('should invoke the callback the expected number times', (done) => {
       defineGetter('countTimesTwo', getCountTimesTwo);
 
@@ -102,7 +102,7 @@ describe('subscribe()', () => {
     });
   });
 
-  describe('when called a "filter" argument that is path to a non-getter', () => {
+  describe('when called a "selector" argument that is path to a non-getter', () => {
     it('should invoke the callback the expected number times', (done) => {
       let calledCount = 0;
       const subscriber = () => {
@@ -122,7 +122,7 @@ describe('subscribe()', () => {
     });
   });
 
-  describe('when called with a "filter" argument that is an array', () => {
+  describe('when called with a "selector" argument that is an array', () => {
     it('should invoke the callback with an array', (done) => {
       const subscriber = ([count]) => {
         expect(count).to.equal(1);
@@ -134,7 +134,7 @@ describe('subscribe()', () => {
     });
   });
 
-  describe('when called with a "filter" argument that is a 2-element array', () => {
+  describe('when called with a "selector" argument that is a 2-element array', () => {
     it('should invoke the callback with a 2-element array', (done) => {
       defineGetter('countTimesTwo', getCountTimesTwo);
 
@@ -149,7 +149,7 @@ describe('subscribe()', () => {
     });
   });
 
-  describe('when called with a "filter" argument that is an array with a deeply nested path', () => {
+  describe('when called with a "selector" argument that is an array with a deeply nested path', () => {
     it('should invoke the callback with an array that includes the value of the deeply nested property', (done) => {
       defineGetter('countTimesTwo', getCountTimesTwo);
       defineGetter('deeply.nested.countTimesTwo', getCountTimesTwo);
@@ -168,7 +168,7 @@ describe('subscribe()', () => {
     });
   });
 
-  describe('when called with a "filter" argument that is a path to a getter', () => {
+  describe('when called with a "selector" argument that is a path to a getter', () => {
     it("should invoke the callback with the getter's value", (done) => {
       defineGetter('countTimesTwo', getCountTimesTwo);
 
@@ -183,7 +183,7 @@ describe('subscribe()', () => {
     });
   });
 
-  describe('when called with a "filter" argument that is a string path', () => {
+  describe('when called with a "selector" argument that is a string path', () => {
     it('should invoke the callback with the value at the given path', (done) => {
       const subscriber = (state) => {
         expect(state).to.equal(1);
@@ -195,7 +195,7 @@ describe('subscribe()', () => {
     });
   });
 
-  describe('when called with a "filter" argument that is a string path and then multiple actions are invoked', () => {
+  describe('when called with a "selector" argument that is a string path and then multiple actions are invoked', () => {
     it('should only call the callback once', (done) => {
       const subscriber = (state) => {
         expect(state).to.equal(3);
@@ -209,7 +209,7 @@ describe('subscribe()', () => {
     });
   });
 
-  describe('when called with a "filter" argument that is a string path to a function', () => {
+  describe('when called with a "selector" argument that is a string path to a function', () => {
     it('should invoke the callback when the function is changed', (done) => {
       const fn = () => 1;
 
@@ -239,17 +239,17 @@ describe('subscribe()', () => {
     });
   });
 
-  describe('when called with an invalid "filter" argument', () => {
-    [null, 0, 1, {}].forEach((filter) => {
-      it(`should throw an error. filter: ${filter}`, () => {
+  describe('when called with an invalid "selector" argument', () => {
+    [null, 0, 1, {}].forEach((selector) => {
+      it(`should throw an error. selector: ${selector}`, () => {
         expect(() => {
-          subscribe(() => null, filter);
+          subscribe(() => null, selector);
         }).to.throw();
       });
     });
   });
 
-  describe('when called without a filter argument, then an action is committed and reverted', () => {
+  describe('when called without a selector argument, then an action is committed and reverted', () => {
     it('should invoke the callback when the change is reverted', (done) => {
       const subscriber = ({ initial }, { prevInitial }) => {
         expect(initial).to.be.true;
@@ -264,7 +264,7 @@ describe('subscribe()', () => {
     });
   });
 
-  describe('when called without a filter argument', () => {
+  describe('when called without a selector argument', () => {
     it('should invoke the callback when a change occurs', (done) => {
       const subscriber = (state) => {
         expect(state.count).to.equal(1);
@@ -297,7 +297,7 @@ describe('subscribeSync()', () => {
 describe('unsubscribe()', () => {
   beforeEach(clearStateThenResolve);
 
-  describe('when called on a filtered subscription', () => {
+  describe('when called on subscription on a derived state', () => {
     it('should unsubscribe the subscription', (done) => {
       const subscriber = sinon.spy();
       const subscription = subscribe(subscriber, 'count');
@@ -312,7 +312,7 @@ describe('unsubscribe()', () => {
     });
   });
 
-  describe('when called on an unfiltered subscription', () => {
+  describe('when called on a subscription on the entire state', () => {
     it('should unsubscribe the subscription', (done) => {
       const subscriber = sinon.spy();
       subscribe(subscriber);

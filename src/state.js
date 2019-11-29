@@ -47,43 +47,45 @@ const commit = (nextState) => {
 
 export const action = (fn) => (...args) => fn({ commit, state: clone(state) }, ...args);
 
-export const getState = (filter) => {
-  if (filter === undefined) {
+export const getState = (selector) => {
+  if (selector === undefined) {
     return state;
   }
-  if (isString(filter)) {
-    return get(state, filter);
+  if (isString(selector)) {
+    return get(state, selector);
   }
-  if (isArray(filter)) {
-    return filter.map((path) => get(state, path));
+  if (isArray(selector)) {
+    return selector.map((path) => get(state, path));
   }
-  if (isFunction(filter)) {
-    return filter(state);
+  if (isFunction(selector)) {
+    return selector(state);
   }
   throw new Error(
-    `statezero: getState() must be called with an Array/Function/String/undefined "filter" argument; not ${filter}`,
+    `statezero: getState() must be called with an Array/Function/String/undefined "selector" argument; not ${selector}`,
   );
 };
 
 // eslint-disable-next-line no-shadow
-export const setState = action(({ commit, state }, filter, value) => {
-  if (filter === undefined || filter === null || filter === '') {
+export const setState = action(({ commit, state }, selector, value) => {
+  if (selector === undefined || selector === null || selector === '') {
     state = value;
-  } else if (isString(filter)) {
-    set(state, filter, value);
+  } else if (isString(selector)) {
+    set(state, selector, value);
   } else {
-    throw new Error(`statezero: setState() must be called with an String/undefined "filter" argument; not ${filter}`);
+    throw new Error(
+      `statezero: setState() must be called with an String/undefined "selector" argument; not ${selector}`,
+    );
   }
   commit(state);
 });
 
-export const setImmutableState = (filter, obj) => {
-  if (!filter) {
-    throw new Error('statezero: setImmutableState() must be called with a non-empty String "filter" argument');
+export const setImmutableState = (selector, obj) => {
+  if (!selector) {
+    throw new Error('statezero: setImmutableState() must be called with a non-empty String "selector" argument');
   }
   if (!isPlainObject(obj)) {
     throw new Error(`statezero: setImmutableState() must be called with a plain object "obj" argument; not: ${obj}`);
   }
   markImmutable(obj);
-  setState(filter, obj);
+  setState(selector, obj);
 };

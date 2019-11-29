@@ -8,7 +8,7 @@ import { action } from './state';
 /**
  * Define a getter (computed property) on the state.
  *
- * @param path: A JSON path as a string eg. "a.b.c", or and array eg. ['a', 'b', 'c'] or property name like "c".
+ * @param path: A dot notation path as a string eg. "a.b.c", or and array eg. ['a', 'b', 'c'] or property name like "c".
  *  If a parent path component does not exist, then it will be created as an empty object.
  * @param fn: A function which takes state as its only parameter and returns a value.
  * @param enumerable: A boolean which determine whether this property shows up during enumeration.

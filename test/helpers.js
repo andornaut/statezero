@@ -1,7 +1,7 @@
 import { action, subscribeOnce } from '../src';
 import { unsubscribeAll } from '../src/subscriptions';
 
-export const getCountTimesTwo = state => (state.count || 0) * 2;
+export const getCountTimesTwo = (state) => (state.count || 0) * 2;
 
 export const assignState = action(({ commit, state }, newState) => {
   Object.assign(state, newState);
@@ -31,11 +31,11 @@ export const incrementNestedCount = action(({ commit, state }) => {
   commit(state);
 });
 
-const resolveOnNotify = filter =>
+const resolveOnNotify = (selector) =>
   new Promise((resolve) => {
     subscribeOnce((val) => {
       setTimeout(() => resolve(val));
-    }, filter);
+    }, selector);
   });
 
 export const clearStateThenResolve = () => {

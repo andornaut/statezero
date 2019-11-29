@@ -32,11 +32,11 @@ const logStateChanges = (state, prevState) => {
   log(properties, ['changeType', 'from', 'to']);
 };
 
-export const startLogging = (filter, logger) => {
+export const startLogging = (selector, logger) => {
   if (logger) {
     log = logger;
   }
-  subscription = subscribe(logStateChanges, filter);
+  subscription = subscribe(logStateChanges, selector);
 };
 
 export const stopLogging = () => {

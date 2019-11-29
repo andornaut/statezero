@@ -69,8 +69,8 @@ Statezero maintains a single state graph. Once your code has a reference to a co
 by calling `getState()` - any changes that you attempt to make to it will not affect any other values returned by
 `getState()`. Instead, you should modify state by calling "actions".
 
-`getState()` accepts an optional "filter" argument, which can be used to select a subset of the state to return.
-"filter" should should be a string path in dot notation, an Array of the same or a Function.
+`getState()` accepts an optional "selector" argument, which can be used to select a subset of the state to return.
+"selector" should should be a string path in dot notation, an Array of the same or a Function.
 
 ```javascript
 const setCount = action(({ commit, state }, count) => {
@@ -101,11 +101,11 @@ function that can be used to set the state; it accepts a single `nextState` argu
 
 Statezero ships with two actions:
 
-`setState(filter, value)`, where "filter" is a string path in dot notation.
-If "filter" is undefined, null or empty-string then the entire state is replaced by the supplied "value".
+`setState(selector, value)`, where "selector" is a string path in dot notation.
+If "selector" is undefined, null or empty-string then the entire state is replaced by the supplied "value".
 
-`setImmutableState(filter, obj)`, where "filter" is a string path in dot notation.
-"filter" must be a non-empty string and "obj" must be plain object.
+`setImmutableState(selector, obj)`, where "selector" is a string path in dot notation.
+"selector" must be a non-empty string and "obj" must be plain object.
 
 ```javascript
 const incrementCount = action(({ commit, state }) => {
@@ -132,11 +132,11 @@ but do not wish to incur the performance penalty of tracking deep changes to all
 
 ### Subscribing to state change notifications
 
-You can subscribe to state change notifications by calling `subscribe(fn, filter)`, where "fn" is a function that you
-define, "filter" is an optional String, Array or Function that selects the part of the state that when changed will
+You can subscribe to state change notifications by calling `subscribe(fn, selector)`, where "fn" is a function that you
+define, "selector" is an optional String, Array or Function that selects the part of the state that when changed will
 trigger a call to "fn", and the return value is a subscription, which you can use to unsubscribe.
 
-When the (optionally filtered) state changes, statezero will call your "fn" function with two arguments: `nextState` and
+When the state changes, statezero will call your "fn" function with two arguments: `nextState` and
 `prevState`.
 
 ```javascript
@@ -144,23 +144,23 @@ const fn = (nextState, prevState) => {
   console.log('From', JSON.stringify(prevState));
   console.log('To', JSON.stringify(nextState));
 };
-subscribe(fn, 'a.b.c'); // String "filter" path in dot notation
-subscribe(fn, ['a.b.c', 'd.e.f']); // Array "filter" paths, each in dot notation
-subscribe(fn, (state) => state.a.b.c); // Function "filter"
-subscribe(fn); // Undefined "filter" - subscribe to every state change
+subscribe(fn, 'a.b.c'); // String "selector" path in dot notation
+subscribe(fn, ['a.b.c', 'd.e.f']); // Array "selector" paths, each in dot notation
+subscribe(fn, (state) => state.a.b.c); // Function "selector"
+subscribe(fn); // Undefined "selector" - subscribe to every state change
 ```
 
 `nextState` is the new/current state and `prevState` is the old state (just prior to the state change), the value of
-each of which depends on the "filter" argument that you supplied.
+each of which depends on the "selector" argument that you supplied.
 
-| "filter" argument                           | Value of `nextState` and `prevState`     |
+| "selector" argument                         | Value of `nextState` and `prevState`     |
 | ------------------------------------------- | ---------------------------------------- |
 | String path, eg. `"a.b"`                    | `getState().a.b`                         |
 | Array of paths, eg. `["a", "c"]`            | `[getState().a, getState().c]`           |
 | Function, eg. `({ a, c } => { a, d: c.d })` | `{ a: getState().a, d: getState().c.d }` |
 | Other, eg. `undefined`                      | `getState()`                             |
 
-If you supplied a `String`, `Array` or `Function` "filter" argument to `subscribe()`, then you must unsubscribe by
+If you supplied a `String`, `Array` or `Function` "selector" argument to `subscribe()`, then you must unsubscribe by
 passing the return value from `subscribe()` to `unsubscribe()`.
 
 ```javascript
@@ -169,7 +169,7 @@ const subscription = subscribe(console.log, 'a');
 unsubscribe(subscription);
 ```
 
-If you did not pass a "filter" argument, then you can unsubscribe as above, or you can simply pass the "fn" argument
+If you did not pass a "selector" argument, then you can unsubscribe as above, or you can simply pass the "fn" argument
 to `unsubscribe()`.
 
 ```javascript
@@ -203,7 +203,7 @@ The function that you pass to `defineGetter()` is itself passed two arguments by
 return value of `getState()`.
 `root` corresponds to the return value of `getState()`.
 
-You can subscribe to state change notifications on getters using "filters" as with any other property of the state.
+You can subscribe to state change notifications on getters using "selectors" as with any other property of the state.
 
 ```javascript
 defineGetter('countTimesTwo', (parent) => parent.count * 2);
@@ -259,7 +259,7 @@ startLogging();
 stopLogging();
 ```
 
-`startLogging(filter, logger)` accepts two optional arguments. `filter` can be used to filter the state changes that
+`startLogging(selector, logger)` accepts two optional arguments. `selector` can be used to selector the state changes that
 are logged; if not specified then all changes are logged. `logger` can be used to override the default log function of
 [`console.table`](https://developer.mozilla.org/en-US/docs/Web/API/Console/table).
 

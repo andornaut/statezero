@@ -18,42 +18,43 @@ const isEqualCustomizer = (value, othValue) => {
   return undefined;
 };
 
-const applyFilter = (callback, filter) => (nextState, prevState) => {
-  nextState = filter(nextState);
-  prevState = filter(prevState);
+const applySelector = (callback, selector) => (nextState, prevState) => {
+  nextState = selector(nextState);
+  prevState = selector(prevState);
   if (!isEqualWith(nextState, prevState, isEqualCustomizer)) {
     callback(nextState, prevState);
   }
 };
 
-const createArrayFilter = (paths) => (_state) => paths.map((path) => get(_state, path));
+const createArraySelector = (paths) => (_state) => paths.map((path) => get(_state, path));
 
-const createStringFilter = (path) => (_state) => get(_state, path);
+const createStringSelector = (path) => (_state) => get(_state, path);
 
 /**
  * Subscribe to changes of state.
  *
- * @param callback: A function which is called when the state (filtered or not) changes.
- * @param filter: One of:
- *  - JSON path string, eg: 'a'
- *  - Array of JSON path strings, eg: ['a', 'b']
- *  - A function which returns the filtered state, eg: (newState, oldState) => { a: newState.a, b: newState.b }
+ * @param callback: A function which is called when the state changes.
+ * @param selector: One of:
+ *  - Dot notation path string, eg: 'a.b'
+ *  - Array of dot notation path strings, eg: ['a.b', 'c']
+ *  - A function which returns a derived state, eg: (newState, oldState) => { b: newState.a.b, c: newState.c }
  * @param isSync: If true, then notifications will be executed synchronously; otherwise, they will be executed on the
  *  next tick
  */
-export const subscribe = (callback, filter, isSync = false) => {
-  // Convert an array or string filter into a function.
-  if (isString(filter)) {
-    filter = createStringFilter(filter);
-  } else if (isArray(filter)) {
-    filter = createArrayFilter(filter);
+export const subscribe = (callback, selector, isSync = false) => {
+  // Convert an array or string selector into a function.
+  if (isString(selector)) {
+    selector = createStringSelector(selector);
+  } else if (isArray(selector)) {
+    selector = createArraySelector(selector);
   }
 
-  if (isFunction(filter)) {
-    callback = applyFilter(callback, filter);
-  } else if (filter !== undefined) {
+  if (isFunction(selector)) {
+    callback = applySelector(callback, selector);
+  } else if (selector !== undefined) {
     throw new Error(
-      `statezero: subscribe() must be called with an Array/Function/String/undefined "filter" argument; not ${filter}`,
+      `statezero: subscribe() must be called with an Array/Function/String/undefined "selector" argument; not\
+        ${selector}`,
     );
   }
 
@@ -63,24 +64,24 @@ export const subscribe = (callback, filter, isSync = false) => {
     subscribersAsync.add(callback);
   }
 
-  // If a `filter` was provided, then the caller will need to use the returned `callback` in order to `unsubscribe()`.
+  // If a `selector` was provided, then the caller will need to use the returned `callback` in order to `unsubscribe()`.
   return callback;
 };
 
-export const subscribeSync = (callback, filter) => subscribe(callback, filter, true);
+export const subscribeSync = (callback, selector) => subscribe(callback, selector, true);
 
-export const subscribeOnce = (callback, filter, isSync = false) => {
+export const subscribeOnce = (callback, selector, isSync = false) => {
   const wrapper = (...args) => {
     callback(...args);
     // eslint-disable-next-line no-use-before-define
     unsubscribe(subscription);
   };
 
-  const subscription = subscribe(wrapper, filter, isSync);
+  const subscription = subscribe(wrapper, selector, isSync);
   return subscription;
 };
 
-export const subscribeOnceSync = (callback, filter) => subscribeOnce(callback, filter, true);
+export const subscribeOnceSync = (callback, selector) => subscribeOnce(callback, selector, true);
 
 export const unsubscribe = (callback) => {
   subscribersAsync.delete(callback);
