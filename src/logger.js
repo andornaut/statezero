@@ -33,6 +33,10 @@ const logStateChanges = (state, prevState) => {
 };
 
 export const startLogging = (selector, logger) => {
+  if (subscription) {
+    // Logger has already started.
+    return;
+  }
   if (logger) {
     log = logger;
   }
