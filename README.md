@@ -70,7 +70,7 @@ by calling `getState()` - any changes that you attempt to make to it will not af
 `getState()`. Instead, you should modify state by calling "actions".
 
 `getState()` accepts an optional "selector" argument, which can be used to select a subset of the state to return.
-"selector" should should be a string path in dot notation, an Array of the same or a Function.
+"selector" should be a string path in dot notation, an Array of the same, or a Function.
 
 ```javascript
 const setCount = action(({ commit, state }, count) => {
