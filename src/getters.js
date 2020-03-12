@@ -2,7 +2,6 @@ import get from 'lodash-es/get';
 import isArray from 'lodash-es/isArray';
 import set from 'lodash-es/set';
 
-import { ROOT } from './clone';
 import { action } from './state';
 
 /**
@@ -28,7 +27,7 @@ export const defineGetter = action((context, path, fn, enumerable = false) => {
 
   const descriptor = {
     get() {
-      return fn.call(this, this, this[ROOT]);
+      return fn.call(this, this, this.__STATEZERO_ROOT);
     },
     enumerable,
   };
@@ -36,9 +35,9 @@ export const defineGetter = action((context, path, fn, enumerable = false) => {
   const descriptors = {
     [propName]: descriptor,
   };
-  if (!obj[ROOT]) {
+  if (!obj.__STATEZERO_ROOT) {
     // This is the first time that a getter has been defined on `obj`, so set its ROOT prop.
-    descriptors[ROOT] = { value: context.state };
+    descriptors.__STATEZERO_ROOT = { value: context.state };
   }
   Object.defineProperties(obj, descriptors);
   context.commit(context.state);

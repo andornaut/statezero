@@ -3,9 +3,6 @@ import isPlainObject from 'lodash-es/isPlainObject';
 
 import { isImmutable } from './immutable';
 
-// Keep track of the top-level state object during cloning so that getters can access it later
-export const ROOT = Symbol('statezero root state');
-
 const getterDescriptors = (obj) => {
   const descriptorEntries = Object.entries(Object.getOwnPropertyDescriptors(obj));
 
@@ -59,7 +56,7 @@ export const clone = (obj) => {
     const descriptors = getterDescriptors(value);
     if (Object.keys(descriptors)) {
       // Only objects with getters need a ROOT prop.
-      descriptors[ROOT] = { value: root };
+      descriptors.__STATEZERO_ROOT = { value: root };
       Object.defineProperties(cloned, descriptors);
     }
     return cloned;
