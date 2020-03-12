@@ -56,7 +56,10 @@ export const clone = (obj) => {
     const descriptors = getterDescriptors(value);
     if (Object.keys(descriptors)) {
       // Only objects with getters need a ROOT prop.
-      descriptors.__STATEZERO_ROOT = { value: root };
+      descriptors.__STATEZERO_ROOT = {
+        enumerable: false,
+        value: root,
+      };
       Object.defineProperties(cloned, descriptors);
     }
     return cloned;

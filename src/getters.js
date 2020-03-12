@@ -37,7 +37,10 @@ export const defineGetter = action((context, path, fn, enumerable = false) => {
   };
   if (!obj.__STATEZERO_ROOT) {
     // This is the first time that a getter has been defined on `obj`, so set its ROOT prop.
-    descriptors.__STATEZERO_ROOT = { value: context.state };
+    descriptors.__STATEZERO_ROOT = {
+      enumerable: false,
+      value: context.state,
+    };
   }
   Object.defineProperties(obj, descriptors);
   context.commit(context.state);
