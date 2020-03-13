@@ -1,10 +1,10 @@
 module.exports = {
-  plugins: ['lodash'],
   presets: [
     [
       '@babel/preset-env',
       {
-        corejs: '3',
+        corejs: 3,
+        modules: false,
         useBuiltIns: 'usage',
       },
     ],

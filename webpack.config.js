@@ -1,5 +1,4 @@
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const path = require('path');
 
 const srcPath = path.join(__dirname, 'src');
@@ -33,15 +32,6 @@ module.exports = (env, argv = {}) => {
       library: 'statezero',
       libraryTarget: 'umd',
     },
-    plugins: [
-      // Smaller lodash bundle size:
-      // https://github.com/lodash/lodash-webpack-plugin
-      new LodashModuleReplacementPlugin({
-        caching: true,
-        cloning: true,
-        paths: true,
-      }),
-      new CleanWebpackPlugin(['dist']),
-    ],
+    plugins: [new CleanWebpackPlugin(['dist'])],
   };
 };
