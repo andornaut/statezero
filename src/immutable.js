@@ -1,8 +1,7 @@
-export const isImmutable = (obj) => !!(obj && obj.__STATEZERO_IMMUTABLE);
+const IMMUTABLE = Symbol('statezero immutable');
+
+export const isImmutable = (obj) => !!(obj && obj[IMMUTABLE]);
 
 export const markImmutable = (obj) => {
-  Object.defineProperty(obj, '__STATEZERO_IMMUTABLE', {
-    enumerable: false,
-    value: true,
-  });
+  obj[IMMUTABLE] = true;
 };

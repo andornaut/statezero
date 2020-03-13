@@ -21,8 +21,7 @@ const logStateChanges = (state, prevState) => {
   if (differences === undefined) {
     return;
   }
-  for (let i = 0; i < differences.length; i += 1) {
-    const difference = differences[i];
+  for (const difference of differences) {
     const { path } = difference;
     properties[path] = {
       changeType: CHANGE_TYPES[difference.kind],
