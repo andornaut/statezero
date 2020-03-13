@@ -1,4 +1,4 @@
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const path = require('path');
 
 const srcPath = path.join(__dirname, 'src');
@@ -32,6 +32,6 @@ module.exports = (env, argv = {}) => {
       library: 'statezero',
       libraryTarget: 'umd',
     },
-    plugins: [new CleanWebpackPlugin(['dist'])],
+    plugins: [new CleanWebpackPlugin()],
   };
 };
