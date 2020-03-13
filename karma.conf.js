@@ -15,6 +15,6 @@ module.exports = (config) => {
     reporters: ['mocha'],
     singleRun: !autoWatch,
     webpack: webpackConfig,
-    webpackMiddleware: { noInfo: true },
+    webpackMiddleware: { stats: 'errors-only' },
   });
 };
