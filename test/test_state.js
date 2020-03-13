@@ -1,4 +1,6 @@
-import { action, getState, setState } from '../src';
+import {
+  action, getState, setImmutableState, setState,
+} from '../src';
 import { clearStateThenResolve, incrementCount, incrementNestedCount } from './helpers';
 
 function Foo() {}
@@ -108,6 +110,36 @@ describe('setState()', () => {
       setState('a.b.c', 'C');
 
       expect(getState().a.b.c).to.equal('C');
+    });
+  });
+});
+
+describe('setImmutableState()', () => {
+  beforeEach(clearStateThenResolve);
+
+  describe('when an immutable object is mutated with setImmutableState', () => {
+    it('should not mutate the object', () => {
+      const initial = { initial: true };
+      setImmutableState('immutable', initial);
+      setImmutableState('immutable.initial', {});
+      expect(getState().immutable.initial, initial);
+    });
+  });
+
+  describe('when an immutable object is mutated with setState', () => {
+    it('should not mutate the object', () => {
+      const initial = { initial: true };
+      setImmutableState('immutable', initial);
+      setState('immutable.initial', {});
+      expect(getState().immutable.initial, initial);
+    });
+  });
+
+  describe('when an immutable object is replaced', () => {
+    it('the new object will not be immutable', () => {
+      setImmutableState('immutable', { initial: true });
+      setState('immutable', { initial: false });
+      expect(getState().immutable.initial, false);
     });
   });
 });

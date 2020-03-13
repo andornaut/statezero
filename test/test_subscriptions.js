@@ -43,27 +43,6 @@ describe('subscribe()', () => {
         setState('immutable', { initial: false });
       });
     });
-
-    describe('and the object is mutated using setImmutableState', () => {
-      it('should throw an error', () => {
-        setImmutableState('immutable', { initial: true });
-        expect(() => {
-          setImmutableState('immutable.initial', false);
-        }).to.throw();
-      });
-    });
-
-    // TODO
-    /*
-    describe('and the object is mutated using setState', () => {
-      it('should throw an error', () => {
-        setImmutableState('immutable', { initial: true });
-        expect(() => {
-          setState('immutable.initial', false);
-        }).to.throw();
-      });
-    });
-    */
   });
 
   describe('when called with a "selector" argument that is a path to a getter', () => {
@@ -168,21 +147,6 @@ describe('subscribe()', () => {
       incrementCount();
       subscribe(subscriber, ['count', 'countTimesTwo', 'deeply.nested.count', 'deeply.nested.countTimesTwo']);
       incrementCountAndDeeplyNestedCount();
-    });
-  });
-
-  describe('when called with a "selector" argument that is a path to a getter', () => {
-    it("should invoke the callback with the getter's value", (done) => {
-      defineGetter('countTimesTwo', getCountTimesTwo);
-
-      const subscriber = (countTimesTwo) => {
-        expect(countTimesTwo).to.equal(getState().count * 2);
-        expect(countTimesTwo).to.equal(2);
-        done();
-      };
-
-      subscribe(subscriber, 'countTimesTwo');
-      incrementCount();
     });
   });
 
