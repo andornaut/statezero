@@ -7,7 +7,7 @@ module.exports = (config) => {
   config.set({
     autoWatch,
     browsers: ['ChromeHeadless'],
-    files: [{ pattern: TEST_FILES }],
+    files: [TEST_FILES],
     frameworks: ['mocha', 'sinon-chai'],
     preprocessors: {
       [TEST_FILES]: ['webpack'],
@@ -16,10 +16,5 @@ module.exports = (config) => {
     singleRun: !autoWatch,
     webpack: webpackConfig,
     webpackMiddleware: { noInfo: true },
-    client: {
-      mocha: {
-        timeout: 10000,
-      },
-    },
   });
 };
