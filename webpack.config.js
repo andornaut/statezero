@@ -1,4 +1,5 @@
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const path = require('path');
 
 const srcPath = path.join(__dirname, 'src');
@@ -15,9 +16,6 @@ module.exports = (env, argv = {}) => {
           include: [srcPath],
           use: {
             loader: 'babel-loader',
-            options: {
-              presets: ['@babel/preset-env'],
-            },
           },
         },
         {
@@ -35,6 +33,15 @@ module.exports = (env, argv = {}) => {
       library: 'statezero',
       libraryTarget: 'umd',
     },
-    plugins: [new CleanWebpackPlugin(['dist'])],
+    plugins: [
+      // Smaller lodash bundle size:
+      // https://github.com/lodash/lodash-webpack-plugin
+      new LodashModuleReplacementPlugin({
+        caching: true,
+        cloning: true,
+        paths: true,
+      }),
+      new CleanWebpackPlugin(['dist']),
+    ],
   };
 };

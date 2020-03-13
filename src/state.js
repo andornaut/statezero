@@ -1,10 +1,10 @@
 import deepFreeze from 'deep-freeze-strict';
-import get from 'lodash-es/get';
-import isArray from 'lodash-es/isArray';
-import isFunction from 'lodash-es/isFunction';
-import isPlainObject from 'lodash-es/isPlainObject';
-import isString from 'lodash-es/isString';
-import set from 'lodash-es/set';
+import get from 'lodash/get';
+import isArray from 'lodash/isArray';
+import isFunction from 'lodash/isFunction';
+import isPlainObject from 'lodash/isPlainObject';
+import isString from 'lodash/isString';
+import set from 'lodash/set';
 
 import { clone } from './clone';
 import { markImmutable } from './immutable';

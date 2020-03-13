@@ -1,8 +1,8 @@
-import get from 'lodash-es/get';
-import isArray from 'lodash-es/isArray';
-import isEqualWith from 'lodash-es/isEqualWith';
-import isFunction from 'lodash-es/isFunction';
-import isString from 'lodash-es/isString';
+import get from 'lodash/get';
+import isArray from 'lodash/isArray';
+import isEqualWith from 'lodash/isEqualWith';
+import isFunction from 'lodash/isFunction';
+import isString from 'lodash/isString';
 
 import { isImmutable } from './immutable';
 

@@ -19,15 +19,18 @@
     "url": "https://github.com/andornaut/statezero.git"
   },
   "dependencies": {
+    "@babel/runtime": "^7.8.7",
+    "core-js": "^3.6.4",
     "deep-diff": "^1.0.2",
     "deep-freeze-strict": "^1.1.1",
-    "lodash-es": "^4.17.15"
+    "lodash": "^4.17.15"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.8.7",
     "@babel/preset-env": "^7.8.7",
     "babel-loader": "^8.0.6",
+    "babel-plugin-lodash": "^3.3.4",
     "chai": "^4.2.0",
     "clean-webpack-plugin": "^0.1.19",
     "eslint": "^6.8.0",
@@ -45,6 +48,7 @@
     "karma-sinon-chai": "^2.0.2",
     "karma-webpack": "^4.0.2",
     "lint-staged": "^9.4.3",
+    "lodash-webpack-plugin": "^0.11.5",
     "mocha": "^6.2.2",
     "prettier-eslint": "^9.0.1",
     "prettier-eslint-cli": "^5.0.0",
