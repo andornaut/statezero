@@ -6,7 +6,7 @@ module.exports = (config) => {
   const autoWatch = !!config.WATCH;
   config.set({
     autoWatch,
-    browsers: ['ChromeHeadless'],
+    browsers: [autoWatch ? 'Chrome' : 'ChromeHeadless'],
     files: [TEST_FILES],
     frameworks: ['mocha', 'sinon-chai'],
     preprocessors: {
