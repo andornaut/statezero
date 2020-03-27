@@ -1,4 +1,6 @@
 import cloneDeepWith from 'lodash/cloneDeepWith';
+import isElement from 'lodash/isElement';
+import isFunction from 'lodash/isFunction';
 import isPlainObject from 'lodash/isPlainObject';
 
 import { isImmutable } from './immutable';
@@ -19,16 +21,21 @@ const getterDescriptors = (obj) => {
 
 /* Deep clone the given object.
  *
- * An empty object is returned for uncloneable values such as error objects, DOM nodes, and WeakMaps; with the
- * exception of functions, which are returned as is.
+ * An empty object is returned for uncloneable values such as error objects, and WeakMaps; with the
+ * exception of Functions and DOM Elements, which are returned as is.
  *
- * @param obj: An object such that `isPlainObject(obj)` evaluates to `true`
+ * See lodash.clone() documentation for more (the description above applies where the two conflict):
+ * https://lodash.com/docs/4.17.15#clone
  */
 export const clone = (obj) => {
   const seen = new WeakMap();
   let root;
 
   const customizer = (value) => {
+    if (isElement(value) || isFunction(value)) {
+      // Do not attempt to clone DOM nodes or Function, but don't replace them with {} either - leave them as is.
+      return value;
+    }
     if (!isPlainObject(value)) {
       // When customizer returns undefined, comparisons are handled by lodash
       // https://lodash.com/docs/4.17.10#clone
