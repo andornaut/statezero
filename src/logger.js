@@ -45,4 +45,5 @@ export const startLogging = (selector, logger) => {
 
 export const stopLogging = () => {
   unsubscribe(subscription);
+  subscription = null;
 };
