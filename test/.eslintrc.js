@@ -1,6 +1,7 @@
 const rootConfig = require('../.eslintrc');
 
-module.exports = Object.assign({}, rootConfig, {
+module.exports = {
+  ...rootConfig,
   env: {
     mocha: true,
   },
@@ -8,8 +9,9 @@ module.exports = Object.assign({}, rootConfig, {
     expect: false,
   },
   plugins: rootConfig.plugins.concat('chai-friendly'),
-  rules: Object.assign({}, rootConfig.rules, {
+  rules: {
+    ...rootConfig.rules,
     'no-unused-expressions': 0,
     'chai-friendly/no-unused-expressions': ['error', { allowTaggedTemplates: true }],
-  }),
-});
+  },
+};

@@ -6,7 +6,7 @@ import isPlainObject from 'lodash/isPlainObject';
 import { isImmutable } from './immutable';
 
 // Keep track of the top-level state object during cloning so that getters can access it later
-export const ROOT = Symbol('statezero root state');
+export const ROOT = Symbol('statezero root');
 
 const getterDescriptors = (obj) => {
   const descriptorEntries = Object.entries(Object.getOwnPropertyDescriptors(obj));
