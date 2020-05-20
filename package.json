@@ -59,6 +59,7 @@
     "build": "webpack --mode=development",
     "build-production": "webpack --mode=production",
     "format": "prettier-eslint --write \"${PWD}/{src/**,/test/**/,./}*.{css,js,json,jsx,md}\"",
+    "prepublish": "npm run test && npm run build-production",
     "static-analysis": "eslint --max-warnings 0 {src,test}/**/*.js",
     "test": "karma start",
     "test-watch": "karma start --WATCH"
