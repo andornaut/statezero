@@ -2,7 +2,7 @@ import get from 'lodash/get';
 import isArray from 'lodash/isArray';
 import set from 'lodash/set';
 
-import { ROOT } from './clone';
+import { getRoot, setRoot } from './root';
 import { action } from './state';
 
 /**
@@ -13,33 +13,25 @@ import { action } from './state';
  * @param fn: A function which takes state as its only parameter and returns a value.
  * @param enumerable: A boolean which determine whether this property shows up during enumeration.
  */
-export const defineGetter = action((context, path, fn, enumerable = false) => {
+export const defineGetter = action(({ commit, state }, path, fn, enumerable = false) => {
   const pathArray = isArray(path) ? path : path.split('.');
   const lastIdx = pathArray.length - 1;
   const propName = pathArray[lastIdx];
   const parentPath = pathArray.slice(0, lastIdx);
 
-  let obj = context.state;
+  let obj = state;
   if (parentPath.length) {
-    obj = get(context.state, parentPath, {});
-    // If parentPath didn't exist (the default case of set() above), then set it.
-    set(context.state, parentPath, obj);
+    obj = get(state, parentPath, {});
+    // Set parentPath in case it didn't exist (the default case of get() above).
+    set(state, parentPath, obj);
   }
 
-  const descriptor = {
+  Object.defineProperty(obj, propName, {
     get() {
-      return fn.call(this, this, this[ROOT]);
+      return fn.call(this, this, getRoot(this));
     },
     enumerable,
-  };
-
-  const descriptors = {
-    [propName]: descriptor,
-  };
-  if (!obj[ROOT]) {
-    // This is the first time that a getter has been defined on `obj`, so set its ROOT prop.
-    descriptors[ROOT] = { value: context.state };
-  }
-  Object.defineProperties(obj, descriptors);
-  context.commit(context.state);
+  });
+  setRoot(obj, state);
+  commit(state);
 });

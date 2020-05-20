@@ -87,6 +87,7 @@ describe('defineGetter()', () => {
   describe('when a nested getter accesses the root state', () => {
     it('should be immutable', () => {
       incrementCount();
+
       defineGetter('nested.topLevelCount', (_, state) => state.count);
 
       const originalNested = getState().nested;
