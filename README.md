@@ -140,9 +140,10 @@ When the state changes, statezero will call your "fn" function with two argument
 `prevState`.
 
 ```javascript
-const fn = (nextState, prevState) => {
+const fn = (nextState, prevState, nextRootState) => {
   console.log('From', JSON.stringify(prevState));
   console.log('To', JSON.stringify(nextState));
+  console.log('Root state', JSON.stringify(nextRootState));
 };
 subscribe(fn, 'a.b.c'); // String "selector" path in dot notation
 subscribe(fn, ['a.b.c', 'd.e.f']); // Array "selector" paths, each in dot notation
@@ -150,8 +151,8 @@ subscribe(fn, (state) => state.a.b.c); // Function "selector"
 subscribe(fn); // Undefined "selector" - subscribe to every state change
 ```
 
-`nextState` is the new/current state and `prevState` is the old state (just prior to the state change), the value of
-each of which depends on the "selector" argument that you supplied.
+`nextState` is the new/current state. `prevState` is the old state (just prior to the state change), the value of
+each of which depends on the "selector" argument that you supplied. `nextRootState` is the new/current full state graph.
 
 | "selector" argument                         | Value of `nextState` and `prevState`     |
 | ------------------------------------------- | ---------------------------------------- |
