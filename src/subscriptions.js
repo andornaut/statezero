@@ -9,20 +9,15 @@ import { isImmutable } from './immutable';
 export const subscribersAsync = new Set();
 export const subscribersSync = new Set();
 
-const isEqualCustomizer = (value, othValue) => {
-  if (isImmutable(value)) {
-    return value === othValue;
-  }
-  // When customizer returns undefined, comparisons are handled by lodash
-  // https://lodash.com/docs/4.17.15#isEqualWith
-  return undefined;
-};
+// When customizer returns undefined, comparisons are handled by lodash
+// https://lodash.com/docs/4.17.15#isEqualWith
+const isEqualCustomizer = (value, othValue) => (isImmutable(value) ? value === othValue : undefined);
 
 const applySelector = (callback, selector) => (nextState, prevState) => {
-  nextState = selector(nextState);
-  prevState = selector(prevState);
-  if (!isEqualWith(nextState, prevState, isEqualCustomizer)) {
-    callback(nextState, prevState);
+  const selectedNextState = selector(nextState);
+  const selectedPrevState = selector(prevState);
+  if (!isEqualWith(selectedNextState, selectedPrevState, isEqualCustomizer)) {
+    callback(selectedNextState, selectedPrevState, nextState);
   }
 };
 

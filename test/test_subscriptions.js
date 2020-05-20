@@ -15,6 +15,20 @@ import {
 describe('subscribe()', () => {
   beforeEach(clearStateThenResolve);
 
+  describe('when called', () => {
+    it('should pass the nextState, prevState and rootState to the callback', (done) => {
+      const subscriber = (count, prevCount, root) => {
+        expect(count).to.equal(1);
+        expect(prevCount).to.equal(undefined);
+        expect(root.count).to.equal(1);
+        done();
+      };
+
+      subscribe(subscriber, 'count');
+      incrementCount();
+    });
+  });
+
   describe('when called on a immutable object', () => {
     describe('and the object is replaced using setImmutableState', () => {
       it('should invoke the callback', (done) => {
