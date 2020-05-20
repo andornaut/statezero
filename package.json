@@ -1,6 +1,6 @@
 {
   "name": "statezero",
-  "version": "0.5.11",
+  "version": "0.5.12",
   "author": "andornaut",
   "description": "Small, simple, functional JavaScript library for managing immutable state",
   "keywords": [
