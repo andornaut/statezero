@@ -2,7 +2,7 @@ import get from 'lodash/get';
 import isArray from 'lodash/isArray';
 import set from 'lodash/set';
 
-import { getRoot, setRoot } from './root';
+import { ROOT } from './root';
 import { action } from './state';
 
 /**
@@ -28,10 +28,10 @@ export const defineGetter = action(({ commit, state }, path, fn, enumerable = fa
 
   Object.defineProperty(obj, propName, {
     get() {
-      return fn.call(this, this, getRoot(this));
+      return fn.call(this, this, this[ROOT]);
     },
     enumerable,
   });
-  setRoot(obj, state);
+  obj[ROOT] = state;
   commit(state);
 });

@@ -4,7 +4,7 @@ import isFunction from 'lodash/isFunction';
 import isPlainObject from 'lodash/isPlainObject';
 
 import { isImmutable } from './immutable';
-import { setRoot } from './root';
+import { ROOT } from './root';
 
 /* Deep clone the given object.
  *
@@ -43,7 +43,19 @@ export const clone = (obj) => {
     if (!root) {
       root = cloned;
     }
-    setRoot(cloned, root);
+
+    if (!value[ROOT]) {
+      // There's a noticeable performance advantage to not retrieving descriptors and exiting early here.
+      // We know that there are no getters if there is no ROOT, b/c defineGetters sets ROOT.
+      // Includes non-enumerable properties, except for those which use Symbol
+      for (const propName of Object.getOwnPropertyNames(value)) {
+        const propValue = value[propName];
+        // Purposefully not extracting a function to keep this critical-path fast.
+        cloned[propName] = typeof propValue === 'object' ? cloneDeepWith(propValue, customizer) : propValue;
+      }
+      return cloned;
+    }
+    cloned[ROOT] = root;
 
     // Includes non-enumerable properties, except for those which use Symbol
     for (const [propName, descriptor] of Object.entries(Object.getOwnPropertyDescriptors(value))) {
