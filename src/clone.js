@@ -47,7 +47,7 @@ export const clone = (obj) => {
     if (!value[ROOT]) {
       // There's a noticeable performance advantage to not retrieving descriptors and exiting early here.
       // We know that there are no getters if there is no ROOT, b/c defineGetters sets ROOT.
-      // Includes non-enumerable properties, except for those which use Symbol
+      // Even `cloned[ROOT] = root;` is costly, so we avoid that here too.
       for (const propName of Object.getOwnPropertyNames(value)) {
         const propValue = value[propName];
         // Purposefully not extracting a function to keep this critical-path fast.
@@ -55,9 +55,8 @@ export const clone = (obj) => {
       }
       return cloned;
     }
-    cloned[ROOT] = root;
 
-    // Includes non-enumerable properties, except for those which use Symbol
+    cloned[ROOT] = root;
     for (const [propName, descriptor] of Object.entries(Object.getOwnPropertyDescriptors(value))) {
       if (descriptor.get) {
         // Copy over getters as is.
