@@ -21,6 +21,10 @@ const applySelector = (callback, selector) => (nextState, prevState) => {
   }
 };
 
+const applyRootState = (callback) => (nextState, prevState) => {
+  callback(nextState, prevState, nextState);
+};
+
 const createArraySelector = (paths) => (_state) => paths.map((path) => get(_state, path));
 
 const createStringSelector = (path) => (_state) => get(_state, path);
@@ -46,7 +50,9 @@ export const subscribe = (callback, selector, isSync = false) => {
 
   if (isFunction(selector)) {
     callback = applySelector(callback, selector);
-  } else if (selector !== undefined) {
+  } else if (selector === undefined) {
+    callback = applyRootState(callback);
+  } else {
     throw new Error(
       `statezero: subscribe() must be called with an Array/Function/String/undefined "selector" argument; not\
         ${selector}`,
