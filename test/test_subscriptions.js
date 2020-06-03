@@ -296,9 +296,9 @@ describe('unsubscribe()', () => {
   describe('when called on a subscription on the entire state', () => {
     it('should unsubscribe the subscription', (done) => {
       const subscriber = sinon.spy();
-      subscribe(subscriber);
+      const subscription = subscribe(subscriber);
 
-      unsubscribe(subscriber);
+      unsubscribe(subscription);
       incrementCount();
 
       setTimeout(() => {
