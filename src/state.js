@@ -47,7 +47,9 @@ function commit(nextState) {
 
 export function action(fn) {
   return function (...args) {
-    return fn({ commit, state: clone(state) }, ...args);
+    const state1 = clone(state);
+    state1.test = true;
+    return fn({ commit, state: state1 }, ...args);
   };
 }
 

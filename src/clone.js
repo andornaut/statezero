@@ -62,7 +62,11 @@ export function clone(obj) {
     for (const [propName, descriptor] of Object.entries(Object.getOwnPropertyDescriptors(value))) {
       if (descriptor.get) {
         // Copy over getters as is.
+        // Getter descriptors are not enumerable, so this check must precede the one below.
         Object.defineProperty(cloned, propName, descriptor);
+        continue;
+      }
+      if (!descriptor.enumerable) {
         continue;
       }
       cloned[propName] = cloneProp(customizer, descriptor.value);

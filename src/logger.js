@@ -7,7 +7,8 @@ var subscription;
 // Ignore extra args to log() when using `console.log` fallback
 // eslint-disable-next-line no-console
 var log = console.table
-  ? console.table
+  ? // eslint-disable-next-line no-console
+  console.table
   : function (message) {
     // eslint-disable-next-line no-console
     console.log(message);
