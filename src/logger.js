@@ -2,17 +2,16 @@ import deepDiff from 'deep-diff';
 
 import { subscribe, unsubscribe } from './subscriptions';
 
-var subscription;
+let subscription;
 
 // Ignore extra args to log() when using `console.log` fallback
+function fallbackLogger(message) {
+  // eslint-disable-next-line no-console
+  console.log(message);
+}
+
 // eslint-disable-next-line no-console
-var log = console.table
-  ? // eslint-disable-next-line no-console
-  console.table
-  : function (message) {
-    // eslint-disable-next-line no-console
-    console.log(message);
-  };
+const DEFAULT_LOGGER = console.table ? console.table : fallbackLogger;
 
 const CHANGE_TYPES = {
   N: 'New',
@@ -20,6 +19,8 @@ const CHANGE_TYPES = {
   E: 'Changed',
   A: 'Array changed',
 };
+
+let log = DEFAULT_LOGGER;
 
 function logStateChanges(state, prevState) {
   const differences = deepDiff(prevState, state);
@@ -42,9 +43,7 @@ export function startLogging(selector, logger) {
     // Logger has already started.
     return;
   }
-  if (logger) {
-    log = logger;
-  }
+  log = logger || DEFAULT_LOGGER;
   subscription = subscribe(logStateChanges, selector);
 }
 
