@@ -13,7 +13,7 @@ import { action } from './state';
  * @param fn: A function which takes state as its only parameter and returns a value.
  * @param enumerable: A boolean which determine whether this property shows up during enumeration.
  */
-export const defineGetter = action(({ commit, state }, path, fn, enumerable = false) => {
+export const defineGetter = action(function ({ commit, state }, path, fn, enumerable = false) {
   const pathArray = isArray(path) ? path : path.split('.');
   const lastIdx = pathArray.length - 1;
   const propName = pathArray[lastIdx];

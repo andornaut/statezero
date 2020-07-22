@@ -6,6 +6,10 @@ import isPlainObject from 'lodash/isPlainObject';
 import { isImmutable } from './immutable';
 import { ROOT } from './root';
 
+function cloneProp(customizer, value) {
+  return typeof value === 'object' ? cloneDeepWith(value, customizer) : value;
+}
+
 /* Deep clone the given object.
  *
  * An empty object is returned for uncloneable values such as error objects, and WeakMaps; with the
@@ -16,11 +20,11 @@ import { ROOT } from './root';
  * See lodash.clone() documentation for more (the description above applies where the two conflict):
  * https://lodash.com/docs/4.17.15#clone
  */
-export const clone = (obj) => {
+export function clone(obj) {
   const seen = new WeakMap();
   let root;
 
-  const customizer = (value) => {
+  function customizer(value) {
     if (isElement(value) || isFunction(value) || isImmutable(value)) {
       // Do not attempt to clone DOM nodes, immutable objects, or Function, but don't replace them with {} either, which
       // is what lodash would usually do. Leave them as is instead.
@@ -49,9 +53,7 @@ export const clone = (obj) => {
       // We know that there are no getters if there is no ROOT, b/c defineGetters sets ROOT.
       // Even `cloned[ROOT] = root;` is costly, so we avoid that here too.
       for (const propName of Object.getOwnPropertyNames(value)) {
-        const propValue = value[propName];
-        // Purposefully not extracting a function to keep this critical-path fast.
-        cloned[propName] = typeof propValue === 'object' ? cloneDeepWith(propValue, customizer) : propValue;
+        cloned[propName] = cloneProp(customizer, value[propName]);
       }
       return cloned;
     }
@@ -63,11 +65,10 @@ export const clone = (obj) => {
         Object.defineProperty(cloned, propName, descriptor);
         continue;
       }
-      const propValue = descriptor.value;
-      cloned[propName] = typeof propValue === 'object' ? cloneDeepWith(propValue, customizer) : propValue;
+      cloned[propName] = cloneProp(customizer, descriptor.value);
     }
     return cloned;
-  };
+  }
 
   return cloneDeepWith(obj, customizer);
-};
+}

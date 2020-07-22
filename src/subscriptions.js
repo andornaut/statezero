@@ -11,23 +11,39 @@ export const subscribersSync = new Set();
 
 // When customizer returns undefined, comparisons are handled by lodash
 // https://lodash.com/docs/4.17.15#isEqualWith
-const isEqualCustomizer = (value, othValue) => (isImmutable(value) ? value === othValue : undefined);
+function isEqualCustomizer(value, othValue) {
+  return isImmutable(value) ? value === othValue : undefined;
+}
 
-const applySelector = (callback, selector) => (nextState, prevState) => {
-  const selectedNextState = selector(nextState);
-  const selectedPrevState = selector(prevState);
-  if (!isEqualWith(selectedNextState, selectedPrevState, isEqualCustomizer)) {
-    callback(selectedNextState, selectedPrevState, nextState);
-  }
-};
+function applySelector(callback, selector) {
+  return function (nextState, prevState) {
+    const selectedNextState = selector(nextState);
+    const selectedPrevState = selector(prevState);
+    if (!isEqualWith(selectedNextState, selectedPrevState, isEqualCustomizer)) {
+      callback(selectedNextState, selectedPrevState, nextState);
+    }
+  };
+}
 
-const applyRootState = (callback) => (nextState, prevState) => {
-  callback(nextState, prevState, nextState);
-};
+function applyRootState(callback) {
+  return function (nextState, prevState) {
+    callback(nextState, prevState, nextState);
+  };
+}
 
-const createArraySelector = (paths) => (_state) => paths.map((path) => get(_state, path));
+function createArraySelector(paths) {
+  return function (_state) {
+    return paths.map(function (path) {
+      return get(_state, path);
+    });
+  };
+}
 
-const createStringSelector = (path) => (_state) => get(_state, path);
+function createStringSelector(path) {
+  return function (_state) {
+    return get(_state, path);
+  };
+}
 
 /**
  * Subscribe to changes of state.
@@ -40,7 +56,7 @@ const createStringSelector = (path) => (_state) => get(_state, path);
  * @param isSync: If true, then notifications will be executed synchronously; otherwise, they will be executed on the
  *  next tick
  */
-export const subscribe = (callback, selector, isSync = false) => {
+export function subscribe(callback, selector, isSync = false) {
   // Convert an array or string selector into a function.
   if (isString(selector)) {
     selector = createStringSelector(selector);
@@ -67,29 +83,32 @@ export const subscribe = (callback, selector, isSync = false) => {
 
   // If a `selector` was provided, then the caller will need to use the returned `callback` in order to `unsubscribe()`.
   return callback;
-};
+}
 
-export const subscribeSync = (callback, selector) => subscribe(callback, selector, true);
+export function subscribeSync(callback, selector) {
+  return subscribe(callback, selector, true);
+}
 
-export const subscribeOnce = (callback, selector, isSync = false) => {
-  const wrapper = (...args) => {
+export function subscribeOnce(callback, selector, isSync = false) {
+  function wrapper(...args) {
     callback(...args);
     // eslint-disable-next-line no-use-before-define
     unsubscribe(subscription);
-  };
-
+  }
   const subscription = subscribe(wrapper, selector, isSync);
   return subscription;
-};
+}
 
-export const subscribeOnceSync = (callback, selector) => subscribeOnce(callback, selector, true);
+export function subscribeOnceSync(callback, selector) {
+  return subscribeOnce(callback, selector, true);
+}
 
-export const unsubscribe = (callback) => {
+export function unsubscribe(callback) {
   subscribersAsync.delete(callback);
   subscribersSync.delete(callback);
-};
+}
 
-export const unsubscribeAll = () => {
+export function unsubscribeAll() {
   subscribersAsync.clear();
   subscribersSync.clear();
-};
+}
