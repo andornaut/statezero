@@ -1,4 +1,4 @@
-const IMMUTABLE = Symbol('immutable');
+const IMMUTABLE = {}; // Sentinel object.
 
 export function isImmutable(obj) {
   return !!(obj && obj[IMMUTABLE]);
