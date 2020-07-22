@@ -4,7 +4,7 @@ import isFunction from 'lodash/isFunction';
 import isPlainObject from 'lodash/isPlainObject';
 
 import { isImmutable } from './immutable';
-import { ROOT } from './root';
+import { getRoot, setRoot } from './root';
 
 function cloneProp(customizer, value) {
   return typeof value === 'object' ? cloneDeepWith(value, customizer) : value;
@@ -48,7 +48,7 @@ export function clone(obj) {
       root = cloned;
     }
 
-    if (!value[ROOT]) {
+    if (!getRoot(value)) {
       // There's a noticeable performance advantage to not retrieving descriptors and exiting early here.
       // We know that there are no getters if there is no ROOT, b/c defineGetters sets ROOT.
       // Even `cloned[ROOT] = root;` is costly, so we avoid that here too.
@@ -58,7 +58,7 @@ export function clone(obj) {
       return cloned;
     }
 
-    cloned[ROOT] = root;
+    setRoot(cloned, root);
     for (const [propName, descriptor] of Object.entries(Object.getOwnPropertyDescriptors(value))) {
       if (descriptor.get) {
         // Copy over getters as is.

@@ -9,9 +9,9 @@ var subscription;
 var log = console.table
   ? console.table
   : function (message) {
-      // eslint-disable-next-line no-console
-      console.log(message);
-    };
+    // eslint-disable-next-line no-console
+    console.log(message);
+  };
 
 const CHANGE_TYPES = {
   N: 'New',
