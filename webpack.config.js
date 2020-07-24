@@ -2,7 +2,6 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const path = require('path');
 
 const srcPath = path.join(__dirname, 'src');
-const testPath = path.join(__dirname, 'test');
 
 module.exports = (env, argv = {}) => {
   const mode = argv.mode || 'production';
@@ -16,12 +15,6 @@ module.exports = (env, argv = {}) => {
           use: {
             loader: 'babel-loader',
           },
-        },
-        {
-          test: /\.js$/,
-          include: [srcPath, testPath],
-          enforce: 'pre',
-          loader: 'eslint-loader',
         },
       ],
     },

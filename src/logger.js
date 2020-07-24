@@ -4,10 +4,6 @@ import { subscribe, unsubscribe } from './subscriptions';
 
 let subscription;
 
-// Ignore extra args to log() when using `console.log` fallback
-// eslint-disable-next-line no-console
-let log = console.table ? console.table : (message) => console.log(message);
-
 const CHANGE_TYPES = {
   N: 'New',
   D: 'Deleted',
@@ -15,7 +11,7 @@ const CHANGE_TYPES = {
   A: 'Array changed',
 };
 
-const logStateChanges = (state, prevState) => {
+const createDiffLogger = (logger) => (state, prevState) => {
   const properties = {};
   const differences = deepDiff(prevState, state);
   if (differences === undefined) {
@@ -29,7 +25,12 @@ const logStateChanges = (state, prevState) => {
       to: difference.rhs,
     };
   }
-  log(properties, ['changeType', 'from', 'to']);
+  logger(properties, ['changeType', 'from', 'to']);
+};
+
+const simpleLogger = (state, prevState) => {
+  // eslint-disable-next-line no-console
+  console.log('state changed from', prevState, 'to', state);
 };
 
 export const startLogging = (selector, logger) => {
@@ -37,10 +38,10 @@ export const startLogging = (selector, logger) => {
     // Logger has already started.
     return;
   }
-  if (logger) {
-    log = logger;
-  }
-  subscription = subscribe(logStateChanges, selector);
+
+  // eslint-disable-next-line no-console
+  logger = console.table ? createDiffLogger(logger || console.table) : simpleLogger;
+  subscription = subscribe(logger, selector);
 };
 
 export const stopLogging = () => {

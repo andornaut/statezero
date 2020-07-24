@@ -27,6 +27,18 @@ describe('action()', () => {
       });
     });
   });
+  describe('when commit is called with "nextState" argument that contains an invalid property', () => {
+    [() => null, document.createElement('div'), new RegExp('a')].forEach((value) => {
+      it(`should throw an error. property: ${value}`, () => {
+        action(({ commit, state }) => {
+          expect(() => {
+            state.value = value;
+            commit(state);
+          }).to.throw();
+        })();
+      });
+    });
+  });
 });
 
 describe('getState()', () => {

@@ -190,20 +190,6 @@ describe('subscribe()', () => {
     });
   });
 
-  describe('when called with a "selector" argument that is a string path to a function', () => {
-    it('should invoke the callback when the function is changed', (done) => {
-      const fn = () => 1;
-
-      const subscriber = (state) => {
-        expect(state).to.equal(fn);
-        done();
-      };
-
-      subscribe(subscriber, 'fn');
-      assignState({ fn });
-    });
-  });
-
   describe('when called with a string path and then state is initialized and multiple actions are invoked,', () => {
     it('should pass a prevState argument that is the initial value from the same "tick"', (done) => {
       const subscriber = (initial, prevInitial) => {

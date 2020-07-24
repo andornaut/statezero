@@ -1,16 +1,16 @@
-import deepFreeze from 'deep-freeze-strict';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
 import isFunction from 'lodash/isFunction';
 import isPlainObject from 'lodash/isPlainObject';
 import isString from 'lodash/isString';
 import set from 'lodash/set';
+import simpleDeepFreeze from 'simple-deep-freeze';
 
 import { clone } from './clone';
 import { markImmutable } from './immutable';
 import { subscribersAsync, subscribersSync } from './subscriptions';
 
-let state = deepFreeze({});
+let state = simpleDeepFreeze({});
 let prevStateForNotify;
 
 const notifyAsync = (prevState) => {
@@ -40,7 +40,7 @@ const commit = (nextState) => {
     throw new Error(`statezero: commit() must be called with a plain object "nextState" argument; not: ${nextState}`);
   }
   const prevState = state;
-  state = deepFreeze(nextState);
+  state = simpleDeepFreeze(nextState);
   notifyAsync(prevState);
   notifySync(prevState);
 };
