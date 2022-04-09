@@ -45,7 +45,9 @@ const commit = (nextState) => {
   notifySync(prevState);
 };
 
-export const action = (fn) => (...args) => fn({ commit, state: clone(state) }, ...args);
+export const action = (fn) =>
+  (...args) =>
+    fn({ commit, state: clone(state) }, ...args);
 
 export const getState = (selector) => {
   if (selector === undefined) {
