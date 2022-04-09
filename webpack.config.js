@@ -1,6 +1,7 @@
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const path = require('path');
 
+const distPath = path.resolve('dist');
 const srcPath = path.resolve('src');
 const testPath = path.resolve('test');
 
@@ -31,6 +32,7 @@ module.exports = (env, argv = {}) => {
       globalObject: 'typeof self !== "undefined" ? self : this',
       library: 'statezero',
       libraryTarget: 'umd',
+      path: distPath,
     },
     plugins: [new CleanWebpackPlugin()],
   };
