@@ -19,10 +19,10 @@
     "url": "https://github.com/andornaut/statezero.git"
   },
   "dependencies": {
-    "@babel/runtime": "^7.10.5",
+    "@babel/runtime": "^7.17.9",
     "deep-diff": "^1.0.2",
-    "lodash": "^4.17.15",
-    "simple-deep-freeze": "0.0.2"
+    "lodash": "^4.17.21",
+    "simple-deep-freeze": "^0.0.2"
   },
   "devDependencies": {
     "@babel/cli": "~7.17.6",
