@@ -50,9 +50,9 @@ export const subscribe = (callback, selector, isSync = false) => {
   } else if (selector === undefined) {
     callback = applyRootState(callback);
   } else {
+    const selectorStr = typeof selector === "object" ? JSON.stringify(selector) : selector;
     throw new Error(
-      `statezero: subscribe() must be called with an Array/Function/String/undefined "selector" argument; not\
-        ${selector}`,
+      `statezero: subscribe() must be called with an Array/Function/String/undefined selector; not ${selectorStr}`,
     );
   }
 

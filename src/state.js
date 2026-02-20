@@ -60,8 +60,9 @@ export const getState = (selector) => {
   if (typeof selector === "function") {
     return selector(state);
   }
+  const selectorStr = typeof selector === "object" ? JSON.stringify(selector) : selector;
   throw new Error(
-    `statezero: getState() must be called with an Array/Function/String/undefined "selector" argument; not ${selector}`,
+    `statezero: getState() must be called with an Array/Function/String/undefined selector; not ${selectorStr}`,
   );
 };
 
@@ -72,8 +73,9 @@ export const setState = action(({ commit, state }, selector, value) => {
   } else if (typeof selector === "string") {
     set(state, selector, value);
   } else {
+    const selectorStr = typeof selector === "object" ? JSON.stringify(selector) : selector;
     throw new Error(
-      `statezero: setState() must be called with an String/undefined "selector" argument; not ${selector}`,
+      `statezero: setState() must be called with an String/undefined "selector" argument; not ${selectorStr}`,
     );
   }
   commit(state);

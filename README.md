@@ -1,5 +1,10 @@
 # statezero
 
+[![npm version](https://badge.fury.io/js/statezero.svg)](https://www.npmjs.com/package/statezero)
+[![CI](https://github.com/andornaut/statezero/workflows/CI/badge.svg)](https://github.com/andornaut/statezero/actions)
+[![Bundle Size](https://img.shields.io/bundlephobia/minzip/statezero)](https://bundlephobia.com/package/statezero)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Small, simple, functional JavaScript library for managing immutable state.
 
 Statezero is used by [Jetstart - a library for building web interfaces](https://github.com/andornaut/jetstart).
@@ -26,18 +31,26 @@ Statezero is packaged as both ESM and UMD bundles, so it can be loaded in variou
 </script>
 ```
 
-### ES6 Module
+### ES6 Module (Recommended)
+
+The default ESM import is tree-shakeable. Dependencies (lodash, deep-diff, simple-deep-freeze) are external, so modern bundlers will tree-shake everything automatically.
 
 ```javascript
 import { action, subscribe } from "statezero";
 ```
 
-### ES6 Module with tree shaking (not transpiled)
+Bundle size: **~3.6KB minified** (statezero code only, external dependencies resolved by your bundler)
+
+### ES6 Module from Source
+
+Import directly from unbundled source files for maximum flexibility:
 
 ```javascript
 // Note that the import path ends with '/src'
 import { action, subscribe } from "statezero/src";
 ```
+
+This gives your bundler complete control over transpilation and tree-shaking.
 
 ### Node
 
@@ -237,12 +250,12 @@ Getters can be
 [enumerable](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Enumerability_and_ownership_of_properties).
 
 ```javascript
-  // The last argument defaults to `false`
-  defineGetter('nested.property', () => null, true);
-  const { enumerable } = Object.getOwnPropertyDescriptor(getState().nested, 'property');
-  console.log(enumerable);
+// The last argument defaults to `false`
+defineGetter("nested.property", () => null, true);
+const { enumerable } = Object.getOwnPropertyDescriptor(getState().nested, "property");
+console.log(enumerable);
 
-  // Prints "true"
+// Prints "true"
 ```
 
 See [./test](./test) for more examples.
@@ -268,8 +281,8 @@ are logged; if not specified then all changes are logged. `logger` can be used t
 ```bash
 npm install
 npm run build        # Development build (UMD + ESM)
+npm run format       # Format code with prettier-eslint
+npm run lint         # ESLint with zero-warning policy
 npm run test         # Run tests with Jest
 npm run test:watch   # Run tests in watch mode
-npm run lint         # ESLint with zero-warning policy
-npm run format       # Format code with prettier-eslint
 ```

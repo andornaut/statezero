@@ -4,9 +4,15 @@
   "author": "andornaut",
   "description": "Small, simple, functional JavaScript library for managing immutable state",
   "keywords": [
+    "flux",
     "functional",
     "immutable",
+    "minimal",
+    "observable",
+    "observer",
+    "pubsub",
     "reactive",
+    "redux-alternative",
     "state",
     "state-management",
     "store"
@@ -14,8 +20,11 @@
   "license": "MIT",
   "main": "dist/statezero.js",
   "module": "dist/statezero.esm.js",
+  "browser": "./dist/statezero.js",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/statezero.esm.js",
       "require": "./dist/statezero.js"
     },
@@ -31,7 +40,10 @@
   "engines": {
     "node": ">=18"
   },
-  "repository": "andornaut/statezero",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/andornaut/statezero.git"
+  },
   "homepage": "https://github.com/andornaut/statezero#readme",
   "bugs": "https://github.com/andornaut/statezero/issues",
   "dependencies": {
@@ -50,7 +62,9 @@
     "jest": "^30.0.2",
     "jest-environment-jsdom": "^30.0.2",
     "lint-staged": "^16.2.7",
-    "prettier-eslint-cli": "^8.0.1"
+    "prettier-eslint-cli": "^8.0.1",
+    "@size-limit/preset-small-lib": "^11.1.7",
+    "size-limit": "^11.1.7"
   },
   "scripts": {
     "build": "npm run build:esm && npm run build:umd",
@@ -61,6 +75,7 @@
     "lint": "eslint --max-warnings 0 {src,test}/**/*.js",
     "prepare": "husky",
     "prepublishOnly": "npm run test && npm run build:production",
+    "size": "size-limit",
     "test": "jest",
     "test:watch": "jest --watch"
   }
