@@ -236,7 +236,7 @@ subscribe(console.log, "nested.countTimesTwoTimesRootCount");
 Getters can be
 [enumerable](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Enumerability_and_ownership_of_properties).
 
-```
+```javascript
   // The last argument defaults to `false`
   defineGetter('nested.property', () => null, true);
   const { enumerable } = Object.getOwnPropertyDescriptor(getState().nested, 'property');

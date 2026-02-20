@@ -6,7 +6,10 @@
   "keywords": [
     "functional",
     "immutable",
-    "state"
+    "reactive",
+    "state",
+    "state-management",
+    "store"
   ],
   "license": "MIT",
   "main": "dist/statezero.js",
@@ -15,17 +18,22 @@
     ".": {
       "import": "./dist/statezero.esm.js",
       "require": "./dist/statezero.js"
+    },
+    "./src": {
+      "import": "./src/index.js"
     }
   },
   "sideEffects": false,
-  "bugs": {
-    "url": "https://github.com/andornaut/statezero/issues"
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=18"
   },
+  "repository": "andornaut/statezero",
   "homepage": "https://github.com/andornaut/statezero#readme",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/andornaut/statezero.git"
-  },
+  "bugs": "https://github.com/andornaut/statezero/issues",
   "dependencies": {
     "deep-diff": "^1.0.2",
     "lodash": "^4.17.23",
