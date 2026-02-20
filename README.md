@@ -2,7 +2,6 @@
 
 [![npm version](https://badge.fury.io/js/statezero.svg)](https://www.npmjs.com/package/statezero)
 [![CI](https://github.com/andornaut/statezero/workflows/CI/badge.svg)](https://github.com/andornaut/statezero/actions)
-[![Bundle Size](https://img.shields.io/bundlephobia/minzip/statezero)](https://bundlephobia.com/package/statezero)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Small, simple, functional JavaScript library for managing immutable state.
