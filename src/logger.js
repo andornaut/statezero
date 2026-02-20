@@ -39,6 +39,9 @@ export const startLogging = (selector, logger) => {
 };
 
 export const stopLogging = () => {
+  if (!subscription) {
+    return;
+  }
   unsubscribe(subscription);
   subscription = null;
 };

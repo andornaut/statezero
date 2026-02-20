@@ -1,8 +1,5 @@
 import get from "lodash/get";
-import isArray from "lodash/isArray";
 import isEqualWith from "lodash/isEqualWith";
-import isFunction from "lodash/isFunction";
-import isString from "lodash/isString";
 
 import { isImmutable } from "./immutable";
 
@@ -42,13 +39,13 @@ const createStringSelector = (path) => (_state) => get(_state, path);
  */
 export const subscribe = (callback, selector, isSync = false) => {
   // Convert an array or string selector into a function.
-  if (isString(selector)) {
+  if (typeof selector === "string") {
     selector = createStringSelector(selector);
-  } else if (isArray(selector)) {
+  } else if (Array.isArray(selector)) {
     selector = createArraySelector(selector);
   }
 
-  if (isFunction(selector)) {
+  if (typeof selector === "function") {
     callback = applySelector(callback, selector);
   } else if (selector === undefined) {
     callback = applyRootState(callback);

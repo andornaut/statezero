@@ -1,6 +1,4 @@
 import cloneDeepWith from "lodash/cloneDeepWith";
-import isElement from "lodash/isElement";
-import isFunction from "lodash/isFunction";
 import isPlainObject from "lodash/isPlainObject";
 
 import { isImmutable } from "./immutable";
@@ -23,7 +21,7 @@ export const clone = (obj) => {
   let root;
 
   const customizer = (value) => {
-    if (isElement(value) || isFunction(value) || isImmutable(value)) {
+    if (value instanceof Element || typeof value === "function" || isImmutable(value)) {
       // Do not attempt to clone DOM nodes, immutable objects, or Function, but don't replace them with {} either, which
       // is what lodash would usually do. Leave them as is instead.
       return value;

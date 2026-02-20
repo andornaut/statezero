@@ -1,8 +1,5 @@
 import get from "lodash/get";
-import isArray from "lodash/isArray";
-import isFunction from "lodash/isFunction";
 import isPlainObject from "lodash/isPlainObject";
-import isString from "lodash/isString";
 import set from "lodash/set";
 import simpleDeepFreeze from "simple-deep-freeze";
 
@@ -54,13 +51,13 @@ export const getState = (selector) => {
   if (selector === undefined) {
     return state;
   }
-  if (isString(selector)) {
+  if (typeof selector === "string") {
     return get(state, selector);
   }
-  if (isArray(selector)) {
+  if (Array.isArray(selector)) {
     return selector.map((path) => get(state, path));
   }
-  if (isFunction(selector)) {
+  if (typeof selector === "function") {
     return selector(state);
   }
   throw new Error(
@@ -72,7 +69,7 @@ export const getState = (selector) => {
 export const setState = action(({ commit, state }, selector, value) => {
   if (selector === undefined || selector === null || selector === "") {
     state = value;
-  } else if (isString(selector)) {
+  } else if (typeof selector === "string") {
     set(state, selector, value);
   } else {
     throw new Error(
