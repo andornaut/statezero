@@ -1,15 +1,3 @@
 {
-  "presets": ["@babel/preset-env"],
-  "plugins": [
-    "babel-plugin-transform-async-to-promises",
-    [
-      "@babel/plugin-transform-runtime",
-      {
-        "absoluteRuntime": true,
-        "corejs": 3,
-        "helpers": true,
-        "useESModules": true
-      }
-    ]
-  ]
+  "presets": [["@babel/preset-env", { "targets": { "node": "current" } }]]
 }

@@ -1,18 +1,16 @@
-import {
-  action, getState, setImmutableState, setState,
-} from '../src';
-import { clearStateThenResolve, incrementCount, incrementNestedCount } from './helpers';
+import { action, getState, setImmutableState, setState } from "../src";
+import { clearStateThenResolve, incrementCount, incrementNestedCount } from "./helpers";
 
 function Foo() {}
 
-describe('action()', () => {
-  beforeEach(clearStateThenResolve);
+describe("action()", () => {
+  beforeEach(() => clearStateThenResolve());
 
-  describe('when called', () => {
-    it('should update the state', () => {
+  describe("when called", () => {
+    it("should update the state", () => {
       incrementCount();
 
-      expect(getState().count).to.equal(1);
+      expect(getState().count).toBe(1);
     });
   });
 
@@ -22,136 +20,137 @@ describe('action()', () => {
         action(({ commit }) => {
           expect(() => {
             commit(nextState);
-          }).to.throw();
+          }).toThrow();
         })();
       });
     });
   });
+
   describe('when commit is called with "nextState" argument that contains an invalid property', () => {
-    [() => null, document.createElement('div'), /a/].forEach((value) => {
+    [() => null, document.createElement("div"), /a/].forEach((value) => {
       it(`should throw an error. property: ${value}`, () => {
         action(({ commit, state }) => {
           expect(() => {
             state.value = value;
             commit(state);
-          }).to.throw();
+          }).toThrow();
         })();
       });
     });
   });
 });
 
-describe('getState()', () => {
-  beforeEach(clearStateThenResolve);
+describe("getState()", () => {
+  beforeEach(() => clearStateThenResolve());
 
-  describe('when attempting to assign a new value to a state property', () => {
-    it('should throw an error', () => {
+  describe("when attempting to assign a new value to a state property", () => {
+    it("should throw an error", () => {
       incrementCount();
 
       expect(() => {
         getState().count = 2;
-      }).to.throw();
+      }).toThrow();
     });
   });
 
-  describe('when attempting to assign a new value to a nested state property', () => {
-    it('should throw an error', () => {
+  describe("when attempting to assign a new value to a nested state property", () => {
+    it("should throw an error", () => {
       incrementNestedCount();
 
       expect(() => {
         getState().nested.count = 2;
-      }).to.throw();
+      }).toThrow();
     });
   });
 
   describe('when an array "selector" argument is supplied', () => {
-    it('should return the state at the given path', () => {
+    it("should return the state at the given path", () => {
       incrementCount();
       incrementNestedCount();
 
-      expect(getState(['nested.count', 'count'])).to.have.members([1, 1]);
+      expect(getState(["nested.count", "count"])).toEqual(expect.arrayContaining([1, 1]));
     });
   });
 
   describe('when an function "selector" argument is supplied', () => {
-    it('should return the state at the given path', () => {
+    it("should return the state at the given path", () => {
       incrementNestedCount();
 
       const selector = (state) => state.nested.count;
 
-      expect(getState(selector)).to.equal(1);
+      expect(getState(selector)).toBe(1);
     });
   });
 
   describe('when a string "selector" argument is supplied', () => {
-    it('should return the state at the given path', () => {
+    it("should return the state at the given path", () => {
       incrementNestedCount();
 
-      expect(getState('nested.count')).to.equal(1);
+      expect(getState("nested.count")).toBe(1);
     });
   });
 
   describe('when a non-existent string "selector" argument is supplied', () => {
-    it('should return undefined', () => {
-      expect(getState('invalid.path')).to.be.undefined;
+    it("should return undefined", () => {
+      expect(getState("invalid.path")).toBeUndefined();
     });
   });
 
   describe('when an unsupported type "selector" argument is supplied', () => {
-    it('should throw an error', () => {
-      expect(() => getState({})).to.throw(Error, /statezero: getState\(\) must be called with/);
+    it("should throw an error", () => {
+      expect(() => getState({})).toThrow(/statezero: getState\(\) must be called with/);
     });
   });
 });
 
-describe('setState()', () => {
-  beforeEach(clearStateThenResolve);
+describe("setState()", () => {
+  beforeEach(() => clearStateThenResolve());
 
-  describe('when supplied an empty-string selector argument', () => {
-    it('should replace the entire state', () => {
+  describe("when supplied an empty-string selector argument", () => {
+    it("should replace the entire state", () => {
       const newState = {};
 
-      setState('', newState);
+      setState("", newState);
 
-      expect(getState()).to.equal(newState);
+      expect(getState()).toBe(newState);
     });
   });
 
-  describe('when supplied a string path selector argument', () => {
-    it('should replace the value at the given path', () => {
-      setState('a.b.c', 'C');
+  describe("when supplied a string path selector argument", () => {
+    it("should replace the value at the given path", () => {
+      setState("a.b.c", "C");
 
-      expect(getState().a.b.c).to.equal('C');
+      expect(getState().a.b.c).toBe("C");
     });
   });
 });
 
-describe('setImmutableState()', () => {
-  beforeEach(clearStateThenResolve);
+describe("setImmutableState()", () => {
+  beforeEach(() => clearStateThenResolve());
 
-  describe('when an immutable object is mutated with setImmutableState', () => {
-    it('should not mutate the object', () => {
+  describe("when an immutable object is mutated with setImmutableState", () => {
+    it("should not mutate the object", () => {
       const initial = { initial: true };
-      setImmutableState('immutable', initial);
-      setImmutableState('immutable.initial', {});
-      expect(getState().immutable.initial, initial);
+      setImmutableState("immutable", initial);
+      setImmutableState("immutable.initial", {});
+      expect(getState().immutable.initial).toBe(true);
     });
   });
 
-  describe('when an immutable object is mutated with setState', () => {
-    it('should not mutate the object', () => {
+  describe("when an immutable object is mutated with setState", () => {
+    it("should not mutate the object", () => {
       const initial = { initial: true };
-      setImmutableState('immutable', initial);
-      setState('immutable.initial', {});
-      expect(getState().immutable.initial, initial);
+      setImmutableState("immutable", initial);
+      setState("immutable.initial", {});
+      expect(getState().immutable.initial).toBe(true);
     });
   });
 
-  describe('when an immutable object is replaced', () => {
-    it('the new object will not be immutable', () => {
-      setImmutableState('immutable', { initial: true });
-      setState('immutable', { initial: false });
-      expect(getState().immutable.initial, false);
+  describe("when an immutable object is replaced", () => {
+    it("the new object will not be immutable", () => {
+      setImmutableState("immutable", { initial: true });
+      setState("immutable", { initial: false });
+      expect(getState().immutable.initial).toBe(false);
     });
   });
 });
