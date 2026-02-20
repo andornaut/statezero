@@ -1,14 +1,14 @@
-import deepDiff from 'deep-diff';
+import deepDiff from "deep-diff";
 
-import { subscribe, unsubscribe } from './subscriptions';
+import { subscribe, unsubscribe } from "./subscriptions";
 
 let subscription;
 
 const CHANGE_TYPES = {
-  N: 'New',
-  D: 'Deleted',
-  E: 'Changed',
-  A: 'Array changed',
+  A: "Array changed",
+  D: "Deleted",
+  E: "Changed",
+  N: "New",
 };
 
 const createDiffLogger = (logger) => (state, prevState) => {
@@ -25,12 +25,7 @@ const createDiffLogger = (logger) => (state, prevState) => {
       to: difference.rhs,
     };
   }
-  logger(properties, ['changeType', 'from', 'to']);
-};
-
-const simpleLogger = (state, prevState) => {
-  // eslint-disable-next-line no-console
-  console.log('state changed from', prevState, 'to', state);
+  logger(properties, ["changeType", "from", "to"]);
 };
 
 export const startLogging = (selector, logger) => {
@@ -40,8 +35,7 @@ export const startLogging = (selector, logger) => {
   }
 
   // eslint-disable-next-line no-console
-  logger = console.table ? createDiffLogger(logger || console.table) : simpleLogger;
-  subscription = subscribe(logger, selector);
+  subscription = subscribe(createDiffLogger(logger || console.table), selector);
 };
 
 export const stopLogging = () => {
