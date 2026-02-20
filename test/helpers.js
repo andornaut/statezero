@@ -1,5 +1,5 @@
-import { action, subscribeOnce } from '../src';
-import { unsubscribeAll } from '../src/subscriptions';
+import { action, subscribeOnce } from "../src";
+import { unsubscribeAll } from "../src/subscriptions";
 
 export const getCountTimesTwo = (state) => (state.count || 0) * 2;
 

@@ -1,4 +1,4 @@
-const IMMUTABLE = '__statezero_immutable';
+const IMMUTABLE = "__statezero_immutable";
 
 export function isImmutable(obj) {
   return obj && obj[IMMUTABLE] === true;

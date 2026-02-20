@@ -1,9 +1,9 @@
-import get from 'lodash/get';
-import isArray from 'lodash/isArray';
-import set from 'lodash/set';
+import get from "lodash/get";
+import isArray from "lodash/isArray";
+import set from "lodash/set";
 
-import { getRoot, setRoot } from './root';
-import { action } from './state';
+import { getRoot, setRoot } from "./root";
+import { action } from "./state";
 
 /**
  * Define a getter (computed property) on the state.
@@ -14,7 +14,7 @@ import { action } from './state';
  * @param enumerable: A boolean which determine whether this property shows up during enumeration.
  */
 export const defineGetter = action(({ commit, state }, path, fn, enumerable = false) => {
-  const pathArray = isArray(path) ? path : path.split('.');
+  const pathArray = isArray(path) ? path : path.split(".");
   const lastIdx = pathArray.length - 1;
   const propName = pathArray[lastIdx];
   const parentPath = pathArray.slice(0, lastIdx);

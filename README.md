@@ -15,8 +15,7 @@ Install from [npm](https://www.npmjs.com/package/statezero).
 npm install statezero --save
 ```
 
-Statezero is packaged using the [Universal Module Definition](https://github.com/umdjs/umd) pattern, so it can be loaded
-in various environments:
+Statezero is packaged as both ESM and UMD bundles, so it can be loaded in various environments:
 
 ### Browser Global
 
@@ -30,20 +29,20 @@ in various environments:
 ### ES6 Module
 
 ```javascript
-import { action, subscribe } from 'statezero';
+import { action, subscribe } from "statezero";
 ```
 
 ### ES6 Module with tree shaking (not transpiled)
 
 ```javascript
 // Note that the import path ends with '/src'
-import { action, subscribe } from 'statezero/src';
+import { action, subscribe } from "statezero/src";
 ```
 
 ### Node
 
 ```javascript
-const { action, subscribe } = require('statezero');
+const { action, subscribe } = require("statezero");
 ```
 
 ## Usage
@@ -82,9 +81,9 @@ const setCount = action(({ commit, state }, count) => {
 setCount(1);
 
 getState(); // returns { count: 1 }
-getState('count');
+getState("count");
 returns; // 1
-getState(['count', 'countTimesTwo']);
+getState(["count", "countTimesTwo"]);
 // returns [1, 2]
 ```
 
@@ -113,7 +112,7 @@ const incrementCount = action(({ commit, state }) => {
   commit(state);
 });
 
-const setCount = (count) => setState('count', count);
+const setCount = (count) => setState("count", count);
 
 setCount(1);
 // getState().count is 1
@@ -141,12 +140,12 @@ When the state changes, statezero will call your "fn" function with two argument
 
 ```javascript
 const fn = (nextState, prevState, nextRootState) => {
-  console.log('From', JSON.stringify(prevState));
-  console.log('To', JSON.stringify(nextState));
-  console.log('Root state', JSON.stringify(nextRootState));
+  console.log("From", JSON.stringify(prevState));
+  console.log("To", JSON.stringify(nextState));
+  console.log("Root state", JSON.stringify(nextRootState));
 };
-subscribe(fn, 'a.b.c'); // String "selector" path in dot notation
-subscribe(fn, ['a.b.c', 'd.e.f']); // Array "selector" paths, each in dot notation
+subscribe(fn, "a.b.c"); // String "selector" path in dot notation
+subscribe(fn, ["a.b.c", "d.e.f"]); // Array "selector" paths, each in dot notation
 subscribe(fn, (state) => state.a.b.c); // Function "selector"
 subscribe(fn); // Undefined "selector" - subscribe to every state change
 ```
@@ -165,7 +164,7 @@ If you supplied a `String`, `Array` or `Function` "selector" argument to `subscr
 passing the return value from `subscribe()` to `unsubscribe()`.
 
 ```javascript
-const subscription = subscribe(console.log, 'a');
+const subscription = subscribe(console.log, "a");
 
 unsubscribe(subscription);
 ```
@@ -207,9 +206,9 @@ return value of `getState()`.
 You can subscribe to state change notifications on getters using "selectors" as with any other property of the state.
 
 ```javascript
-defineGetter('countTimesTwo', (parent) => parent.count * 2);
+defineGetter("countTimesTwo", (parent) => parent.count * 2);
 
-subscribe(console.log, 'countTimesTwo');
+subscribe(console.log, "countTimesTwo");
 
 // If `state.count` is changed to 1 to 2, then this prints "4 2"
 ```
@@ -217,9 +216,9 @@ subscribe(console.log, 'countTimesTwo');
 You can also define nested getters.
 
 ```javascript
-defineGetter('nested.countTimesTwo', (parent) => parent.count * 2);
+defineGetter("nested.countTimesTwo", (parent) => parent.count * 2);
 
-subscribe(console.log, 'nested.countTimesTwo');
+subscribe(console.log, "nested.countTimesTwo");
 
 // If `state.nested.count` is changed from 2 to 3, then this prints "6 4"
 ```
@@ -227,9 +226,9 @@ subscribe(console.log, 'nested.countTimesTwo');
 Getter functions are called with the root state as the second argument.
 
 ```javascript
-defineGetter('nested.countTimesTwoTimesRootCount', (parent, root) => parent.count * 2 * root.count);
+defineGetter("nested.countTimesTwoTimesRootCount", (parent, root) => parent.count * 2 * root.count);
 
-subscribe(console.log, 'nested.countTimesTwoTimesRootCount');
+subscribe(console.log, "nested.countTimesTwoTimesRootCount");
 
 // If `state.count` is changed to 1 to 2 and `state.nested.count` is changed from 2 to 3, then this prints "12 4"
 ```
@@ -251,7 +250,7 @@ See [./test](./test) for more examples.
 ### Logging
 
 ```javascript
-import { startLogging, stopLogging } from 'statezero';
+import { startLogging, stopLogging } from "statezero";
 
 startLogging();
 
@@ -266,8 +265,11 @@ are logged; if not specified then all changes are logged. `logger` can be used t
 
 ## Developing
 
-```
+```bash
 npm install
-npm run build
-npm run test
+npm run build        # Development build (UMD + ESM)
+npm run test         # Run tests with Jest
+npm run test:watch   # Run tests in watch mode
+npm run lint         # ESLint with zero-warning policy
+npm run format       # Format code with prettier-eslint
 ```

@@ -1,10 +1,10 @@
-import get from 'lodash/get';
-import isArray from 'lodash/isArray';
-import isEqualWith from 'lodash/isEqualWith';
-import isFunction from 'lodash/isFunction';
-import isString from 'lodash/isString';
+import get from "lodash/get";
+import isArray from "lodash/isArray";
+import isEqualWith from "lodash/isEqualWith";
+import isFunction from "lodash/isFunction";
+import isString from "lodash/isString";
 
-import { isImmutable } from './immutable';
+import { isImmutable } from "./immutable";
 
 export const subscribersAsync = new Set();
 export const subscribersSync = new Set();

@@ -1,14 +1,14 @@
-import get from 'lodash/get';
-import isArray from 'lodash/isArray';
-import isFunction from 'lodash/isFunction';
-import isPlainObject from 'lodash/isPlainObject';
-import isString from 'lodash/isString';
-import set from 'lodash/set';
-import simpleDeepFreeze from 'simple-deep-freeze';
+import get from "lodash/get";
+import isArray from "lodash/isArray";
+import isFunction from "lodash/isFunction";
+import isPlainObject from "lodash/isPlainObject";
+import isString from "lodash/isString";
+import set from "lodash/set";
+import simpleDeepFreeze from "simple-deep-freeze";
 
-import { clone } from './clone';
-import { markImmutable } from './immutable';
-import { subscribersAsync, subscribersSync } from './subscriptions';
+import { clone } from "./clone";
+import { markImmutable } from "./immutable";
+import { subscribersAsync, subscribersSync } from "./subscriptions";
 
 let state = simpleDeepFreeze({});
 let prevStateForNotify;
@@ -45,7 +45,8 @@ const commit = (nextState) => {
   notifySync(prevState);
 };
 
-export const action = (fn) =>
+export const action =
+  (fn) =>
   (...args) =>
     fn({ commit, state: clone(state) }, ...args);
 
@@ -69,7 +70,7 @@ export const getState = (selector) => {
 
 // eslint-disable-next-line no-shadow
 export const setState = action(({ commit, state }, selector, value) => {
-  if (selector === undefined || selector === null || selector === '') {
+  if (selector === undefined || selector === null || selector === "") {
     state = value;
   } else if (isString(selector)) {
     set(state, selector, value);

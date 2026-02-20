@@ -1,12 +1,12 @@
-import cloneDeepWith from 'lodash/cloneDeepWith';
-import isElement from 'lodash/isElement';
-import isFunction from 'lodash/isFunction';
-import isPlainObject from 'lodash/isPlainObject';
+import cloneDeepWith from "lodash/cloneDeepWith";
+import isElement from "lodash/isElement";
+import isFunction from "lodash/isFunction";
+import isPlainObject from "lodash/isPlainObject";
 
-import { isImmutable } from './immutable';
-import { getRoot, setRoot } from './root';
+import { isImmutable } from "./immutable";
+import { getRoot, setRoot } from "./root";
 
-const cloneProp = (customizer, value) => (typeof value === 'object' ? cloneDeepWith(value, customizer) : value);
+const cloneProp = (customizer, value) => (typeof value === "object" ? cloneDeepWith(value, customizer) : value);
 
 /* Deep clone the given object.
  *
@@ -51,7 +51,7 @@ export const clone = (obj) => {
       // We know that there are no getters if there is no ROOT, b/c defineGetters sets ROOT.
       // Even `cloned[ROOT] = root;` is costly, so we avoid that here too.
       for (const propName of Object.getOwnPropertyNames(value)) {
-        if (propName.startsWith('__statezero') || propName.startsWith('$jscomp')) {
+        if (propName.startsWith("__statezero") || propName.startsWith("$jscomp")) {
           continue;
         }
         cloned[propName] = cloneProp(customizer, value[propName]);
@@ -62,7 +62,7 @@ export const clone = (obj) => {
     setRoot(cloned, root);
 
     for (const [propName, descriptor] of Object.entries(Object.getOwnPropertyDescriptors(value))) {
-      if (propName.startsWith('__statezero') || propName.startsWith('$jscomp')) {
+      if (propName.startsWith("__statezero") || propName.startsWith("$jscomp")) {
         continue;
       }
       if (descriptor.get) {
