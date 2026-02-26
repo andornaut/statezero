@@ -32,7 +32,9 @@ const notifySync = (prevState) => {
 
 const commit = (nextState) => {
   if (!isPlainObject(nextState)) {
-    throw new Error(`statezero: commit() must be called with a plain object "nextState" argument; not: ${nextState}`);
+    throw new Error(
+      `statezero: commit() must be called with a plain object "nextState" argument; not: ${nextState}`,
+    );
   }
   const prevState = state;
   state = simpleDeepFreeze(nextState);
@@ -58,20 +60,21 @@ export const getState = (selector) => {
   if (typeof selector === "function") {
     return selector(state);
   }
-  const selectorStr = typeof selector === "object" ? JSON.stringify(selector) : selector;
+  const selectorStr =
+    typeof selector === "object" ? JSON.stringify(selector) : selector;
   throw new Error(
     `statezero: getState() must be called with an Array/Function/String/undefined selector; not ${selectorStr}`,
   );
 };
 
-// eslint-disable-next-line no-shadow
 export const setState = action(({ commit, state }, selector, value) => {
   if (selector === undefined || selector === null || selector === "") {
     state = value;
   } else if (typeof selector === "string") {
     set(state, selector, value);
   } else {
-    const selectorStr = typeof selector === "object" ? JSON.stringify(selector) : selector;
+    const selectorStr =
+      typeof selector === "object" ? JSON.stringify(selector) : selector;
     throw new Error(
       `statezero: setState() must be called with an String/undefined "selector" argument; not ${selectorStr}`,
     );
@@ -81,10 +84,14 @@ export const setState = action(({ commit, state }, selector, value) => {
 
 export const setImmutableState = (selector, obj) => {
   if (!selector) {
-    throw new Error('statezero: setImmutableState() must be called with a non-empty String "selector" argument');
+    throw new Error(
+      'statezero: setImmutableState() must be called with a non-empty String "selector" argument',
+    );
   }
   if (!isPlainObject(obj)) {
-    throw new Error(`statezero: setImmutableState() must be called with a plain object "obj" argument; not: ${obj}`);
+    throw new Error(
+      `statezero: setImmutableState() must be called with a plain object "obj" argument; not: ${obj}`,
+    );
   }
   markImmutable(obj);
   setState(selector, obj);

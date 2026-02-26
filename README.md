@@ -202,13 +202,13 @@ but if you want the callbacks to be invoked synchronously, then you can use `sub
 
 Getters are analogous to "computed properties" (see, for example,
 [computed properties in Vuex](https://vuex.vuejs.org/guide/state.html#getting-vuex-state-into-vue-components)).
-Getters are defined by calling `defineGetter(fn, path)`, where "fn" is a function that you define, which should return
-the value of the property, and "path" is the
+Getters are defined by calling `defineGetter(path, fn, enumerable)`, where "path" is the
 [dot notation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_accessors)
 path of the
-[getter Property](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_Objects#Defining_getters_and_setters)
-that you wish to define. Any non-existent ancestors in the "path" will be created as empty objects. Note that you should
-avoid [cycles](https://en.wikipedia.org/wiki/Circular_dependency) in getters.
+[getter property](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_Objects#Defining_getters_and_setters)
+that you wish to define, "fn" is a function that returns the computed value, and "enumerable" (optional, defaults to
+false) determines whether the property shows up during enumeration. Any non-existent ancestors in the "path" will be
+created as empty objects. Note that you should avoid [cycles](https://en.wikipedia.org/wiki/Circular_dependency) in getters.
 
 The function that you pass to `defineGetter()` is itself passed two arguments by statezero: `parent` and `root`.
 `parent` corresponds to the object on which the getter was defined; in the case of a top-level getter, this is the
@@ -238,7 +238,10 @@ subscribe(console.log, "nested.countTimesTwo");
 Getter functions are called with the root state as the second argument.
 
 ```javascript
-defineGetter("nested.countTimesTwoTimesRootCount", (parent, root) => parent.count * 2 * root.count);
+defineGetter(
+  "nested.countTimesTwoTimesRootCount",
+  (parent, root) => parent.count * 2 * root.count,
+);
 
 subscribe(console.log, "nested.countTimesTwoTimesRootCount");
 
@@ -251,7 +254,10 @@ Getters can be
 ```javascript
 // The last argument defaults to `false`
 defineGetter("nested.property", () => null, true);
-const { enumerable } = Object.getOwnPropertyDescriptor(getState().nested, "property");
+const { enumerable } = Object.getOwnPropertyDescriptor(
+  getState().nested,
+  "property",
+);
 console.log(enumerable);
 
 // Prints "true"

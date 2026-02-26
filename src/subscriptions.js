@@ -7,7 +7,8 @@ export const subscribersSync = new Set();
 
 // When customizer returns undefined, comparisons are handled by lodash
 // https://lodash.com/docs/4.17.15#isEqualWith
-const isEqualCustomizer = (value, othValue) => (isImmutable(value) ? value === othValue : undefined);
+const isEqualCustomizer = (value, othValue) =>
+  isImmutable(value) ? value === othValue : undefined;
 
 const applySelector = (callback, selector) => (nextState, prevState) => {
   const selectedNextState = selector(nextState);
@@ -21,7 +22,8 @@ const applyRootState = (callback) => (nextState, prevState) => {
   callback(nextState, prevState, nextState);
 };
 
-const createArraySelector = (paths) => (_state) => paths.map((path) => get(_state, path));
+const createArraySelector = (paths) => (_state) =>
+  paths.map((path) => get(_state, path));
 
 const createStringSelector = (path) => (_state) => get(_state, path);
 
@@ -49,7 +51,8 @@ export const subscribe = (callback, selector, isSync = false) => {
   } else if (selector === undefined) {
     callback = applyRootState(callback);
   } else {
-    const selectorStr = typeof selector === "object" ? JSON.stringify(selector) : selector;
+    const selectorStr =
+      typeof selector === "object" ? JSON.stringify(selector) : selector;
     throw new Error(
       `statezero: subscribe() must be called with an Array/Function/String/undefined selector; not ${selectorStr}`,
     );
@@ -65,12 +68,12 @@ export const subscribe = (callback, selector, isSync = false) => {
   return callback;
 };
 
-export const subscribeSync = (callback, selector) => subscribe(callback, selector, true);
+export const subscribeSync = (callback, selector) =>
+  subscribe(callback, selector, true);
 
 export const subscribeOnce = (callback, selector, isSync = false) => {
   const wrapper = (...args) => {
     callback(...args);
-    // eslint-disable-next-line no-use-before-define
     unsubscribe(subscription);
   };
 
@@ -78,7 +81,8 @@ export const subscribeOnce = (callback, selector, isSync = false) => {
   return subscription;
 };
 
-export const subscribeOnceSync = (callback, selector) => subscribeOnce(callback, selector, true);
+export const subscribeOnceSync = (callback, selector) =>
+  subscribeOnce(callback, selector, true);
 
 export const unsubscribe = (callback) => {
   subscribersAsync.delete(callback);

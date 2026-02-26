@@ -34,7 +34,6 @@ export const startLogging = (selector, logger) => {
     return;
   }
 
-  // eslint-disable-next-line no-console
   subscription = subscribe(createDiffLogger(logger || console.table), selector);
 };
 

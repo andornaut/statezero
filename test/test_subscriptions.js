@@ -1,4 +1,11 @@
-import { getState, setImmutableState, setState, subscribe, subscribeSync, unsubscribe } from "../src";
+import {
+  getState,
+  setImmutableState,
+  setState,
+  subscribe,
+  subscribeSync,
+  unsubscribe,
+} from "../src";
 import { defineGetter } from "../src/getters";
 import {
   assignState,
@@ -146,7 +153,12 @@ describe("subscribe()", () => {
       defineGetter("countTimesTwo", getCountTimesTwo);
       defineGetter("deeply.nested.countTimesTwo", getCountTimesTwo);
 
-      const subscriber = ([count, countTimesTwo, nestedCount, nestedCountTimesTwo]) => {
+      const subscriber = ([
+        count,
+        countTimesTwo,
+        nestedCount,
+        nestedCountTimesTwo,
+      ]) => {
         expect(count).toBe(2);
         expect(countTimesTwo).toBe(4);
         expect(nestedCount).toBe(1);
@@ -155,7 +167,12 @@ describe("subscribe()", () => {
       };
 
       incrementCount();
-      subscribe(subscriber, ["count", "countTimesTwo", "deeply.nested.count", "deeply.nested.countTimesTwo"]);
+      subscribe(subscriber, [
+        "count",
+        "countTimesTwo",
+        "deeply.nested.count",
+        "deeply.nested.countTimesTwo",
+      ]);
       incrementCountAndDeeplyNestedCount();
     });
   });
@@ -287,6 +304,99 @@ describe("unsubscribe()", () => {
         expect(subscriber).not.toHaveBeenCalled();
         done();
       }, 1);
+    });
+  });
+});
+
+describe("debounce behavior", () => {
+  beforeEach(() => clearStateThenResolve());
+
+  describe("when multiple state changes occur in the same tick", () => {
+    it("should only call async subscriber once", (done) => {
+      const subscriber = jest.fn();
+
+      subscribe(subscriber, "count");
+      incrementCount();
+      incrementCount();
+      incrementCount();
+
+      setTimeout(() => {
+        expect(subscriber).toHaveBeenCalledTimes(1);
+        done();
+      });
+    });
+
+    it("should pass the final state as nextState", (done) => {
+      const subscriber = jest.fn();
+
+      subscribe(subscriber, "count");
+      incrementCount();
+      incrementCount();
+      incrementCount();
+
+      setTimeout(() => {
+        expect(subscriber).toHaveBeenCalledWith(
+          3,
+          undefined,
+          expect.any(Object),
+        );
+        done();
+      });
+    });
+
+    it("should pass the initial state as prevState", (done) => {
+      const subscriber = (next, prev) => {
+        expect(prev).toBe(undefined);
+        expect(next).toBe(3);
+        done();
+      };
+
+      subscribe(subscriber, "count");
+      incrementCount();
+      incrementCount();
+      incrementCount();
+    });
+  });
+
+  describe("when state changes occur in separate ticks", () => {
+    it("should call async subscriber for each tick", (done) => {
+      const subscriber = jest.fn();
+
+      subscribe(subscriber, "count");
+      incrementCount();
+
+      setTimeout(() => {
+        incrementCount();
+        setTimeout(() => {
+          expect(subscriber).toHaveBeenCalledTimes(2);
+          done();
+        });
+      });
+    });
+  });
+
+  describe("when using subscribeSync", () => {
+    it("should call subscriber for each state change immediately", () => {
+      const subscriber = jest.fn();
+
+      subscribeSync(subscriber, "count");
+      incrementCount();
+      incrementCount();
+      incrementCount();
+
+      expect(subscriber).toHaveBeenCalledTimes(3);
+    });
+
+    it("should pass intermediate states to sync subscribers", () => {
+      const values = [];
+      const subscriber = (count) => values.push(count);
+
+      subscribeSync(subscriber, "count");
+      incrementCount();
+      incrementCount();
+      incrementCount();
+
+      expect(values).toEqual([1, 2, 3]);
     });
   });
 });

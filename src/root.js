@@ -1,5 +1,5 @@
 // Keep track of the top-level state object during cloning so that getters can access it later
-const ROOT = "__statezero__root";
+const ROOT = "__statezero_root";
 
 export function getRoot(obj) {
   return obj ? obj[ROOT] : undefined;
