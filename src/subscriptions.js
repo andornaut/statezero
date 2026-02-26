@@ -1,5 +1,4 @@
-import get from "lodash/get";
-import isEqualWith from "lodash/isEqualWith";
+import { get, isEqualWith } from "lodash-es";
 
 import { isImmutable } from "./immutable";
 

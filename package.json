@@ -1,6 +1,6 @@
 {
   "name": "statezero",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "author": "andornaut",
   "description": "Small, simple, functional JavaScript library for managing immutable state",
   "keywords": [
@@ -48,7 +48,7 @@
   "bugs": "https://github.com/andornaut/statezero/issues",
   "dependencies": {
     "deep-diff": "^1.0.2",
-    "lodash": "^4.17.23",
+    "lodash-es": "^4.17.23",
     "simple-deep-freeze": "^0.0.2"
   },
   "devDependencies": {

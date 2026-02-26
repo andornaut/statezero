@@ -3,7 +3,7 @@
     "name": "ESM (minified, external deps)",
     "path": "dist/statezero.esm.js",
     "limit": "4 KB",
-    "ignore": ["lodash", "deep-diff", "simple-deep-freeze"]
+    "ignore": ["lodash-es", "deep-diff", "simple-deep-freeze"]
   },
   {
     "name": "UMD (minified, bundled)",

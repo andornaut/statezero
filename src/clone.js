@@ -1,5 +1,4 @@
-import cloneDeepWith from "lodash/cloneDeepWith";
-import isPlainObject from "lodash/isPlainObject";
+import { cloneDeepWith, isPlainObject } from "lodash-es";
 
 import { isImmutable } from "./immutable";
 import { getRoot, setRoot } from "./root";

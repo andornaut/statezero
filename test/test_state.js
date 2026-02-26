@@ -129,20 +129,18 @@ describe("setImmutableState()", () => {
   beforeEach(() => clearStateThenResolve());
 
   describe("when an immutable object is mutated with setImmutableState", () => {
-    it("should not mutate the object", () => {
+    it("should throw an error", () => {
       const initial = { initial: true };
       setImmutableState("immutable", initial);
-      setImmutableState("immutable.initial", {});
-      expect(getState().immutable.initial).toBe(true);
+      expect(() => setImmutableState("immutable.initial", {})).toThrow();
     });
   });
 
   describe("when an immutable object is mutated with setState", () => {
-    it("should not mutate the object", () => {
+    it("should throw an error", () => {
       const initial = { initial: true };
       setImmutableState("immutable", initial);
-      setState("immutable.initial", {});
-      expect(getState().immutable.initial).toBe(true);
+      expect(() => setState("immutable.initial", {})).toThrow();
     });
   });
 

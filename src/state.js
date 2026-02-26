@@ -1,6 +1,4 @@
-import get from "lodash/get";
-import isPlainObject from "lodash/isPlainObject";
-import set from "lodash/set";
+import { get, isPlainObject, set } from "lodash-es";
 import simpleDeepFreeze from "simple-deep-freeze";
 
 import { clone } from "./clone";
