@@ -1,18 +1,25 @@
 name: Release
 
+# Every branch, not just main and pull requests: work lands on main directly as
+# often as it arrives through one, so a check that only runs on main is a check
+# that runs after the fact.
 on:
   push:
-    branches: [main]
+    branches: ["**"]
     tags: ["v*"]
   pull_request:
     branches: [main]
   workflow_dispatch:
 
+# Write access is granted only to the jobs that create releases
 permissions:
-  contents: write
+  contents: read
 
+# Keyed on the branch rather than the ref, so the push event and the pull
+# request event for one branch share a group instead of running the same checks
+# twice.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
@@ -54,6 +61,9 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+    # The one job that writes: it creates and deletes releases and tags.
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout code
