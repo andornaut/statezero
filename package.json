@@ -74,7 +74,7 @@
     "build:production": "npm run build:esm -- --minify && npm run build:umd -- --minify",
     "build:umd": "esbuild src/index.js --bundle --format=iife --global-name=statezero --outfile=dist/statezero.js",
     "format": "prettier --write \"{src,test}/**/*.js\" \"*.{json,md}\"",
-    "lint": "eslint --max-warnings 0 {src,test}/**/*.js",
+    "lint": "eslint --max-warnings 0 .",
     "prepare": "husky",
     "prepublishOnly": "npm run test && npm run build:production",
     "size": "size-limit",

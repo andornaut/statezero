@@ -1,49 +1,48 @@
 import js from "@eslint/js";
-import simpleImportSort from "eslint-plugin-simple-import-sort";
-import sortDestructureKeys from "eslint-plugin-sort-destructure-keys";
 import globals from "globals";
 
+import { plugins, sourceRules, toolingRules } from "./eslint.config.base.mjs";
+
 export default [
+  {
+    ignores: ["dist/**", "node_modules/**"],
+  },
   js.configs.recommended,
+  {
+    files: ["*.config.js"],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: {
+        ...globals.node,
+      },
+      sourceType: "commonjs",
+    },
+    plugins,
+    rules: toolingRules,
+  },
   {
     files: ["src/**/*.js"],
     languageOptions: {
       ecmaVersion: 2020,
-      sourceType: "module",
       globals: {
         ...globals.browser,
       },
+      sourceType: "module",
     },
-    plugins: {
-      "simple-import-sort": simpleImportSort,
-      "sort-destructure-keys": sortDestructureKeys,
-    },
-    rules: {
-      "max-len": ["error", { code: 120 }],
-      "simple-import-sort/exports": "error",
-      "simple-import-sort/imports": "error",
-      "sort-destructure-keys/sort-destructure-keys": "error",
-    },
+    plugins,
+    rules: sourceRules,
   },
   {
     files: ["test/**/*.js"],
     languageOptions: {
       ecmaVersion: 2020,
-      sourceType: "module",
       globals: {
         ...globals.browser,
         ...globals.jest,
       },
+      sourceType: "module",
     },
-    plugins: {
-      "simple-import-sort": simpleImportSort,
-      "sort-destructure-keys": sortDestructureKeys,
-    },
-    rules: {
-      "max-len": ["error", { code: 120 }],
-      "simple-import-sort/exports": "error",
-      "simple-import-sort/imports": "error",
-      "sort-destructure-keys/sort-destructure-keys": "error",
-    },
+    plugins,
+    rules: sourceRules,
   },
 ];

@@ -11,25 +11,27 @@ import { action } from "./state";
  * @param fn: A function which takes state as its only parameter and returns a value.
  * @param enumerable: A boolean which determine whether this property shows up during enumeration.
  */
-export const defineGetter = action(({ commit, state }, path, fn, enumerable = false) => {
-  const pathArray = Array.isArray(path) ? path : path.split(".");
-  const lastIdx = pathArray.length - 1;
-  const propName = pathArray[lastIdx];
-  const parentPath = pathArray.slice(0, lastIdx);
+export const defineGetter = action(
+  ({ commit, state }, path, fn, enumerable = false) => {
+    const pathArray = Array.isArray(path) ? path : path.split(".");
+    const lastIdx = pathArray.length - 1;
+    const propName = pathArray[lastIdx];
+    const parentPath = pathArray.slice(0, lastIdx);
 
-  let obj = state;
-  if (parentPath.length) {
-    obj = get(state, parentPath, {});
-    // Set parentPath in case it didn't exist (the default case of get() above).
-    set(state, parentPath, obj);
-  }
+    let obj = state;
+    if (parentPath.length) {
+      obj = get(state, parentPath, {});
+      // Set parentPath in case it didn't exist (the default case of get() above).
+      set(state, parentPath, obj);
+    }
 
-  Object.defineProperty(obj, propName, {
-    get() {
-      return fn.call(this, this, getRoot(this));
-    },
-    enumerable,
-  });
-  setRoot(obj, state);
-  commit(state);
-});
+    Object.defineProperty(obj, propName, {
+      enumerable,
+      get() {
+        return fn.call(this, this, getRoot(this));
+      },
+    });
+    setRoot(obj, state);
+    commit(state);
+  },
+);
