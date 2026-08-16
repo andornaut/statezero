@@ -17,13 +17,15 @@ export const incrementCount = action(({ commit, state }) => {
   commit(state);
 });
 
-export const incrementCountAndDeeplyNestedCount = action(({ commit, state }) => {
-  state.deeply = state.deeply || {};
-  state.deeply.nested = state.deeply.nested || {};
-  count(state.deeply.nested);
-  count(state);
-  commit(state);
-});
+export const incrementCountAndDeeplyNestedCount = action(
+  ({ commit, state }) => {
+    state.deeply = state.deeply || {};
+    state.deeply.nested = state.deeply.nested || {};
+    count(state.deeply.nested);
+    count(state);
+    commit(state);
+  },
+);
 
 export const incrementNestedCount = action(({ commit, state }) => {
   state.nested = state.nested || {};

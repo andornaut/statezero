@@ -3,7 +3,8 @@ import { cloneDeepWith, isPlainObject } from "lodash-es";
 import { isImmutable } from "./immutable";
 import { getRoot, setRoot } from "./root";
 
-const cloneProp = (customizer, value) => (typeof value === "object" ? cloneDeepWith(value, customizer) : value);
+const cloneProp = (customizer, value) =>
+  typeof value === "object" ? cloneDeepWith(value, customizer) : value;
 
 /* Deep clone the given object.
  *
@@ -20,7 +21,11 @@ export const clone = (obj) => {
   let root;
 
   const customizer = (value) => {
-    if (value instanceof Element || typeof value === "function" || isImmutable(value)) {
+    if (
+      value instanceof Element ||
+      typeof value === "function" ||
+      isImmutable(value)
+    ) {
       // Do not attempt to clone DOM nodes, immutable objects, or Function, but don't replace them with {} either, which
       // is what lodash would usually do. Leave them as is instead.
       return value;
@@ -48,7 +53,10 @@ export const clone = (obj) => {
       // We know that there are no getters if there is no ROOT, b/c defineGetters sets ROOT.
       // Even `cloned[ROOT] = root;` is costly, so we avoid that here too.
       for (const propName of Object.getOwnPropertyNames(value)) {
-        if (propName.startsWith("__statezero") || propName.startsWith("$jscomp")) {
+        if (
+          propName.startsWith("__statezero") ||
+          propName.startsWith("$jscomp")
+        ) {
           continue;
         }
         cloned[propName] = cloneProp(customizer, value[propName]);
@@ -58,8 +66,13 @@ export const clone = (obj) => {
 
     setRoot(cloned, root);
 
-    for (const [propName, descriptor] of Object.entries(Object.getOwnPropertyDescriptors(value))) {
-      if (propName.startsWith("__statezero") || propName.startsWith("$jscomp")) {
+    for (const [propName, descriptor] of Object.entries(
+      Object.getOwnPropertyDescriptors(value),
+    )) {
+      if (
+        propName.startsWith("__statezero") ||
+        propName.startsWith("$jscomp")
+      ) {
         continue;
       }
       if (descriptor.get) {

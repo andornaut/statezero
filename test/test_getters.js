@@ -1,6 +1,11 @@
 import { getState } from "../src";
 import { defineGetter } from "../src/getters";
-import { clearStateThenResolve, getCountTimesTwo, incrementCount, incrementNestedCount } from "./helpers";
+import {
+  clearStateThenResolve,
+  getCountTimesTwo,
+  incrementCount,
+  incrementNestedCount,
+} from "./helpers";
 
 describe("defineGetter()", () => {
   beforeEach(() => clearStateThenResolve());
@@ -35,7 +40,10 @@ describe("defineGetter()", () => {
       defineGetter("nested.enumerable", () => null);
 
       const { nested } = getState();
-      const { enumerable } = Object.getOwnPropertyDescriptor(nested, "enumerable");
+      const { enumerable } = Object.getOwnPropertyDescriptor(
+        nested,
+        "enumerable",
+      );
 
       expect(enumerable).toBe(false);
     });
@@ -46,7 +54,10 @@ describe("defineGetter()", () => {
       defineGetter("nested.enumerable", () => null, true);
 
       const { nested } = getState();
-      const { enumerable } = Object.getOwnPropertyDescriptor(nested, "enumerable");
+      const { enumerable } = Object.getOwnPropertyDescriptor(
+        nested,
+        "enumerable",
+      );
 
       expect(enumerable).toBe(true);
     });

@@ -1,5 +1,9 @@
 import { action, getState, setImmutableState, setState } from "../src";
-import { clearStateThenResolve, incrementCount, incrementNestedCount } from "./helpers";
+import {
+  clearStateThenResolve,
+  incrementCount,
+  incrementNestedCount,
+} from "./helpers";
 
 function Foo() {}
 
@@ -68,7 +72,9 @@ describe("getState()", () => {
       incrementCount();
       incrementNestedCount();
 
-      expect(getState(["nested.count", "count"])).toEqual(expect.arrayContaining([1, 1]));
+      expect(getState(["nested.count", "count"])).toEqual(
+        expect.arrayContaining([1, 1]),
+      );
     });
   });
 
@@ -98,7 +104,9 @@ describe("getState()", () => {
 
   describe('when an unsupported type "selector" argument is supplied', () => {
     it("should throw an error", () => {
-      expect(() => getState({})).toThrow(/statezero: getState\(\) must be called with/);
+      expect(() => getState({})).toThrow(
+        /statezero: getState\(\) must be called with/,
+      );
     });
   });
 });

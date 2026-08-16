@@ -40,16 +40,19 @@ const createStringSelector = (path) => (_state) => get(_state, path);
  */
 export const subscribe = (callback, selector, isSync = false) => {
   // Convert an array or string selector into a function.
+  let select = selector;
   if (typeof selector === "string") {
-    selector = createStringSelector(selector);
+    select = createStringSelector(selector);
   } else if (Array.isArray(selector)) {
-    selector = createArraySelector(selector);
+    select = createArraySelector(selector);
   }
 
-  if (typeof selector === "function") {
-    callback = applySelector(callback, selector);
-  } else if (selector === undefined) {
-    callback = applyRootState(callback);
+  // Every branch below assigns it or throws.
+  let notify;
+  if (typeof select === "function") {
+    notify = applySelector(callback, select);
+  } else if (select === undefined) {
+    notify = applyRootState(callback);
   } else {
     const selectorStr =
       typeof selector === "object" ? JSON.stringify(selector) : selector;
@@ -59,13 +62,13 @@ export const subscribe = (callback, selector, isSync = false) => {
   }
 
   if (isSync) {
-    subscribersSync.add(callback);
+    subscribersSync.add(notify);
   } else {
-    subscribersAsync.add(callback);
+    subscribersAsync.add(notify);
   }
 
   // If a `selector` was provided, then the caller will need to use the returned `callback` in order to `unsubscribe()`.
-  return callback;
+  return notify;
 };
 
 export const subscribeSync = (callback, selector) =>

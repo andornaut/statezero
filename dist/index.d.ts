@@ -19,10 +19,7 @@ export interface StateSchema {
  * Can be a dot-notation path, array of paths, selector function, or undefined for full state.
  */
 export type Selector<TState = StateSchema, TSelected = unknown> =
-  | string
-  | string[]
-  | ((state: TState) => TSelected)
-  | undefined;
+  string | string[] | ((state: TState) => TSelected) | undefined;
 
 /**
  * Context provided to action functions
@@ -37,15 +34,18 @@ export interface ActionContext<TState = StateSchema> {
 /**
  * Function signature for action definitions
  */
-export type ActionFunction<TState = StateSchema, TArgs extends unknown[] = unknown[], TReturn = void> = (
-  context: ActionContext<TState>,
-  ...args: TArgs
-) => TReturn;
+export type ActionFunction<
+  TState = StateSchema,
+  TArgs extends unknown[] = unknown[],
+  TReturn = void,
+> = (context: ActionContext<TState>, ...args: TArgs) => TReturn;
 
 /**
  * The callable action returned by action()
  */
-export type Action<TArgs extends unknown[] = unknown[], TReturn = void> = (...args: TArgs) => TReturn;
+export type Action<TArgs extends unknown[] = unknown[], TReturn = void> = (
+  ...args: TArgs
+) => TReturn;
 
 /**
  * Callback function for state change subscriptions
@@ -53,20 +53,26 @@ export type Action<TArgs extends unknown[] = unknown[], TReturn = void> = (...ar
 export type SubscriberCallback<TSelected = unknown, TState = StateSchema> = (
   nextState: TSelected,
   prevState: TSelected,
-  nextRootState: TState
+  nextRootState: TState,
 ) => void;
 
 /**
  * A subscription handle returned by subscribe functions, used for unsubscribing
  */
-export type Subscription<TSelected = unknown, TState = StateSchema> = SubscriberCallback<TSelected, TState>;
+export type Subscription<
+  TSelected = unknown,
+  TState = StateSchema,
+> = SubscriberCallback<TSelected, TState>;
 
 /**
  * Function signature for getters (computed properties)
  * @param parent - The parent object on which the getter is defined
  * @param root - The root state object
  */
-export type GetterFunction<TState = StateSchema, TReturn = unknown> = (parent: unknown, root: TState) => TReturn;
+export type GetterFunction<TState = StateSchema, TReturn = unknown> = (
+  parent: unknown,
+  root: TState,
+) => TReturn;
 
 /**
  * Log entry for state change differences
@@ -85,7 +91,10 @@ export type LogProperties = Record<string, LogDiffEntry>;
 /**
  * Logger function signature for startLogging
  */
-export type LoggerFunction = (properties: LogProperties, columns: ["changeType", "from", "to"]) => void;
+export type LoggerFunction = (
+  properties: LogProperties,
+  columns: ["changeType", "from", "to"],
+) => void;
 
 /**
  * Create an action that can modify state.
@@ -98,7 +107,7 @@ export type LoggerFunction = (properties: LogProperties, columns: ["changeType",
  * });
  */
 export function action<TArgs extends unknown[] = unknown[], TReturn = void>(
-  fn: ActionFunction<StateSchema, TArgs, TReturn>
+  fn: ActionFunction<StateSchema, TArgs, TReturn>,
 ): Action<TArgs, TReturn>;
 
 /**
@@ -124,7 +133,10 @@ export function getState<T = unknown>(selector: (state: StateSchema) => T): T;
  * setState('user.name', 'Alice');
  * setState('', { count: 0 }); // replaces entire state
  */
-export const setState: Action<[selector: string | undefined | null, value: unknown], void>;
+export const setState: Action<
+  [selector: string | undefined | null, value: unknown],
+  void
+>;
 
 /**
  * Set immutable state at the given selector path.
@@ -134,7 +146,10 @@ export const setState: Action<[selector: string | undefined | null, value: unkno
  * @param selector - A non-empty dot-notation path string
  * @param obj - A plain object to store as immutable
  */
-export function setImmutableState(selector: string, obj: Record<string, unknown>): void;
+export function setImmutableState(
+  selector: string,
+  obj: Record<string, unknown>,
+): void;
 
 /**
  * Subscribe to state changes.
@@ -151,7 +166,7 @@ export function setImmutableState(selector: string, obj: Record<string, unknown>
 export function subscribe<T = unknown>(
   callback: SubscriberCallback<T>,
   selector?: Selector<StateSchema, T>,
-  isSync?: boolean
+  isSync?: boolean,
 ): Subscription<T>;
 
 /**
@@ -160,7 +175,7 @@ export function subscribe<T = unknown>(
  */
 export function subscribeSync<T = unknown>(
   callback: SubscriberCallback<T>,
-  selector?: Selector<StateSchema, T>
+  selector?: Selector<StateSchema, T>,
 ): Subscription<T>;
 
 /**
@@ -169,7 +184,7 @@ export function subscribeSync<T = unknown>(
 export function subscribeOnce<T = unknown>(
   callback: SubscriberCallback<T>,
   selector?: Selector<StateSchema, T>,
-  isSync?: boolean
+  isSync?: boolean,
 ): Subscription<T>;
 
 /**
@@ -177,7 +192,7 @@ export function subscribeOnce<T = unknown>(
  */
 export function subscribeOnceSync<T = unknown>(
   callback: SubscriberCallback<T>,
-  selector?: Selector<StateSchema, T>
+  selector?: Selector<StateSchema, T>,
 ): Subscription<T>;
 
 /**
@@ -203,7 +218,10 @@ export function unsubscribeAll(): void;
  * defineGetter('countTimesTwo', (parent) => parent.count * 2);
  * defineGetter('nested.computed', (parent, root) => parent.value + root.count);
  */
-export const defineGetter: Action<[path: string | string[], fn: GetterFunction, enumerable?: boolean], void>;
+export const defineGetter: Action<
+  [path: string | string[], fn: GetterFunction, enumerable?: boolean],
+  void
+>;
 
 /**
  * Start logging state changes to the console.
@@ -212,7 +230,10 @@ export const defineGetter: Action<[path: string | string[], fn: GetterFunction, 
  * @param selector - Optional selector to filter which changes are logged
  * @param logger - Optional custom logger function (default: console.table)
  */
-export function startLogging(selector?: Selector, logger?: LoggerFunction): void;
+export function startLogging(
+  selector?: Selector,
+  logger?: LoggerFunction,
+): void;
 
 /**
  * Stop logging state changes.

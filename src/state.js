@@ -68,8 +68,11 @@ export const getState = (selector) => {
 };
 
 export const setState = action(({ commit, state }, selector, value) => {
+  // Replacing the root commits `value` itself; a nested selector mutates the
+  // state object in place and commits that.
+  let next = state;
   if (selector === undefined || selector === null || selector === "") {
-    state = value;
+    next = value;
   } else if (typeof selector === "string") {
     set(state, selector, value);
   } else {
@@ -79,7 +82,7 @@ export const setState = action(({ commit, state }, selector, value) => {
       `statezero: setState() must be called with an String/undefined "selector" argument; not ${selectorStr}`,
     );
   }
-  commit(state);
+  commit(next);
 });
 
 export const setImmutableState = (selector, obj) => {
