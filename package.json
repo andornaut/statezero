@@ -73,7 +73,7 @@
     "build:esm": "esbuild src/index.js --bundle --format=esm --packages=external --outfile=dist/statezero.esm.js",
     "build:production": "npm run build:esm -- --minify && npm run build:umd -- --minify",
     "build:umd": "esbuild src/index.js --bundle --format=iife --global-name=statezero --outfile=dist/statezero.js",
-    "format": "prettier --write \"{src,test}/**/*.js\" \"*.{json,md}\"",
+    "format": "prettier --write . && eslint --fix .",
     "lint": "prettier --check . && eslint --max-warnings 0 .",
     "prepare": "husky",
     "prepublishOnly": "npm run test && npm run build:production",
