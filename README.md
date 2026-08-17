@@ -291,3 +291,21 @@ npm run lint         # ESLint with zero-warning policy
 npm run test         # Run tests with Jest
 npm run test:watch   # Run tests in watch mode
 ```
+
+## Publishing
+
+```bash
+npm version minor    # or major/patch - updates package.json and creates git tag
+git push && git push --tags
+```
+
+Pushing the tag is the whole release. The Release workflow runs the checks,
+cuts the GitHub release, and publishes to npm. `npm publish` is not run by
+hand.
+
+Nothing here holds an npm token. The workflow authenticates with a short-lived
+credential minted from its own OIDC claim, against a trusted publisher
+registered on npm that names this repository and
+`.github/workflows/release.yml`. Renaming that file stops publishing until the
+trusted publisher is updated to match. Publishing this way also attests
+provenance, which is why no `--provenance` flag appears anywhere.
