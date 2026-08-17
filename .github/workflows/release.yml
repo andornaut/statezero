@@ -129,3 +129,48 @@ jobs:
           generate_release_notes: ${{ github.ref != 'refs/heads/main' }}
           make_latest: ${{ github.ref == 'refs/heads/main' && 'false' || 'true' }}
           files: artifacts/*
+
+  # Tags only: `dev` is a rolling build and the registry holds released
+  # versions. Behind `release` rather than beside it, so the tag and the GitHub
+  # release naming a version exist before npm carries it; a registry cannot
+  # unpublish a version the way a GitHub release can be edited.
+  publish:
+    needs: release
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    # id-token is the whole credential: npm exchanges this job's OIDC claim for
+    # a short-lived token, so no registry key is stored as a secret. The trusted
+    # publisher registered on npmjs.com names this repository and this workflow
+    # file, so renaming either stops the publish until it is renamed there too.
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7.0.1
+        with:
+          # Nothing in this job uses the token, so it is not left
+          # in .git/config for a later step to read.
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          # Writes the .npmrc that names the registry the OIDC exchange
+          # authenticates against. Without it npm has no registry configured to
+          # present the claim to.
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Not the artifact the Build job uploaded: package.json declares a
+      # prepublishOnly that runs the tests and rebuilds, and that contract is
+      # the package's own. Provenance is attested automatically, the OIDC claim
+      # above being what signs it.
+      - name: Publish to npm
+        run: npm publish
