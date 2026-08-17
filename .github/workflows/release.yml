@@ -12,7 +12,8 @@ on:
     branches: [main]
   workflow_dispatch:
 
-# Write access is granted only to the jobs that create releases
+# Write access is granted per job rather than here: `contents` to the job that
+# creates releases, `id-token` to the job that publishes to the registry.
 permissions:
   contents: read
 
@@ -88,7 +89,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
-    # The one job that writes: it publishes releases and moves the `dev` tag.
+    # The job that writes `contents`: it publishes releases and moves the `dev`
+    # tag. The publish job below writes nothing but its own `id-token`.
     permissions:
       contents: write
 
