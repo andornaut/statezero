@@ -139,10 +139,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-    # id-token is the whole credential: npm exchanges this job's OIDC claim for
-    # a short-lived token, so no registry key is stored as a secret. The trusted
-    # publisher registered on npmjs.com names this repository and this workflow
-    # file, so renaming either stops the publish until it is renamed there too.
+    # id-token is the whole credential: the step below exchanges this job's OIDC
+    # claim for a short-lived npm token, so nothing long-lived is stored as a
+    # secret. The trusted publisher registered on npmjs.com names this
+    # repository and this workflow file, so renaming either stops the publish
+    # until it is renamed there too.
     permissions:
       contents: read
       id-token: write
@@ -160,17 +161,23 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
-          # Writes the .npmrc that names the registry the OIDC exchange
-          # authenticates against. Without it npm has no registry configured to
-          # present the claim to.
+          # Named rather than left to npm's default, which is this same
+          # registry: the .npmrc written here is what a later change to a scope
+          # or a mirror would have to go through, so the target the OIDC claim
+          # is presented to is stated where it can be seen.
           registry-url: https://registry.npmjs.org
 
       - name: Install dependencies
         run: npm ci
 
-      # Not the artifact the Build job uploaded: package.json declares a
-      # prepublishOnly that runs the tests and rebuilds, and that contract is
-      # the package's own. Provenance is attested automatically, the OIDC claim
-      # above being what signs it.
+      # Not the artifact the Build job uploaded, unlike the gem and wheel the
+      # sibling repositories push: package.json declares a prepublishOnly that
+      # runs the tests and rebuilds, and that contract is the package's own. It
+      # costs a second build of one version, and buys the suite running once
+      # more immediately before the step that cannot be taken back.
+      #
+      # No `--provenance`: publishing through a trusted publisher attests
+      # provenance on its own, and passing the flag as well would say nothing
+      # extra.
       - name: Publish to npm
         run: npm publish
