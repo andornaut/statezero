@@ -39,8 +39,8 @@ jobs:
     name: Test (node 20)
     runs-on: ubuntu-latest
     # Capped well under the six-hour default: nothing here runs longer than
-    # six minutes, so a job still going at thirty has hung rather than failed.
-    timeout-minutes: 30
+    # six minutes, so a job still going at fifteen has hung rather than failed.
+    timeout-minutes: 15
 
     steps:
       - name: Checkout code
@@ -67,7 +67,7 @@ jobs:
   test-current:
     name: Test (current)
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 15
 
     steps:
       - name: Checkout code
@@ -100,7 +100,7 @@ jobs:
     needs: [test-floor, test-current]
     if: always()
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 15
 
     steps:
       - name: Check that every version passed
@@ -111,7 +111,7 @@ jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 15
 
     steps:
       - name: Checkout code
