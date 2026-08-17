@@ -64,8 +64,8 @@
     "husky": "^9.1.7",
     "jest": "^30.3.0",
     "jest-environment-jsdom": "^30.3.0",
-    "lint-staged": "^17.0.7",
-    "prettier": "^3.8.3",
+    "lint-staged": "^17.3.0",
+    "prettier": "^3.9.6",
     "size-limit": "^13.0.1"
   },
   "scripts": {
