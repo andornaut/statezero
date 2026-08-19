@@ -77,7 +77,10 @@ jobs:
         env:
           TAG: ${{ github.ref_name }}
         run: |
-          version=$(jq -r .version package.json)
+          # `// ""` so an absent key gives an empty string: jq -r prints the
+          # string "null" for one, which the check below would compare rather
+          # than catch.
+          version=$(jq -r '.version // ""' package.json)
           # An extraction that returned nothing is a format that moved, which
           # must fail rather than compare an empty string and look like a match.
           if [ -z "$version" ]; then
