@@ -1,6 +1,6 @@
 # statezero
 
-[![npm version](https://badge.fury.io/js/statezero.svg)](https://www.npmjs.com/package/statezero)
+[![npm version](https://img.shields.io/npm/v/statezero)](https://www.npmjs.com/package/statezero)
 [![CI](https://github.com/andornaut/statezero/actions/workflows/release.yml/badge.svg)](https://github.com/andornaut/statezero/actions/workflows/release.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
