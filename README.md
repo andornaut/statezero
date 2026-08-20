@@ -286,8 +286,8 @@ are logged; if not specified then all changes are logged. `logger` can be used t
 ```bash
 npm install
 npm run build        # Development build (UMD + ESM)
-npm run format       # Format code with prettier-eslint
-npm run lint         # ESLint with zero-warning policy
+npm run format       # Prettier write, then ESLint --fix
+npm run lint         # Prettier check, then ESLint with zero warnings
 npm run test         # Run tests with Jest
 npm run test:watch   # Run tests in watch mode
 ```
