@@ -2,13 +2,13 @@
 
 [![npm version](https://img.shields.io/npm/v/statezero)](https://www.npmjs.com/package/statezero)
 [![CI](https://github.com/andornaut/statezero/actions/workflows/release.yml/badge.svg)](https://github.com/andornaut/statezero/actions/workflows/release.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/license/MIT)
 
 Small, simple, functional JavaScript library for managing immutable state.
 
 Statezero is used by [Jetstart - a library for building web interfaces](https://github.com/andornaut/jetstart).
 
-[React Hooks](https://reactjs.org/docs/hooks-intro.html) are provided via
+[React Hooks](https://legacy.reactjs.org/docs/hooks-intro.html) are provided via
 [statezero-react-hooks](https://github.com/andornaut/statezero-react-hooks).
 
 ## Getting Started
