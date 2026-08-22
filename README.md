@@ -108,7 +108,7 @@ value is a function that can modify state.
 The function that you pass to `action()` is itself passed a `context` argument by statezero, and it can also accept
 arbitrary additional arguments. Typically, you would destructure `context` into `{ commit, state }`. `commit` is a
 function that can be used to set the state; it accepts a single `nextState` argument, which must be a JSON-serializable
-[plain object](https://lodash.com/docs/4.17.10#isPlainObject). `state` is a mutable copy of the current state.
+[plain object](https://lodash.com/docs/4.18.1#isPlainObject). `state` is a mutable copy of the current state.
 
 Statezero ships with two actions:
 
@@ -205,7 +205,7 @@ Getters are analogous to "computed properties" (see, for example,
 Getters are defined by calling `defineGetter(path, fn, enumerable)`, where "path" is the
 [dot notation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_accessors)
 path of the
-[getter property](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_Objects#Defining_getters_and_setters)
+[getter property](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_objects#Defining_getters_and_setters)
 that you wish to define, "fn" is a function that returns the computed value, and "enumerable" (optional, defaults to
 false) determines whether the property shows up during enumeration. Any non-existent ancestors in the "path" will be
 created as empty objects. Note that you should avoid [cycles](https://en.wikipedia.org/wiki/Circular_dependency) in getters.
@@ -249,7 +249,7 @@ subscribe(console.log, "nested.countTimesTwoTimesRootCount");
 ```
 
 Getters can be
-[enumerable](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Enumerability_and_ownership_of_properties).
+[enumerable](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Enumerability_and_ownership_of_properties).
 
 ```javascript
 // The last argument defaults to `false`
@@ -279,7 +279,7 @@ stopLogging();
 
 `startLogging(selector, logger)` accepts two optional arguments. `selector` can be used to selector the state changes that
 are logged; if not specified then all changes are logged. `logger` can be used to override the default log function of
-[`console.table`](https://developer.mozilla.org/en-US/docs/Web/API/Console/table).
+[`console.table`](https://developer.mozilla.org/en-US/docs/Web/API/console/table_static).
 
 ## Developing
 
