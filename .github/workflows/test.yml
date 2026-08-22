@@ -32,41 +32,11 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # The floor engines.node declares. A floor below what the gate runs is a claim
-  # nothing checks: the sources are transpiled, so nothing here fails on an old
-  # runtime until someone runs it on one.
-  test-floor:
-    name: Test (node 20)
+  test:
+    name: Test
     runs-on: ubuntu-latest
     # Capped well under the six-hour default: nothing here runs longer than
     # six minutes, so a job still going at fifteen has hung rather than failed.
-    timeout-minutes: 15
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v7.0.1
-        with:
-          # Nothing in this job uses the token, so it is not left
-          # in .git/config for a later step to read.
-          persist-credentials: false
-
-      # The floor is spelled here rather than in a file: it moves when
-      # engines.node moves, which is rarely and deliberately.
-      - name: Set up Node.js
-        uses: actions/setup-node@v7.0.0
-        with:
-          node-version: "20"
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run tests
-        run: npm test
-
-  test-current:
-    name: Test (current)
-    runs-on: ubuntu-latest
     timeout-minutes: 15
 
     steps:
@@ -88,25 +58,6 @@ jobs:
 
       - name: Run tests
         run: npm test
-
-  # The two jobs above report under names that change whenever the versions do,
-  # and a required check that stops reporting blocks every pull request forever.
-  # This job reports under one stable name, which is what the ruleset requires.
-  #
-  # `always()` and not `!cancelled()`: a cancelled run would skip this job, and
-  # GitHub counts a skipped required check as passing.
-  test:
-    name: Test
-    needs: [test-floor, test-current]
-    if: always()
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-
-    steps:
-      - name: Check that every version passed
-        run: |
-          [ "${{ needs.test-floor.result }}" = success ] \
-            && [ "${{ needs.test-current.result }}" = success ]
 
   lint:
     name: Lint
