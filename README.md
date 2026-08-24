@@ -1,7 +1,7 @@
 # statezero
 
 [![npm version](https://img.shields.io/npm/v/statezero)](https://www.npmjs.com/package/statezero)
-[![CI](https://github.com/andornaut/statezero/actions/workflows/release.yml/badge.svg)](https://github.com/andornaut/statezero/actions/workflows/release.yml)
+[![Release](https://github.com/andornaut/statezero/actions/workflows/release.yml/badge.svg)](https://github.com/andornaut/statezero/actions/workflows/release.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/license/MIT)
 
 Small, simple, functional JavaScript library for managing immutable state.
