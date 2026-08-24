@@ -195,7 +195,7 @@ unsubscribe(fn);
 #### Async vs Sync
 
 Callbacks passed to `subscribe()` or `subscribeOnce()` are executed on relevant state changes on the
-[next tick](https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/setImmediate/Overview.html). This is fine for many cases,
+[next tick](https://w3c.github.io/setImmediate/). This is fine for many cases,
 but if you want the callbacks to be invoked synchronously, then you can use `subscribeSync()` or `subscribeOnceSync()`.
 
 ### Getters a.k.a. Computed Properties
