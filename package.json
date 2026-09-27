@@ -55,7 +55,7 @@
     "@babel/core": "^8.0.1",
     "@babel/preset-env": "^8.0.2",
     "@eslint/js": "^10.0.1",
-    "@size-limit/preset-small-lib": "^13.0.1",
+    "@size-limit/preset-small-lib": "^14.0.0",
     "esbuild": "^0.28.0",
     "eslint": "^10.1.0",
     "eslint-plugin-simple-import-sort": "^14.0.0",
