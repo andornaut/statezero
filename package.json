@@ -65,6 +65,7 @@
     "jest": "^30.3.0",
     "jest-environment-jsdom": "^30.3.0",
     "lint-staged": "^17.3.0",
+    "markdownlint-cli2": "0.24.0",
     "prettier": "^3.9.6",
     "size-limit": "^14.0.0"
   },
@@ -79,7 +80,7 @@
     "build:umd": "make exec COMMAND='npm run internal:build:umd'",
     "internal:format": "prettier --write . && eslint --fix .",
     "format": "make exec COMMAND='npm run internal:format'",
-    "internal:lint": "prettier --check . && eslint --max-warnings 0 .",
+    "internal:lint": "prettier --check . && eslint --max-warnings 0 . && markdownlint-cli2",
     "lint": "make lint",
     "prepare": "husky",
     "prepublishOnly": "if [ \"${CHECK_WRITABLE:-0}\" = 1 ]; then npm run internal:test && npm run internal:build:production; else npm run test && npm run build:production; fi",
