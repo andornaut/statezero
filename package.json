@@ -80,5 +80,9 @@
     "size": "size-limit",
     "test": "jest",
     "test:watch": "jest --watch"
+  },
+  "//": "WORKAROUND: https://github.com/advisories/GHSA-g3hv-75wg-m249. Remove when upstream dependency ranges require patched minimatch versions.",
+  "overrides": {
+    "minimatch@>=7.0.0 <11.0.1": "11.0.5"
   }
 }
