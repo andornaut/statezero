@@ -211,14 +211,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Not the artifact the Build job uploaded, unlike the gem and wheel the
-      # sibling repositories push: package.json declares a prepublishOnly that
-      # runs the tests and rebuilds, and that contract is the package's own. It
-      # costs a second build of one version, and buys the suite running once
-      # more immediately before the step that cannot be taken back.
+      # Verify and rebuild in the project image, then package those outputs
+      # with the host registry authentication.
       #
       # No `--provenance`: publishing through a trusted publisher attests
       # provenance on its own, and passing the flag as well would say nothing
       # extra.
+      - name: Verify package
+        run: |
+          make test
+          make build
+
       - name: Publish to npm
-        run: npm publish
+        run: npm publish --ignore-scripts
