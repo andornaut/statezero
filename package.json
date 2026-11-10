@@ -82,7 +82,7 @@
     "internal:lint": "prettier --check . && eslint --max-warnings 0 .",
     "lint": "make lint",
     "prepare": "husky",
-    "prepublishOnly": "npm run test && npm run build:production",
+    "prepublishOnly": "if [ \"${CHECK_WRITABLE:-0}\" = 1 ]; then npm run internal:test && npm run internal:build:production; else npm run test && npm run build:production; fi",
     "internal:size": "size-limit",
     "size": "make build",
     "internal:test": "jest",
