@@ -94,6 +94,10 @@
   },
   "//": "WORKAROUND: https://github.com/advisories/GHSA-g3hv-75wg-m249. Remove when upstream dependency ranges require patched minimatch versions.",
   "overrides": {
-    "minimatch@>=7.0.0 <11.0.1": "11.0.5"
+    "minimatch@>=7.0.0 <11.0.1": "11.0.5",
+    "markdownlint-cli2@0.24.0": {
+      "markdownlint": "0.42.1",
+      "katex": "0.19.1"
+    }
   }
 }
