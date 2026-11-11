@@ -283,14 +283,19 @@ are logged; if not specified then all changes are logged. `logger` can be used t
 
 ## Developing
 
-Use `make check` for the complete automation gate in the project's test image.
+Use `make check` for the complete automation gate with stock Node.js and ShellCheck
+images. It does not build a project image.
 It runs formatting, Markdown, lint, Jest, development and production builds, and bundle size limits.
+
+Optional `make build` runs the build checks and exports `dist/statezero.esm.js` and `dist/statezero.js`.
+Other checks keep generated files in disposable scratch.
 
 Native npm commands run locally and do not delegate to Make. Select the Node.js
 version in `.nvmrc` and install the lockfile dependencies with `npm ci`.
 
 ```bash
 make check
+make build
 npm test -- test/test_clone.js
 npm run lint
 npm run build

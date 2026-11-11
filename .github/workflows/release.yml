@@ -97,14 +97,31 @@ jobs:
         with:
           version: v29.9.3
 
-      - name: Set up Buildx
-        uses: docker/setup-buildx-action@v4.4.1
-        with:
-          version: v0.38.2
-          driver: docker
-
       - name: Build
-        run: make build
+        shell: bash
+        run: |
+          set -euo pipefail
+          source tests/container/stock
+          stock_begin "$PWD"
+          stock_image node_image "node:$(sed 's/^v//' .nvmrc)"
+          stock_prepare "${node_image}" node -- sh -ec '
+            node --version >&2
+            npm --version >&2
+            mkdir -p /scratch/node
+            cp package.json package-lock.json /scratch/node/
+            npm ci --prefix /scratch/node --maxsockets=1 --ignore-scripts --no-audit --no-fund >&2
+            tar --create --file - --directory / scratch/node/node_modules
+          '
+          outputs=(dist/statezero.esm.js dist/statezero.js)
+          stock_run "${node_image}" node -- sh -ec '
+            cp -R /scratch/node/node_modules node_modules
+            export PATH="/work/node_modules/.bin:${PATH}"
+            export HUSKY=0
+            npm run build
+            npm run build:production
+            npm run size
+          '
+          stock_finish
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v7.0.2
@@ -191,12 +208,6 @@ jobs:
         with:
           version: v29.9.3
 
-      - name: Set up Buildx
-        uses: docker/setup-buildx-action@v4.4.1
-        with:
-          version: v0.38.2
-          driver: docker
-
       - name: Set up Node.js
         uses: actions/setup-node@v7.1.0
         with:
@@ -218,9 +229,31 @@ jobs:
       # provenance on its own, and passing the flag as well would say nothing
       # extra.
       - name: Verify package
+        shell: bash
         run: |
-          make test
-          make build
+          set -euo pipefail
+          source tests/container/stock
+          stock_begin "$PWD"
+          stock_image node_image "node:$(sed 's/^v//' .nvmrc)"
+          stock_prepare "${node_image}" node -- sh -ec '
+            node --version >&2
+            npm --version >&2
+            mkdir -p /scratch/node
+            cp package.json package-lock.json /scratch/node/
+            npm ci --prefix /scratch/node --maxsockets=1 --ignore-scripts --no-audit --no-fund >&2
+            tar --create --file - --directory / scratch/node/node_modules
+          '
+          outputs=(dist/statezero.esm.js dist/statezero.js)
+          stock_run "${node_image}" node -- sh -ec '
+            cp -R /scratch/node/node_modules node_modules
+            export PATH="/work/node_modules/.bin:${PATH}"
+            export HUSKY=0
+            npm run test -- --runInBand
+            npm run build
+            npm run build:production
+            npm run size
+          '
+          stock_finish
 
       - name: Publish to npm
         run: npm publish --ignore-scripts
