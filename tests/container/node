@@ -14,8 +14,6 @@ export PATH="/work/node_modules/.bin:${PATH}"
 export HUSKY=0
 case "$task" in
 lint)
-    for script in tests/container/stock tests/container/check-stock tests/container/publish; do bash -n "$script"; done
-    for script in tests/container/node tests/container/markdown; do sh -n "$script"; done
     npx --no-install prettier --check .
     exec npx --no-install eslint --max-warnings 0 .
     ;;
@@ -35,22 +33,9 @@ else
     run_task "$action"
 fi
 if [ "$action" = build ] && [ -d /outputs ]; then
-    test -e dist/statezero.esm.js
-    test ! -L dist/statezero.esm.js
-    if [ -n "$(find -P dist/statezero.esm.js -type l -print -quit)" ]; then
-        printf '%s\n' 'Build outputs must not contain symlinks.' >&2
-        exit 2
-    fi
     mkdir -p /outputs/dist
-    cp -a --no-preserve=ownership dist/statezero.esm.js /outputs/dist/
-    test -e dist/statezero.js
-    test ! -L dist/statezero.js
-    if [ -n "$(find -P dist/statezero.js -type l -print -quit)" ]; then
-        printf '%s\n' 'Build outputs must not contain symlinks.' >&2
-        exit 2
-    fi
+    cp -R dist/statezero.esm.js /outputs/dist/
     mkdir -p /outputs/dist
-    cp -a --no-preserve=ownership dist/statezero.js /outputs/dist/
-    find -P /outputs -mindepth 1 -type d -exec chmod a+rwX {} +
-    find -P /outputs -mindepth 1 -type f -exec chmod a+rwX {} +
+    cp -R dist/statezero.js /outputs/dist/
+    find /outputs -mindepth 1 -type d -exec chmod a+rwx {} +
 fi

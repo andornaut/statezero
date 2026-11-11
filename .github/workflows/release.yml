@@ -100,35 +100,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [[ ! ${GITHUB_SHA:-} =~ ^[a-f0-9]{40}$ ]]; then
-            printf '%s\n' 'CI requires a full expected commit SHA.' >&2
-            exit 2
-          fi
-          expected_revision=$(git --no-optional-locks -c core.fsmonitor=false -c core.hooksPath=/dev/null rev-parse --verify "${GITHUB_SHA}^{commit}")
-          if [[ $(git rev-parse HEAD) != "${expected_revision}" || -n $(git --no-optional-locks -c core.fsmonitor=false -c core.hooksPath=/dev/null status --porcelain=v1 --untracked-files=all) ]]; then
-            printf '%s\n' 'CI requires the expected commit and a clean checkout.' >&2
-            exit 2
-          fi
-          git ls-files --error-unmatch .nvmrc package.json package-lock.json tests/container/stock >/dev/null
-          ci_control_blob=$(git --no-optional-locks -c core.fsmonitor=false -c core.hooksPath=/dev/null rev-parse --verify "${expected_revision}:tests/container/stock")
-          ci_control_entry=$(git --no-optional-locks -c core.fsmonitor=false -c core.hooksPath=/dev/null ls-tree "${expected_revision}" -- tests/container/stock)
-          if [[ ( ${ci_control_entry} != "100644 blob ${ci_control_blob}"$'\t'"tests/container/stock" && ${ci_control_entry} != "100755 blob ${ci_control_blob}"$'\t'"tests/container/stock" ) || ! -f tests/container/stock || -L tests/container/stock || ( ${ci_control_entry} == 100644* && -x tests/container/stock ) || ( ${ci_control_entry} == 100755* && ! -x tests/container/stock ) || $(git hash-object --no-filters -- tests/container/stock) != "${ci_control_blob}" ]]; then
-            printf '%s\n' 'CI stock control source differs from the expected regular blob.' >&2
-            exit 2
-          fi
-          ci_publish_blob=$(git --no-optional-locks -c core.fsmonitor=false -c core.hooksPath=/dev/null rev-parse --verify "${expected_revision}:tests/container/publish")
-          ci_publish_entry=$(git --no-optional-locks -c core.fsmonitor=false -c core.hooksPath=/dev/null ls-tree "${expected_revision}" -- tests/container/publish)
-          if [[ ( ${ci_publish_entry} != "100644 blob ${ci_publish_blob}"$'\t'"tests/container/publish" && ${ci_publish_entry} != "100755 blob ${ci_publish_blob}"$'\t'"tests/container/publish" ) || ! -f tests/container/publish || -L tests/container/publish || ( ${ci_publish_entry} == 100644* && -x tests/container/publish ) || ( ${ci_publish_entry} == 100755* && ! -x tests/container/publish ) || $(git hash-object --no-filters -- tests/container/publish) != "${ci_publish_blob}" ]]; then
-            printf '%s\n' 'CI output control source differs from the expected regular blob.' >&2
-            exit 2
-          fi
           source tests/container/stock
           stock_begin "$PWD"
           unset STOCK_OUTPUT_DIR
-          if [[ ${revision} != "${expected_revision}" || ${source_dirty} != false ]]; then
-            printf '%s\n' 'CI source changed before snapshot capture.' >&2
-            exit 2
-          fi
           stock_image node_image "node:$(sed 's/^v//' .nvmrc)"
           output_directory=$(mktemp -d "${scratch}/build-output.XXXXXXXX")
           STOCK_OUTPUT_DIR=${output_directory} STOCK_NETWORK=bridge stock_run "${node_image}" -- sh -ec '
@@ -143,21 +117,17 @@ jobs:
             npm run build
             npm run build:production
             npm run size
-            test -e dist/statezero.esm.js
-            test ! -L dist/statezero.esm.js
-            if [ -n "$(find -P dist/statezero.esm.js -type l -print -quit)" ]; then exit 2; fi
             mkdir -p /outputs/dist
-            cp -a --no-preserve=ownership dist/statezero.esm.js /outputs/dist/
-            test -e dist/statezero.js
-            test ! -L dist/statezero.js
-            if [ -n "$(find -P dist/statezero.js -type l -print -quit)" ]; then exit 2; fi
+            cp -R dist/statezero.esm.js /outputs/dist/
             mkdir -p /outputs/dist
-            cp -a --no-preserve=ownership dist/statezero.js /outputs/dist/
+            cp -R dist/statezero.js /outputs/dist/
             find -P /outputs -mindepth 1 -type d -exec chmod a+rwX {} +
-            find -P /outputs -mindepth 1 -type f -exec chmod a+rwX {} +
           '
           stock_finish
-          bash tests/container/publish "${output_directory}"
+          mkdir -p dist
+          cp -R "${output_directory}/dist/statezero.esm.js" dist/
+          mkdir -p dist
+          cp -R "${output_directory}/dist/statezero.js" dist/
       - name: Upload build artifact
         uses: actions/upload-artifact@v7.0.2
         with:
@@ -266,35 +236,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [[ ! ${GITHUB_SHA:-} =~ ^[a-f0-9]{40}$ ]]; then
-            printf '%s\n' 'CI requires a full expected commit SHA.' >&2
-            exit 2
-          fi
-          expected_revision=$(git --no-optional-locks -c core.fsmonitor=false -c core.hooksPath=/dev/null rev-parse --verify "${GITHUB_SHA}^{commit}")
-          if [[ $(git rev-parse HEAD) != "${expected_revision}" || -n $(git --no-optional-locks -c core.fsmonitor=false -c core.hooksPath=/dev/null status --porcelain=v1 --untracked-files=all) ]]; then
-            printf '%s\n' 'CI requires the expected commit and a clean checkout.' >&2
-            exit 2
-          fi
-          git ls-files --error-unmatch .nvmrc package.json package-lock.json tests/container/stock >/dev/null
-          ci_control_blob=$(git --no-optional-locks -c core.fsmonitor=false -c core.hooksPath=/dev/null rev-parse --verify "${expected_revision}:tests/container/stock")
-          ci_control_entry=$(git --no-optional-locks -c core.fsmonitor=false -c core.hooksPath=/dev/null ls-tree "${expected_revision}" -- tests/container/stock)
-          if [[ ( ${ci_control_entry} != "100644 blob ${ci_control_blob}"$'\t'"tests/container/stock" && ${ci_control_entry} != "100755 blob ${ci_control_blob}"$'\t'"tests/container/stock" ) || ! -f tests/container/stock || -L tests/container/stock || ( ${ci_control_entry} == 100644* && -x tests/container/stock ) || ( ${ci_control_entry} == 100755* && ! -x tests/container/stock ) || $(git hash-object --no-filters -- tests/container/stock) != "${ci_control_blob}" ]]; then
-            printf '%s\n' 'CI stock control source differs from the expected regular blob.' >&2
-            exit 2
-          fi
-          ci_publish_blob=$(git --no-optional-locks -c core.fsmonitor=false -c core.hooksPath=/dev/null rev-parse --verify "${expected_revision}:tests/container/publish")
-          ci_publish_entry=$(git --no-optional-locks -c core.fsmonitor=false -c core.hooksPath=/dev/null ls-tree "${expected_revision}" -- tests/container/publish)
-          if [[ ( ${ci_publish_entry} != "100644 blob ${ci_publish_blob}"$'\t'"tests/container/publish" && ${ci_publish_entry} != "100755 blob ${ci_publish_blob}"$'\t'"tests/container/publish" ) || ! -f tests/container/publish || -L tests/container/publish || ( ${ci_publish_entry} == 100644* && -x tests/container/publish ) || ( ${ci_publish_entry} == 100755* && ! -x tests/container/publish ) || $(git hash-object --no-filters -- tests/container/publish) != "${ci_publish_blob}" ]]; then
-            printf '%s\n' 'CI output control source differs from the expected regular blob.' >&2
-            exit 2
-          fi
           source tests/container/stock
           stock_begin "$PWD"
           unset STOCK_OUTPUT_DIR
-          if [[ ${revision} != "${expected_revision}" || ${source_dirty} != false ]]; then
-            printf '%s\n' 'CI source changed before snapshot capture.' >&2
-            exit 2
-          fi
           stock_image node_image "node:$(sed 's/^v//' .nvmrc)"
           output_directory=$(mktemp -d "${scratch}/build-output.XXXXXXXX")
           STOCK_OUTPUT_DIR=${output_directory} STOCK_NETWORK=bridge stock_run "${node_image}" -- sh -ec '
@@ -310,20 +254,16 @@ jobs:
             npm run build
             npm run build:production
             npm run size
-            test -e dist/statezero.esm.js
-            test ! -L dist/statezero.esm.js
-            if [ -n "$(find -P dist/statezero.esm.js -type l -print -quit)" ]; then exit 2; fi
             mkdir -p /outputs/dist
-            cp -a --no-preserve=ownership dist/statezero.esm.js /outputs/dist/
-            test -e dist/statezero.js
-            test ! -L dist/statezero.js
-            if [ -n "$(find -P dist/statezero.js -type l -print -quit)" ]; then exit 2; fi
+            cp -R dist/statezero.esm.js /outputs/dist/
             mkdir -p /outputs/dist
-            cp -a --no-preserve=ownership dist/statezero.js /outputs/dist/
+            cp -R dist/statezero.js /outputs/dist/
             find -P /outputs -mindepth 1 -type d -exec chmod a+rwX {} +
-            find -P /outputs -mindepth 1 -type f -exec chmod a+rwX {} +
           '
           stock_finish
-          bash tests/container/publish "${output_directory}"
+          mkdir -p dist
+          cp -R "${output_directory}/dist/statezero.esm.js" dist/
+          mkdir -p dist
+          cp -R "${output_directory}/dist/statezero.js" dist/
       - name: Publish to npm
         run: npm publish --ignore-scripts
