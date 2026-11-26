@@ -65,7 +65,7 @@
     "jest": "^30.3.0",
     "jest-environment-jsdom": "^30.3.0",
     "lint-staged": "^17.3.0",
-    "markdownlint-cli2": "0.24.0",
+    "markdownlint-cli2": "0.24.1",
     "prettier": "^3.9.6",
     "size-limit": "^14.0.0"
   },
